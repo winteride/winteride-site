@@ -221,9 +221,29 @@ nav{background:var(--navy);padding:0 2rem;display:flex;align-items:center;justif
           </select>
         </div>
       </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>שם נמען (אופציונלי)</label>
+          <input type="text" id="taskAssigneeName" placeholder="שם מלא">
+        </div>
+        <div class="form-group">
+          <label>מייל נמען (אופציונלי)</label>
+          <input type="email" id="taskAssigneeEmail" placeholder="email@example.com" dir="ltr">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>תאריך יעד (אופציונלי)</label>
+          <input type="date" id="taskDueDate">
+        </div>
+        <div class="form-group">
+          <label>הערות (אופציונלי)</label>
+          <input type="text" id="taskNotes" placeholder="פרטים נוספים...">
+        </div>
+      </div>
       <div class="form-actions">
         <button class="btn-cancel" onclick="toggleAddTask()">ביטול</button>
-        <button class="btn-save" onclick="addTask()">שמור משימה</button>
+        <button class="btn-save" onclick="addTask()">שמור ושלח משימה</button>
       </div>
     </div>
 
@@ -466,11 +486,20 @@ function updateTaskFileSelect() {
 async function addTask() {
   const title = document.getElementById("taskTitle").value.trim();
   if(!title) { showToast("נא להזין כותרת"); return; }
+  const assigneeEmail = document.getElementById("taskAssigneeEmail").value.trim();
+  const assigneeName = document.getElementById("taskAssigneeName").value.trim();
+  const dueDate = document.getElementById("taskDueDate").value || null;
+  const notes = document.getElementById("taskNotes").value.trim() || null;
+
   const data = {
     title,
     status: "todo",
     priority: document.getElementById("taskPriority").value,
     file_id: document.getElementById("taskFile").value || null,
+    assignee_email: assigneeEmail || null,
+    assignee_name: assigneeName || null,
+    due_date: dueDate,
+    notes: notes,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   };
@@ -480,8 +509,29 @@ async function addTask() {
     renderTasks();
     renderStats();
     document.getElementById("taskTitle").value = "";
+    document.getElementById("taskAssigneeEmail").value = "";
+    document.getElementById("taskAssigneeName").value = "";
+    document.getElementById("taskDueDate").value = "";
+    document.getElementById("taskNotes").value = "";
     toggleAddTask();
-    showToast("✅ משימה נוספה");
+    if(assigneeEmail && res[0].token) {
+      const portalUrl = `https://snazzy-praline-f53f9b.netlify.app/task-portal_3.html?token=${res[0].token}`;
+      showToast("✅ משימה נוצרה! שולח מייל לנמען...");
+      await sendTaskEmail(res[0], assigneeEmail, assigneeName, portalUrl);
+    } else {
+      showToast("✅ משימה נוספה");
+    }
+  }
+}
+
+async function sendTaskEmail(task, email, name, portalUrl) {
+  const EMAILJS_AVAILABLE = false;
+  if(!EMAILJS_AVAILABLE) {
+    const subject = encodeURIComponent(`משימה חדשה: ${task.title}`);
+    const body = encodeURIComponent(`שלום ${name || ""},\n\nהוקצתה לך משימה חדשה:\n${task.title}\n\nלצפייה ואישור השלמה:\n${portalUrl}\n\nWinteride Team`);
+    const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
+    window.open(mailtoLink);
+    showToast("📧 נפתח חלון מייל — שלח ידנית");
   }
 }
 
