@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account — Winteride</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#0D2B4E;--blue:#1A5F8A;--light-blue:#5BB8E8;
+  --orange:#F47920;--orange-dark:#C85F0A;
+  --white:#fff;--offwhite:#F4F8FB;
+  --text:#1a1a2e;--muted:#5a6a7a;--border:#d0dde8;
+  --green:#1D9E75;--green-light:#E1F5EE;
+  --red:#E24B4A;--red-light:#FCEBEB;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;color:var(--text)}
+
+/* TOPBAR */
+.topbar{background:rgba(13,43,78,0.95);backdrop-filter:blur(10px);padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);position:fixed;top:0;left:0;right:0;z-index:100}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:24px;color:white;letter-spacing:2px;text-decoration:none}
+.logo span{color:var(--orange)}
+.user-info{display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,0.6)}
+.logout-btn{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:6px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.logout-btn:hover{background:rgba(255,255,255,0.12);color:white}
+
+/* PAGES */
+.page{display:none;min-height:100vh;padding-top:60px}
+.page.active{display:block}
+
+/* LOGIN PAGE */
+.login-page{background:linear-gradient(135deg,#0a1628 0%,#0D2B4E 50%,#0a1f3d 100%);display:flex;align-items:center;justify-content:center;padding:2rem}
+.login-card{background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:48px;width:100%;max-width:420px;text-align:center}
+.login-logo{font-family:'Bebas Neue',sans-serif;font-size:36px;color:white;letter-spacing:4px;margin-bottom:8px}
+.login-logo span{color:var(--orange)}
+.login-subtitle{font-size:14px;color:rgba(255,255,255,0.4);margin-bottom:36px}
+.login-label{display:block;text-align:right;font-size:11px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:1px;margin-bottom:8px}
+.login-input{width:100%;padding:13px 16px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:white;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border 0.2s;margin-bottom:16px}
+.login-input:focus{border-color:var(--orange)}
+.login-input::placeholder{color:rgba(255,255,255,0.2)}
+.login-btn{width:100%;background:var(--orange);border:none;color:white;padding:14px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.2s;letter-spacing:0.5px}
+.login-btn:hover{background:var(--orange-dark)}
+.login-btn:disabled{opacity:0.5;cursor:not-allowed}
+.login-note{font-size:12px;color:rgba(255,255,255,0.25);margin-top:16px;line-height:1.6}
+.otp-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:20px}
+.otp-box{padding:14px 8px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:white;font-size:20px;font-weight:700;text-align:center;font-family:'DM Sans',sans-serif;outline:none;transition:border 0.2s}
+.otp-box:focus{border-color:var(--orange)}
+.back-link{font-size:13px;color:rgba(255,255,255,0.35);cursor:pointer;margin-top:16px;display:inline-block;transition:color 0.2s}
+.back-link:hover{color:rgba(255,255,255,0.6)}
+.login-error{background:rgba(226,75,74,0.1);border:1px solid rgba(226,75,74,0.3);color:#F09595;font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:16px;display:none}
+.login-error.show{display:block}
+
+/* ACCOUNT PAGE */
+.account-page{background:var(--offwhite)}
+.account-wrap{max-width:800px;margin:0 auto;padding:2rem}
+.welcome-banner{background:linear-gradient(135deg,var(--navy),var(--blue));border-radius:16px;padding:28px;margin-bottom:24px;position:relative;overflow:hidden}
+.welcome-banner::before{content:'';position:absolute;top:-30px;right:-30px;width:150px;height:150px;background:rgba(244,121,32,0.15);border-radius:50%}
+.welcome-name{font-family:'Bebas Neue',sans-serif;font-size:28px;color:white;letter-spacing:2px}
+.welcome-name span{color:var(--orange)}
+.welcome-sub{font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px}
+.welcome-stats{display:flex;gap:24px;margin-top:20px}
+.w-stat{background:rgba(255,255,255,0.07);border-radius:10px;padding:12px 20px;text-align:center}
+.w-stat-num{font-family:'Bebas Neue',sans-serif;font-size:24px;color:white}
+.w-stat-lbl{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:1px;text-transform:uppercase}
+
+.section-title{font-size:13px;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px}
+
+/* BOOKING CARDS */
+.booking-card{background:white;border-radius:14px;padding:20px;margin-bottom:12px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,0.04);transition:box-shadow 0.2s}
+.booking-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.08)}
+.booking-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.booking-ref{font-size:13px;font-weight:700;color:var(--navy);font-family:'Bebas Neue',sans-serif;letter-spacing:1px}
+.booking-status{font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;letter-spacing:0.5px}
+.status-pending{background:var(--amber-light);color:var(--amber)}
+.status-confirmed{background:var(--green-light);color:var(--green)}
+.status-cancelled{background:var(--red-light);color:var(--red)}
+.booking-route{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--navy);margin-bottom:8px}
+.route-arrow{color:var(--orange);font-size:12px}
+.booking-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.meta-item{display:flex;align-items:center;gap:4px}
+.booking-actions{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.action-btn{padding:7px 16px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;border:none}
+.btn-msg{background:var(--offwhite);color:var(--navy);border:1px solid var(--border)}
+.btn-msg:hover{background:var(--pale-blue,#D6EEF8);border-color:var(--light-blue)}
+.btn-change{background:rgba(186,117,23,0.1);color:var(--amber);border:1px solid rgba(186,117,23,0.2)}
+.btn-change:hover{background:rgba(186,117,23,0.15)}
+.btn-cancel{background:var(--red-light);color:var(--red);border:1px solid rgba(226,75,74,0.2)}
+.btn-cancel:hover{background:rgba(226,75,74,0.15)}
+.btn-primary{background:var(--orange);color:white}
+.btn-primary:hover{background:var(--orange-dark)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:white;border-radius:16px;padding:28px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.form-input,.form-textarea,.form-select{width:100%;padding:10px 14px;background:var(--offwhite);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border 0.2s}
+.form-textarea{min-height:100px;resize:vertical}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--orange)}
+.form-select{-webkit-appearance:none}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.btn-modal-cancel{background:var(--offwhite);border:1px solid var(--border);color:var(--muted);padding:9px 20px;border-radius:7px;cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif}
+.btn-modal-submit{background:var(--orange);border:none;color:white;padding:9px 24px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;transition:background 0.2s}
+.btn-modal-submit:hover{background:var(--orange-dark)}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:48px 24px;color:var(--muted)}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.empty-title{font-size:16px;font-weight:600;color:var(--navy);margin-bottom:6px}
+.empty-sub{font-size:13px}
+
+/* SUCCESS TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--green);color:white;padding:12px 24px;border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,0.2);display:none}
+.toast.show{display:block}
+
+.loading{text-align:center;padding:48px;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a class="logo" href="index.html">WINTER<span>IDE</span></a>
+  <div class="user-info" id="user-info" style="display:none">
+    <span id="user-email-display"></span>
+    <button class="logout-btn" onclick="logout()">Sign out</button>
+  </div>
+</div>
+
+<!-- LOGIN PAGE -->
+<div class="page active login-page" id="page-login">
+  <div class="login-card">
+    <div class="login-logo">WINTER<span>IDE</span></div>
+    <div class="login-subtitle">Sign in to manage your bookings</div>
+
+    <!-- Step 1: Email -->
+    <div id="step-email">
+      <div class="login-error" id="email-error"></div>
+      <label class="login-label">Your email address</label>
+      <input class="login-input" type="email" id="email-input" placeholder="you@example.com" onkeydown="if(event.key==='Enter')sendOTP()">
+      <button class="login-btn" onclick="sendOTP()" id="send-otp-btn">Send verification code</button>
+      <p class="login-note">We'll send a 6-digit code to your email.<br>No password needed.</p>
+    </div>
+
+    <!-- Step 2: OTP -->
+    <div id="step-otp" style="display:none">
+      <div class="login-error" id="otp-error"></div>
+      <p style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:20px">Enter the 6-digit code sent to <strong style="color:white" id="otp-email-display"></strong></p>
+      <div class="otp-grid">
+        <input class="otp-box" type="text" maxlength="1" id="otp-0" oninput="otpInput(0)">
+        <input class="otp-box" type="text" maxlength="1" id="otp-1" oninput="otpInput(1)">
+        <input class="otp-box" type="text" maxlength="1" id="otp-2" oninput="otpInput(2)">
+        <input class="otp-box" type="text" maxlength="1" id="otp-3" oninput="otpInput(3)">
+        <input class="otp-box" type="text" maxlength="1" id="otp-4" oninput="otpInput(4)">
+        <input class="otp-box" type="text" maxlength="1" id="otp-5" oninput="otpInput(5)">
+      </div>
+      <button class="login-btn" onclick="verifyOTP()" id="verify-btn">Verify & Sign in</button>
+      <div><span class="back-link" onclick="backToEmail()">← Use a different email</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ACCOUNT PAGE -->
+<div class="page" id="page-account">
+  <div class="account-wrap">
+    <div class="welcome-banner">
+      <div class="welcome-name">WELCOME BACK, <span id="welcome-name-display">TRAVELER</span></div>
+      <div class="welcome-sub">Your mountain transfer dashboard</div>
+      <div class="welcome-stats">
+        <div class="w-stat"><div class="w-stat-num" id="stat-total">0</div><div class="w-stat-lbl">Bookings</div></div>
+        <div class="w-stat"><div class="w-stat-num" id="stat-upcoming">0</div><div class="w-stat-lbl">Upcoming</div></div>
+        <div class="w-stat"><div class="w-stat-num" id="stat-past">0</div><div class="w-stat-lbl">Completed</div></div>
+      </div>
+    </div>
+
+    <div class="section-title">Your Bookings</div>
+    <div id="bookings-list"><div class="loading">Loading your bookings...</div></div>
+
+    <div style="margin-top:24px;text-align:center">
+      <a href="book.html" style="background:var(--orange);color:white;padding:12px 28px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;display:inline-block">+ New Booking</a>
+    </div>
+  </div>
+</div>
+
+<!-- MESSAGE MODAL -->
+<div class="modal-overlay" id="msg-modal">
+  <div class="modal">
+    <div class="modal-title">Send a message</div>
+    <div class="modal-sub" id="msg-modal-sub">Get in touch with our team</div>
+    <div class="form-group">
+      <label class="form-label">Message type</label>
+      <select class="form-select" id="msg-type">
+        <option value="question">General question</option>
+        <option value="change">Request a change</option>
+        <option value="cancel">Request cancellation</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Message</label>
+      <textarea class="form-textarea" id="msg-body" placeholder="Describe your request..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeModal('msg-modal')">Cancel</button>
+      <button class="btn-modal-submit" onclick="sendMessage()">Send message</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://tguovceyhyilmdtctlgp.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRndW92Y2V5aHlpbG1kdGN0bGdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMDc3NzcsImV4cCI6MjA5NTc4Mzc3N30.c58sNmyMW1YCC2HihC9CfEyO-Kyt1On8tdGvx58Hstg';
+
+const RESORT_LABELS = {
+  'val-thorens':'Val Thorens','les-menuires':'Les Menuires','courchevel':'Courchevel',
+  'meribel':'Méribel','val-disere':"Val d'Isère",'tignes':'Tignes','les-arcs':'Les Arcs',
+  'la-plagne':'La Plagne','les-2-alpes':'Les 2 Alpes','alpe-dhuez':"Alpe d'Huez",
+  'avoriaz':'Avoriaz','morzine':'Morzine'
+};
+
+let currentSession = null;
+let currentBookingId = null;
+let currentEmail = '';
+
+// ========== AUTH ==========
+async function sendOTP() {
+  const email = document.getElementById('email-input').value.trim();
+  if(!email || !email.includes('@')) { showError('email-error','Please enter a valid email address'); return; }
+  const btn = document.getElementById('send-otp-btn');
+  btn.disabled = true; btn.textContent = 'Sending...';
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/otp`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, create_user: true })
+    });
+    if(!res.ok) throw new Error(await res.text());
+    currentEmail = email;
+    document.getElementById('otp-email-display').textContent = email;
+    document.getElementById('step-email').style.display = 'none';
+    document.getElementById('step-otp').style.display = 'block';
+    document.getElementById('otp-0').focus();
+  } catch(e) {
+    showError('email-error', 'Could not send code. Please try again.');
+    btn.disabled = false; btn.textContent = 'Send verification code';
+  }
+}
+
+async function verifyOTP() {
+  const token = [0,1,2,3,4,5].map(i=>document.getElementById('otp-'+i).value).join('');
+  if(token.length < 6) { showError('otp-error','Please enter the complete 6-digit code'); return; }
+  const btn = document.getElementById('verify-btn');
+  btn.disabled = true; btn.textContent = 'Verifying...';
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/verify`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: currentEmail, token, type: 'email' })
+    });
+    const data = await res.json();
+    if(!res.ok || !data.access_token) throw new Error(data.error_description || 'Invalid code');
+    currentSession = data;
+    localStorage.setItem('winteride_session', JSON.stringify(data));
+    showAccount(data.user.email);
+  } catch(e) {
+    showError('otp-error', 'Invalid or expired code. Please try again.');
+    btn.disabled = false; btn.textContent = 'Verify & Sign in';
+  }
+}
+
+function otpInput(i) {
+  const val = document.getElementById('otp-'+i).value;
+  if(val && i < 5) document.getElementById('otp-'+(i+1)).focus();
+  if([0,1,2,3,4,5].map(j=>document.getElementById('otp-'+j).value).join('').length === 6) verifyOTP();
+}
+
+function backToEmail() {
+  document.getElementById('step-otp').style.display = 'none';
+  document.getElementById('step-email').style.display = 'block';
+  document.getElementById('send-otp-btn').disabled = false;
+  document.getElementById('send-otp-btn').textContent = 'Send verification code';
+}
+
+function logout() {
+  localStorage.removeItem('winteride_session');
+  currentSession = null;
+  document.getElementById('page-account').classList.remove('active');
+  document.getElementById('page-login').classList.add('active');
+  document.getElementById('user-info').style.display = 'none';
+}
+
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 4000);
+}
+
+// ========== ACCOUNT ==========
+async function showAccount(email) {
+  document.getElementById('page-login').classList.remove('active');
+  document.getElementById('page-account').classList.add('active');
+  document.getElementById('user-info').style.display = 'flex';
+  document.getElementById('user-email-display').textContent = email;
+  const name = email.split('@')[0].split('.').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+  document.getElementById('welcome-name-display').textContent = name.toUpperCase();
+  await loadBookings(email);
+}
+
+async function loadBookings(email) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/bookings?email=eq.${encodeURIComponent(email)}&order=travel_date.desc`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${currentSession.access_token}` }
+    });
+    const bookings = await res.json();
+    renderBookings(bookings);
+  } catch(e) {
+    document.getElementById('bookings-list').innerHTML = '<div class="loading">Could not load bookings.</div>';
+  }
+}
+
+function renderBookings(bookings) {
+  const today = new Date().toISOString().split('T')[0];
+  const upcoming = bookings.filter(b=>b.travel_date >= today && b.status !== 'cancelled');
+  const past = bookings.filter(b=>b.travel_date < today || b.status === 'cancelled');
+
+  document.getElementById('stat-total').textContent = bookings.length;
+  document.getElementById('stat-upcoming').textContent = upcoming.length;
+  document.getElementById('stat-past').textContent = past.length;
+
+  if(!bookings.length) {
+    document.getElementById('bookings-list').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">⛷️</div>
+        <div class="empty-title">No bookings yet</div>
+        <div class="empty-sub">Book your first mountain transfer and it will appear here.</div>
+      </div>`;
+    return;
+  }
+
+  const html = bookings.map(b => {
+    const resort = RESORT_LABELS[b.resort] || b.resort || '—';
+    const dir = b.direction === 'pickup'
+      ? `<span style="color:var(--light-blue);font-size:12px">✈</span> ${b.airport} <span class="route-arrow">→</span> ${resort}`
+      : `<span style="color:var(--green)">⛷</span> ${resort} <span class="route-arrow">→</span> ${b.airport}`;
+    const statusClass = b.status === 'confirmed' ? 'status-confirmed' : b.status === 'cancelled' ? 'status-cancelled' : 'status-pending';
+    const statusLabel = b.status === 'confirmed' ? 'Confirmed' : b.status === 'cancelled' ? 'Cancelled' : 'Pending';
+    const isPast = b.travel_date < today;
+    const isCancelled = b.status === 'cancelled';
+    const dateObj = new Date(b.travel_date);
+    const dateStr = dateObj.toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+
+    return `<div class="booking-card">
+      <div class="booking-header">
+        <div>
+          <div class="booking-ref">${b.booking_ref}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">${b.service_type === 'private' ? '🚐 Private' : '🚌 Shared'}</div>
+        </div>
+        <span class="booking-status ${statusClass}">${statusLabel}</span>
+      </div>
+      <div class="booking-route">${dir}</div>
+      <div class="booking-meta">
+        <div class="meta-item">📅 ${dateStr}</div>
+        ${b.arrival_time ? `<div class="meta-item">🕐 ${b.arrival_time}</div>` : ''}
+        ${b.flight_number ? `<div class="meta-item">✈️ ${b.flight_number}</div>` : ''}
+        <div class="meta-item">👤 ${b.passengers}</div>
+        ${b.price_display ? `<div class="meta-item" style="color:var(--orange);font-weight:600">${b.price_display}</div>` : ''}
+      </div>
+      ${!isCancelled ? `<div class="booking-actions">
+        <button class="action-btn btn-msg" onclick="openMsgModal('${b.id}','${b.booking_ref}')">💬 Message us</button>
+        ${!isPast ? `<button class="action-btn btn-change" onclick="openMsgModal('${b.id}','${b.booking_ref}','change')">✏️ Request change</button>
+        <button class="action-btn btn-cancel" onclick="openMsgModal('${b.id}','${b.booking_ref}','cancel')">✕ Cancel</button>` : ''}
+      </div>` : ''}
+    </div>`;
+  }).join('');
+
+  document.getElementById('bookings-list').innerHTML = html;
+}
+
+// ========== MESSAGING ==========
+function openMsgModal(bookingId, ref, type) {
+  currentBookingId = bookingId;
+  document.getElementById('msg-modal-sub').textContent = `Booking: ${ref}`;
+  if(type === 'change') document.getElementById('msg-type').value = 'change';
+  else if(type === 'cancel') document.getElementById('msg-type').value = 'cancel';
+  else document.getElementById('msg-type').value = 'question';
+  document.getElementById('msg-body').value = '';
+  document.getElementById('msg-modal').classList.add('open');
+}
+
+async function sendMessage() {
+  const type = document.getElementById('msg-type').value;
+  const body = document.getElementById('msg-body').value.trim();
+  if(!body) { alert('Please write a message'); return; }
+
+  const subject = type === 'cancel' ? 'Cancellation Request' : type === 'change' ? 'Change Request' : 'Customer Message';
+
+  try {
+    // Save message to Supabase
+    await fetch(`${SUPABASE_URL}/rest/v1/booking_messages`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${currentSession.access_token}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        booking_id: currentBookingId,
+        email: currentEmail,
+        type,
+        message: body,
+        created_at: new Date().toISOString()
+      })
+    });
+  } catch(e) { /* table might not exist yet, still send email */ }
+
+  // Send email notification to admin via Resend
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer re_VqYSn95e_KAa5EDU5qK8EEKP2B4quHodU', 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'Winteride <bookings@winteride.com>',
+        to: ['michael@winteride.com'],
+        subject: `${subject} — Booking ${currentBookingId}`,
+        html: `<p><b>From:</b> ${currentEmail}</p><p><b>Type:</b> ${type}</p><p><b>Booking:</b> ${currentBookingId}</p><p><b>Message:</b><br>${body}</p>`
+      })
+    });
+  } catch(e) {}
+
+  closeModal('msg-modal');
+  showToast('✓ Message sent! We\'ll get back to you soon.');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 4000);
+}
+
+// ========== INIT ==========
+// Check for existing session
+const saved = localStorage.getItem('winteride_session');
+if(saved) {
+  try {
+    const s = JSON.parse(saved);
+    if(s.access_token && s.user) {
+      currentSession = s;
+      currentEmail = s.user.email;
+      showAccount(s.user.email);
+    }
+  } catch(e) { localStorage.removeItem('winteride_session'); }
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  m.addEventListener('click',e=>{if(e.target===m) m.classList.remove('open');});
+});
+</script>
+</body>
+</html>

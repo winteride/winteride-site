@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="html-root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Winteride | Premium Alpine Airport Transfers</title>
+<meta name="description" content="Private & shared airport transfers from Geneva, Lyon, Grenoble, Chambéry, Milan to all major French Alpine ski resorts. 20 years experience. Flight tracking. 70 min free wait.">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--navy:#0D2B4E;--blue:#1A5F8A;--light-blue:#5BB8E8;--pale-blue:#D6EEF8;
+--orange:#F47920;--orange-dark:#C85F0A;--white:#ffffff;--offwhite:#F4F8FB;
+--text:#1a1a2e;--muted:#5a6a7a;--border:#d0dde8;
+}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--offwhite);overflow-x:hidden}
+[dir="rtl"] body{font-family:'DM Sans',sans-serif}
+
+nav{background:var(--navy);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,0.3)}
+.nav-logo-text{color:white;font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px}
+.nav-logo-sub{color:var(--light-blue);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;margin-top:-4px}
+.nav-right{display:flex;align-items:center;gap:1rem}
+.lang-toggle{display:flex;background:rgba(255,255,255,0.1);border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.2)}
+.lang-btn{padding:5px 14px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.6);cursor:pointer;border:none;background:transparent;transition:all 0.2s;font-family:'DM Sans',sans-serif}
+.lang-btn.active{background:var(--orange);color:white;border-radius:20px}
+.nav-cta{background:var(--orange);color:white;border:none;padding:8px 20px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.2s}
+.nav-cta:hover{background:var(--orange-dark)}
+
+.hero{background:linear-gradient(160deg,var(--navy) 0%,var(--blue) 60%,#2a8abf 100%);position:relative;overflow:hidden;padding:70px 2rem 80px;min-height:480px;display:flex;align-items:center}
+.hero-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.mountain{position:absolute;bottom:0;width:100%}
+.hero-content{position:relative;z-index:2;max-width:900px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.hero-tag{display:inline-block;background:var(--orange);color:white;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:3px;margin-bottom:16px}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(42px,6vw,72px);color:white;line-height:1;letter-spacing:2px;margin-bottom:16px}
+.hero-title span{color:var(--orange)}
+.hero-sub{color:rgba(255,255,255,0.75);font-size:15px;line-height:1.7;margin-bottom:24px;font-weight:300}
+.hero-badges{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px}
+.badge{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;padding:6px 14px;border-radius:20px;font-size:12px;display:flex;align-items:center;gap:6px}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);flex-shrink:0}
+.hero-btn{background:var(--orange);color:white;border:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;display:inline-block}
+.hero-btn:hover{background:var(--orange-dark);transform:translateY(-1px)}
+
+.booking-card{background:white;border-radius:16px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,0.25);position:relative;z-index:3}
+.booking-title{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--pale-blue)}
+.service-tabs{display:flex;gap:0;margin-bottom:20px;background:var(--offwhite);border-radius:8px;padding:4px}
+.stab{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:500;cursor:pointer;border-radius:6px;border:none;background:transparent;color:var(--muted);transition:all 0.2s;font-family:'DM Sans',sans-serif}
+.stab.active{background:var(--navy);color:white;font-weight:600}
+.form-group{margin-bottom:14px}
+.form-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;display:block}
+.form-input,.form-select{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);background:white;transition:border 0.2s;outline:none}
+.form-input:focus,.form-select:focus{border-color:var(--blue)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.shared-info{background:#FFF7F0;border:1px solid #FFD9B8;border-radius:8px;padding:10px 12px;font-size:12px;color:#8B4513;margin-bottom:14px;display:none}
+.shared-info.visible{display:block}
+.price-preview{background:var(--pale-blue);border-radius:8px;padding:12px 14px;margin-bottom:14px;display:none}
+.price-preview.visible{display:flex;justify-content:space-between;align-items:center}
+.price-label{font-size:12px;color:var(--blue);font-weight:500}
+.price-amount{font-size:20px;font-weight:700;color:var(--navy)}
+.price-per{font-size:11px;color:var(--muted)}
+.book-btn{width:100%;background:var(--orange);color:white;border:none;padding:13px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Bebas Neue',sans-serif;letter-spacing:1.5px;transition:all 0.2s}
+.book-btn:hover{background:var(--orange-dark)}
+.min-pax-note{font-size:11px;color:var(--muted);text-align:center;margin-top:8px;display:none}
+.min-pax-note.visible{display:block}
+
+.stats{background:var(--navy);padding:32px 2rem}
+.stats-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;text-align:center}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--orange);line-height:1}
+.stat-label{font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px;text-transform:uppercase;letter-spacing:1px}
+
+.section{padding:60px 2rem;max-width:900px;margin:0 auto}
+.section-tag{font-size:11px;font-weight:700;color:var(--orange);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,48px);color:var(--navy);letter-spacing:1px;margin-bottom:8px}
+.section-sub{color:var(--muted);font-size:15px;margin-bottom:36px;max-width:560px}
+.services-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.service-card{background:white;border-radius:12px;padding:28px;border:1.5px solid var(--border);transition:all 0.2s}
+.service-card:hover{border-color:var(--light-blue);box-shadow:0 8px 30px rgba(91,184,232,0.15);transform:translateY(-2px)}
+.service-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
+.private-icon{background:#FFF0E6}
+.shared-icon{background:#E6F4FC}
+.service-name{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.service-desc{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:16px}
+.service-features{list-style:none}
+.service-features li{font-size:13px;color:var(--text);padding:4px 0;display:flex;align-items:center;gap:8px}
+.check{color:var(--orange);font-weight:700}
+
+.airports-section{background:var(--navy);padding:50px 2rem}
+.airports-inner{max-width:900px;margin:0 auto}
+.airports-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:28px}
+.airport-card{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:16px 10px;text-align:center;transition:all 0.2s}
+.airport-card:hover{background:rgba(244,121,32,0.2);border-color:var(--orange)}
+.airport-code{font-family:'Bebas Neue',sans-serif;font-size:26px;color:white;letter-spacing:2px}
+.airport-name{font-size:10px;color:rgba(255,255,255,0.5);margin-top:3px}
+.airport-city{font-size:11px;color:var(--light-blue);font-weight:500;margin-top:2px}
+
+.resorts-grid{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.resort-pill{background:white;border:1.5px solid var(--border);border-radius:20px;padding:8px 18px;font-size:13px;font-weight:500;color:var(--navy);transition:all 0.2s}
+.resort-pill:hover{background:var(--navy);color:white;border-color:var(--navy)}
+.resort-pill.shared-resort{border-color:var(--orange);color:var(--orange-dark)}
+.resort-pill.shared-resort:hover{background:var(--orange);color:white;border-color:var(--orange)}
+
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px}
+.why-card{background:white;border-radius:12px;padding:24px;border:1.5px solid var(--border)}
+.why-num{font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--pale-blue);line-height:1;margin-bottom:4px}
+.why-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.why-desc{font-size:13px;color:var(--muted);line-height:1.6}
+
+footer{background:var(--navy);padding:40px 2rem 24px;color:rgba(255,255,255,0.7)}
+.footer-inner{max-width:900px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2rem;margin-bottom:32px}
+.footer-brand{color:white;font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;margin-bottom:8px}
+.footer-tagline{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6}
+.footer-heading{font-size:12px;font-weight:700;color:white;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px}
+.footer-links{list-style:none}
+.footer-links li{margin-bottom:8px}
+.footer-links a{color:rgba(255,255,255,0.5);font-size:13px;text-decoration:none;transition:color 0.2s}
+.footer-links a:hover{color:var(--orange)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;display:flex;justify-content:space-between;align-items:center;font-size:12px}
+.footer-contact{color:var(--orange);font-size:13px;margin-top:4px}
+
+[dir="rtl"] .hero-content{direction:rtl}
+[dir="rtl"] .booking-card{direction:rtl}
+[dir="rtl"] .section-title,[dir="rtl"] .section-sub,[dir="rtl"] .section-tag{text-align:right}
+[dir="rtl"] .service-features li{flex-direction:row-reverse}
+[dir="rtl"] .footer-top{direction:rtl}
+[dir="rtl"] .badge{flex-direction:row-reverse}
+
+@media(max-width:700px){
+  .hero-content{grid-template-columns:1fr}
+  .services-grid,.why-grid{grid-template-columns:1fr}
+  .airports-grid{grid-template-columns:repeat(3,1fr)}
+  .footer-top{grid-template-columns:1fr}
+  .stats-inner{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div>
+    <div class="nav-logo-text">WINTERIDE</div>
+    <div class="nav-logo-sub" id="nav-sub">Alpine Transfers</div>
+  </div>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('he')">עב</button>
+    </div>
+    <button class="nav-cta" onclick="document.getElementById('booking-section').scrollIntoView({behavior:'smooth'})" id="nav-book">Book Now</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg">
+    <svg class="mountain" viewBox="0 0 1200 220" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="0,220 0,140 150,60 280,110 420,30 560,90 700,20 820,80 950,40 1100,100 1200,50 1200,220" fill="rgba(255,255,255,0.04)"/>
+      <polygon points="0,220 0,160 100,100 220,140 350,70 480,120 600,50 730,110 860,60 1000,130 1120,80 1200,110 1200,220" fill="rgba(255,255,255,0.06)"/>
+    </svg>
+  </div>
+  <div class="hero-content">
+    <div>
+      <div class="hero-tag" id="hero-tag">Premium Alpine Transfers</div>
+      <h1 class="hero-title" id="hero-title">YOUR RIDE<br>TO THE <span>SLOPES</span></h1>
+      <p class="hero-sub" id="hero-sub">Private & shared transfers from Geneva, Lyon, Grenoble, Chambéry, Milan & Bergamo to all major French Alpine resorts.</p>
+      <div class="hero-badges">
+        <div class="badge"><div class="badge-dot"></div><span id="b1">70 min free wait</span></div>
+        <div class="badge"><div class="badge-dot"></div><span id="b2">Flight tracking</span></div>
+        <div class="badge"><div class="badge-dot"></div><span id="b3">24/7 support EN/FR</span></div>
+        <div class="badge"><div class="badge-dot"></div><span id="b4">20 years experience</span></div>
+      </div>
+      <button class="hero-btn" onclick="document.getElementById('booking-section').scrollIntoView({behavior:'smooth'})" id="hero-btn">Book Your Transfer</button>
+    </div>
+
+    <div class="booking-card" id="booking-section">
+      <div class="booking-title" id="book-title">📍 Book Your Transfer</div>
+      <div class="service-tabs">
+        <button class="stab active" id="tab-private" onclick="switchService('private')">🚗 <span id="tab-priv-label">Private</span></button>
+        <button class="stab" id="tab-shared" onclick="switchService('shared')">🚌 <span id="tab-shar-label">Shared</span></button>
+      </div>
+      <div id="shared-info" class="shared-info">
+        <strong id="shared-info-title">ℹ️ Shared transfers:</strong> <span id="shared-info-text">Available from GVA & LYS on direct flights from Tel Aviv only. Select resorts apply.</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="lbl-airport">Airport</label>
+        <select class="form-select" id="airport-select" onchange="updateResorts()">
+          <option value="" id="opt-airport">— Select airport —</option>
+          <option value="GVA">Geneva (GVA)</option>
+          <option value="GNB">Grenoble (GNB)</option>
+          <option value="LYS">Lyon Saint-Exupéry (LYS)</option>
+          <option value="CMF">Chambéry (CMF)</option>
+          <option value="MXP">Milan Malpensa (MXP)</option>
+          <option value="BGY">Milan Bergamo (BGY)</option>
+        </select>
+      </div>
+      <div class="form-group" id="flight-group" style="display:none">
+        <label class="form-label" id="lbl-flight">Flight Number</label>
+        <input class="form-input" type="text" id="flight-input" placeholder="e.g. FR1234">
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="lbl-resort">Resort</label>
+        <select class="form-select" id="resort-select" onchange="calcPrice()">
+          <option value="" id="opt-resort">— Select resort —</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" id="lbl-date">Date</label>
+          <input class="form-input" type="date" id="date-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label" id="lbl-pax">Passengers</label>
+          <select class="form-select" id="pax-select" onchange="calcPrice()">
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+            <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+            <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+            <option value="10">10+</option>
+          </select>
+        </div>
+      </div>
+      <div id="vehicle-group" class="form-group" style="display:none">
+        <label class="form-label" id="lbl-vehicle">Vehicle</label>
+        <select class="form-select" id="vehicle-select" onchange="calcPrice()">
+          <option value="sedan" id="opt-sedan">Sedan (1–3 pax)</option>
+          <option value="minivan" id="opt-minivan">Minivan (4–7 pax)</option>
+          <option value="minibus" id="opt-minibus">Minibus (8–16 pax)</option>
+          <option value="coach" id="opt-coach">Coach (large groups)</option>
+        </select>
+      </div>
+      <div id="price-preview" class="price-preview">
+        <div>
+          <div class="price-label" id="price-label">Estimated price</div>
+          <div class="price-per" id="price-per">per vehicle</div>
+        </div>
+        <div class="price-amount" id="price-amount">€ —</div>
+      </div>
+      <div id="min-pax-note" class="min-pax-note"></div>
+      <button class="book-btn" id="book-btn">BOOK NOW →</button>
+    </div>
+  </div>
+</section>
+
+<div style="background:var(--navy)">
+  <div class="stats">
+    <div class="stats-inner">
+      <div><div class="stat-num">20+</div><div class="stat-label" id="stat1">Years Experience</div></div>
+      <div><div class="stat-num">6</div><div class="stat-label" id="stat2">Airports Served</div></div>
+      <div><div class="stat-num">14+</div><div class="stat-label" id="stat3">Alpine Resorts</div></div>
+      <div><div class="stat-num">70'</div><div class="stat-label" id="stat4">Free Wait Time</div></div>
+    </div>
+  </div>
+</div>
+
+<div style="padding:60px 2rem;background:var(--offwhite)">
+  <div class="section" style="padding:0;margin:0 auto">
+    <div class="section-tag" id="serv-tag">Our Services</div>
+    <h2 class="section-title" id="serv-title">TWO WAYS TO RIDE</h2>
+    <p class="section-sub" id="serv-sub">Choose the transfer that suits your group, budget and schedule.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon private-icon">🚗</div>
+        <div class="service-name" id="priv-name">Private Transfer</div>
+        <div class="service-desc" id="priv-desc">Your vehicle, your schedule. Door-to-door from any of our 6 airports to any resort. Priced per vehicle.</div>
+        <ul class="service-features">
+          <li><span class="check">✓</span><span id="pf1">All 6 airports</span></li>
+          <li><span class="check">✓</span><span id="pf2">All 14+ resorts</span></li>
+          <li><span class="check">✓</span><span id="pf3">Sedan, Minivan, Minibus, Coach</span></li>
+          <li><span class="check">✓</span><span id="pf4">Fixed price per vehicle</span></li>
+          <li><span class="check">✓</span><span id="pf5">70 min free waiting time</span></li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <div class="service-icon shared-icon">🚌</div>
+        <div class="service-name" id="shar-name">Shared Transfer</div>
+        <div class="service-desc" id="shar-desc">Share the ride, share the cost. Available from Geneva & Lyon on direct flights from Tel Aviv. More passengers = lower rate per person.</div>
+        <ul class="service-features">
+          <li><span class="check">✓</span><span id="sf1">GVA & LYS only</span></li>
+          <li><span class="check">✓</span><span id="sf2">Val Thorens, Les Menuires, Les Arcs, Tignes</span></li>
+          <li><span class="check">✓</span><span id="sf3">Price per person</span></li>
+          <li><span class="check">✓</span><span id="sf4">Group discounts — more pax, lower rate</span></li>
+          <li><span class="check">✓</span><span id="sf5">Direct Tel Aviv flights only</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="airports-section">
+  <div class="airports-inner">
+    <div class="section-tag" style="color:var(--light-blue)" id="air-tag">Departure Points</div>
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:42px;color:white;letter-spacing:1px;margin-bottom:4px" id="air-title">AIRPORTS WE SERVE</h2>
+    <p style="color:rgba(255,255,255,0.5);font-size:14px" id="air-sub">Pick up from any of these 6 airports straight to your resort</p>
+    <div class="airports-grid">
+      <div class="airport-card"><div class="airport-code">GVA</div><div class="airport-city">Geneva</div><div class="airport-name">Switzerland</div></div>
+      <div class="airport-card"><div class="airport-code">GNB</div><div class="airport-city">Grenoble</div><div class="airport-name">France</div></div>
+      <div class="airport-card"><div class="airport-code">LYS</div><div class="airport-city">Lyon</div><div class="airport-name">France</div></div>
+      <div class="airport-card"><div class="airport-code">CMF</div><div class="airport-city">Chambéry</div><div class="airport-name">France</div></div>
+      <div class="airport-card"><div class="airport-code">MXP</div><div class="airport-city">Milan Malpensa</div><div class="airport-name">Italy</div></div>
+      <div class="airport-card"><div class="airport-code">BGY</div><div class="airport-city">Bergamo</div><div class="airport-name">Italy</div></div>
+    </div>
+  </div>
+</div>
+
+<div style="padding:60px 2rem;background:var(--offwhite)">
+  <div class="section" style="padding:0;margin:0 auto">
+    <div class="section-tag" id="res-tag">Destinations</div>
+    <h2 class="section-title" id="res-title">OUR RESORTS</h2>
+    <p class="section-sub" id="res-sub"><span style="color:var(--orange-dark);font-weight:600">Orange border</span> = also available as shared transfer</p>
+    <div class="resorts-grid">
+      <div class="resort-pill shared-resort">Val Thorens</div>
+      <div class="resort-pill shared-resort">Les Menuires</div>
+      <div class="resort-pill">La Plagne</div>
+      <div class="resort-pill shared-resort">Les Arcs</div>
+      <div class="resort-pill shared-resort">Tignes</div>
+      <div class="resort-pill">Val d'Isère</div>
+      <div class="resort-pill">Chamonix</div>
+      <div class="resort-pill">Avoriaz</div>
+      <div class="resort-pill">Samoëns</div>
+      <div class="resort-pill">La Tania</div>
+      <div class="resort-pill">Les 2 Alpes</div>
+      <div class="resort-pill">Alpe d'Huez</div>
+      <div class="resort-pill">Méribel</div>
+      <div class="resort-pill">Courchevel</div>
+    </div>
+  </div>
+</div>
+
+<div style="padding:60px 2rem;background:white">
+  <div class="section" style="padding:0;margin:0 auto">
+    <div class="section-tag" id="why-tag">Why Us</div>
+    <h2 class="section-title" id="why-title">WHY WINTERIDE</h2>
+    <div class="why-grid">
+      <div class="why-card"><div class="why-num">01</div><div class="why-title" id="w1t">Flight Tracking</div><div class="why-desc" id="w1d">We monitor every flight in real time. Your driver is always there when you land.</div></div>
+      <div class="why-card"><div class="why-num">02</div><div class="why-title" id="w2t">70 Min Free Wait</div><div class="why-desc" id="w2d">Delayed flight? No stress. We give you 70 minutes of free waiting time after landing.</div></div>
+      <div class="why-card"><div class="why-num">03</div><div class="why-title" id="w3t">20 Years Experience</div><div class="why-desc" id="w3d">Two decades of Alpine transfer expertise. We know every road, every resort, every season.</div></div>
+      <div class="why-card"><div class="why-num">04</div><div class="why-title" id="w4t">24/7 Bilingual Support</div><div class="why-desc" id="w4d">English and French support around the clock. We're always reachable.</div></div>
+      <div class="why-card"><div class="why-num">05</div><div class="why-title" id="w5t">Full Fleet</div><div class="why-desc" id="w5d">From a solo traveller to a large group — sedan, minivan, minibus or coach, we have the right vehicle.</div></div>
+      <div class="why-card"><div class="why-num">06</div><div class="why-title" id="w6t">Partner Commissions</div><div class="why-desc" id="w6d">Tour operators & travel agencies: earn commissions on every booking. Contact us for our trade rates.</div></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">WINTERIDE</div>
+        <div class="footer-tagline" id="ft-tag">Premium Alpine airport transfers.<br>Geneva · Lyon · Grenoble · Chambéry · Milan</div>
+        <div style="margin-top:16px">
+          <div class="footer-contact">michael@winteride.com</div>
+          <div class="footer-contact">+972 52 890 0506 (WhatsApp)</div>
+          <div class="footer-contact">www.winteride.com</div>
+        </div>
+      </div>
+      <div>
+        <div class="footer-heading" id="fh-services">Services</div>
+        <ul class="footer-links">
+          <li><a href="#" id="fl-private">Private Transfer</a></li>
+          <li><a href="#" id="fl-shared">Shared Transfer</a></li>
+          <li><a href="#" id="fl-groups">Group Bookings</a></li>
+          <li><a href="#" id="fl-trade">Trade / Partners</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-heading" id="fh-resorts">Top Resorts</div>
+        <ul class="footer-links">
+          <li><a href="#">Val Thorens</a></li>
+          <li><a href="#">Courchevel</a></li>
+          <li><a href="#">Méribel</a></li>
+          <li><a href="#">Val d'Isère</a></li>
+          <li><a href="#">Chamonix</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div id="ft-copy">© 2025 Winteride. All rights reserved.</div>
+      <div style="color:var(--orange);font-size:13px" id="ft-made">Premium Alpine Transfers</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const SHARED_AIRPORTS=['GVA','LYS'];
+const ALL_RESORTS=[
+  {v:'val-thorens',l:'Val Thorens',shared:true},
+  {v:'les-menuires',l:"Les Menuires",shared:true},
+  {v:'les-arcs',l:'Les Arcs',shared:true},
+  {v:'tignes',l:'Tignes',shared:true},
+  {v:'la-plagne',l:'La Plagne',shared:false},
+  {v:'val-disere',l:"Val d'Isère",shared:false},
+  {v:'courchevel',l:'Courchevel',shared:false},
+  {v:'meribel',l:'Méribel',shared:false},
+  {v:'avoriaz',l:'Avoriaz',shared:false},
+  {v:'morzine',l:'Morzine',shared:false},
+  {v:'les-2-alpes',l:'Les 2 Alpes',shared:false},
+  {v:'alpe-dhuez',l:"Alpe d'Huez",shared:false},
+  {v:'chamonix',l:'Chamonix',shared:false},
+  {v:'samoens',l:'Samoëns',shared:false},
+  {v:'la-tania',l:'La Tania',shared:false},
+];
+
+const PRIVATE={
+  GVA:{
+    'val-thorens':  {sedan:280,minivan:300,van:320},
+    'les-menuires': {sedan:280,minivan:300,van:320},
+    'courchevel':   {sedan:280,minivan:300,van:320},
+    'meribel':      {sedan:280,minivan:300,van:320},
+    'tignes':       {sedan:300,minivan:320,van:340},
+    'les-arcs':     {sedan:300,minivan:320,van:340},
+    'la-plagne':    {sedan:300,minivan:320,van:340},
+    'les-2-alpes':  {sedan:300,minivan:320,van:340},
+    'alpe-dhuez':   {sedan:300,minivan:320,van:340},
+    'val-disere':   {sedan:315,minivan:336,van:357},
+    'avoriaz':      {sedan:230,minivan:250,van:260},
+    'morzine':      {sedan:230,minivan:250,van:260},
+  },
+  GNB:{
+    'val-thorens':  {sedan:280,minivan:300,van:320},
+    'les-menuires': {sedan:280,minivan:300,van:320},
+    'courchevel':   {sedan:280,minivan:300,van:320},
+    'meribel':      {sedan:280,minivan:300,van:320},
+    'les-2-alpes':  {sedan:280,minivan:300,van:320},
+    'alpe-dhuez':   {sedan:280,minivan:300,van:320},
+  },
+};
+PRIVATE.LYS={...PRIVATE.GVA};
+delete PRIVATE.LYS['avoriaz'];
+delete PRIVATE.LYS['morzine'];
+
+const SHARED_RESORTS={'val-thorens':true,'les-menuires':true,'les-arcs':true,'tignes':true};
+const SHARED_PRICES={
+  1:{one:90,rt:180},2:{one:180,rt:350},3:{one:260,rt:510},
+  4:{one:320,rt:620},5:{one:350,rt:680},6:{one:390,rt:750},7:{one:420,rt:800}
+};
+function sharedPrice(pax,dir){
+  if(pax<=7) return SHARED_PRICES[pax][dir];
+  if(pax<=11) return pax*(dir==='one'?60:115);
+  return pax*(dir==='one'?55:105);
+}
+function dayType(d){
+  if(!d) return 'weekday';
+  const day=new Date(d).getDay();
+  if(day===6) return 'saturday';
+  if(day===0) return 'sunday';
+  return 'weekday';
+}
+function dayMult(dt,svc){
+  if(dt==='saturday') return svc==='shared'?1.25:1.50;
+  if(dt==='sunday')   return svc==='shared'?1.00:1.25;
+  return 1.00;
+}
+
+let currentService='private';
+
+function switchService(s){
+  currentService=s;
+  document.getElementById('tab-private').classList.toggle('active',s==='private');
+  document.getElementById('tab-shared').classList.toggle('active',s==='shared');
+  document.getElementById('shared-info').classList.toggle('visible',s==='shared');
+  document.getElementById('vehicle-group').style.display=s==='private'?'block':'none';
+  updateResorts();calcPrice();
+}
+function updateResorts(){
+  const airport=document.getElementById('airport-select').value;
+  const sel=document.getElementById('resort-select');
+  const isShared=currentService==='shared';
+  const lang=document.documentElement.lang;
+  document.getElementById('flight-group').style.display=(isShared&&SHARED_AIRPORTS.includes(airport))?'block':'none';
+  sel.innerHTML=`<option value="">${lang==='he'?'— בחר אתר סקי —':'— Select resort —'}</option>`;
+  ALL_RESORTS.forEach(r=>{
+    if(isShared&&!r.shared) return;
+    if(isShared&&airport&&!SHARED_AIRPORTS.includes(airport)) return;
+    if(!isShared&&airport&&PRIVATE[airport]&&!PRIVATE[airport][r.v]) return;
+    const opt=document.createElement('option');
+    opt.value=r.v;opt.textContent=r.l;sel.appendChild(opt);
+  });
+  calcPrice();
+}
+function calcPrice(){
+  const preview=document.getElementById('price-preview');
+  const amountEl=document.getElementById('price-amount');
+  const perEl=document.getElementById('price-per');
+  const minNote=document.getElementById('min-pax-note');
+  const resort=document.getElementById('resort-select').value;
+  const airport=document.getElementById('airport-select').value;
+  const dateVal=document.getElementById('date-input').value;
+  const lang=document.documentElement.lang;
+  const dt=dayType(dateVal);
+  const mult=dayMult(dt,currentService);
+  if(!resort){preview.classList.remove('visible');minNote.classList.remove('visible');return;}
+  if(currentService==='private'){
+    const vehicle=document.getElementById('vehicle-select').value||'sedan';
+    const routes=PRIVATE[airport];
+    if(!routes||!routes[resort]){preview.classList.remove('visible');return;}
+    const oneWay=routes[resort][vehicle]||0;
+    const paxDir=document.getElementById('pax-select').value;
+    const isRT=parseInt(paxDir)>1&&false;
+    const base=oneWay;
+    const price=Math.round(base*mult);
+    const dayNote=dt==='saturday'?` (+50% ${lang==='he'?'שבת':'Sat'})`:dt==='sunday'?` (+25% ${lang==='he'?'ראשון':'Sun'})`:'';
+    amountEl.textContent=`€ ${price}${dayNote}`;
+    perEl.textContent=lang==='he'?'לרכב (הלוך) | ×1.95 הלוך-ושוב':'per vehicle (one way) | ×1.95 return';
+    preview.classList.add('visible');minNote.classList.remove('visible');
+  } else {
+    const pax=parseInt(document.getElementById('pax-select').value)||1;
+    if(!SHARED_RESORTS[resort]){preview.classList.remove('visible');return;}
+    if((resort==='les-arcs'||resort==='tignes')&&pax<3){
+      minNote.classList.add('visible');
+      minNote.textContent=lang==='he'?'⚠️ מינימום 3 נוסעים ל-Les Arcs ו-Tignes':'⚠️ Minimum 3 passengers for Les Arcs & Tignes';
+      preview.classList.remove('visible');return;
+    }
+    const oneWayPrice=Math.round(sharedPrice(pax,'one')*mult);
+    const rtPrice=Math.round(sharedPrice(pax,'rt')*(dt==='saturday'?1.25:1.00));
+    const dayNote=dt==='saturday'?` (+25% ${lang==='he'?'שבת':'Sat'})`:'';
+    amountEl.textContent=`€${oneWayPrice}${dayNote} | R/T €${rtPrice}`;
+    perEl.textContent=lang==='he'?'סה״כ (כל הנוסעים)':'total (all passengers)';
+    preview.classList.add('visible');
+    const isReq=pax===1;
+    minNote.classList.add('visible');
+    minNote.textContent=isReq
+      ?(lang==='he'?'⚠️ נוסע 1 — ההזמנה תישלח כ-Request':'⚠️ 1 passenger — booking sent as Request')
+      :(lang==='he'?'✓ הסעה זמינה':'✓ Transfer available');
+  }
+}
+
+const T={
+  en:{'nav-sub':'Alpine Transfers','nav-book':'Book Now','hero-tag':'Premium Alpine Transfers','hero-title':'YOUR RIDE<br>TO THE <span style="color:var(--orange)">SLOPES</span>','hero-sub':'Private & shared transfers from Geneva, Lyon, Grenoble, Chambéry, Milan & Bergamo to all major French Alpine resorts.','b1':'70 min free wait','b2':'Flight tracking','b3':'24/7 support EN/FR','b4':'20 years experience','hero-btn':'Book Your Transfer','book-title':'📍 Book Your Transfer','tab-priv-label':'Private','tab-shar-label':'Shared','shared-info-title':'ℹ️ Shared transfers:','shared-info-text':'Available from GVA & LYS on direct flights from Tel Aviv only. Select resorts apply.','lbl-airport':'Airport','lbl-flight':'Flight Number','lbl-resort':'Resort','lbl-date':'Date','lbl-pax':'Passengers','lbl-vehicle':'Vehicle','price-label':'Estimated price','book-btn':'BOOK NOW →','stat1':'Years Experience','stat2':'Airports Served','stat3':'Alpine Resorts','stat4':'Free Wait Time','serv-tag':'Our Services','serv-title':'TWO WAYS TO RIDE','serv-sub':'Choose the transfer that suits your group, budget and schedule.','priv-name':'Private Transfer','priv-desc':'Your vehicle, your schedule. Door-to-door from any of our 6 airports to any resort. Priced per vehicle.','pf1':'All 6 airports','pf2':'All 14+ resorts','pf3':'Sedan, Minivan, Minibus, Coach','pf4':'Fixed price per vehicle','pf5':'70 min free waiting time','shar-name':'Shared Transfer','shar-desc':'Share the ride, share the cost. Available from Geneva & Lyon on direct flights from Tel Aviv.','sf1':'GVA & LYS only','sf2':'Val Thorens, Les Menuires, Les Arcs, Tignes','sf3':'Price per person','sf4':'Group discounts — more pax, lower rate','sf5':'Direct Tel Aviv flights only','air-tag':'Departure Points','air-title':'AIRPORTS WE SERVE','air-sub':'Pick up from any of these 6 airports straight to your resort','res-tag':'Destinations','res-title':'OUR RESORTS','res-sub':'<span style="color:var(--orange-dark);font-weight:600">Orange border</span> = also available as shared transfer','why-tag':'Why Us','why-title':'WHY WINTERIDE','w1t':'Flight Tracking','w1d':'We monitor every flight in real time. Your driver is always there when you land.','w2t':'70 Min Free Wait','w2d':'Delayed flight? No stress. We give you 70 minutes of free waiting time after landing.','w3t':'20 Years Experience','w3d':'Two decades of Alpine transfer expertise. We know every road, every resort, every season.','w4t':'24/7 Bilingual Support','w4d':'English and French support around the clock. We\'re always reachable.','w5t':'Full Fleet','w5d':'From a solo traveller to a large group — sedan, minivan, minibus or coach.','w6t':'Partner Commissions','w6d':'Tour operators & travel agencies: earn commissions on every booking.','ft-tag':'Premium Alpine airport transfers.<br>Geneva · Lyon · Grenoble · Chambéry · Milan','fh-services':'Services','fl-private':'Private Transfer','fl-shared':'Shared Transfer','fl-groups':'Group Bookings','fl-trade':'Trade / Partners','fh-resorts':'Top Resorts','ft-copy':'© 2025 Winteride. All rights reserved.','ft-made':'Premium Alpine Transfers'},
+  he:{'nav-sub':'העברות אלפיניות','nav-book':'הזמן עכשיו','hero-tag':'העברות פרמיום לאלפים','hero-title':'הנסיעה שלך<br>אל <span style="color:var(--orange)">המדרונות</span>','hero-sub':'העברות פרטיות ושיתופיות מז׳נבה, ליון, גרנובל, שמברי, מילאנו ובגמו לכל אתרי הסקי הגדולים בצרפת.','b1':'70 דקות המתנה חינם','b2':'מעקב טיסות','b3':'תמיכה 24/7 עברית/צרפתית','b4':'20 שנות ניסיון','hero-btn':'הזמן העברה','book-title':'📍 הזמן את ההעברה שלך','tab-priv-label':'פרטי','tab-shar-label':'שיתופי','shared-info-title':'ℹ️ העברות שיתופיות:','shared-info-text':'זמינות מ-GVA ו-LYS על טיסות ישירות מתל אביב בלבד.','lbl-airport':'שדה תעופה','lbl-flight':'מספר טיסה','lbl-resort':'אתר סקי','lbl-date':'תאריך','lbl-pax':'נוסעים','lbl-vehicle':'רכב','price-label':'מחיר משוער','book-btn':'הזמן עכשיו ←','stat1':'שנות ניסיון','stat2':'שדות תעופה','stat3':'אתרי סקי','stat4':'דקות המתנה חינם','serv-tag':'השירותים שלנו','serv-title':'שתי דרכים לנסוע','serv-sub':'בחר את ההעברה המתאימה לקבוצה, לתקציב ולוח הזמנים שלך.','priv-name':'העברה פרטית','priv-desc':'הרכב שלך, הזמן שלך. מדלת לדלת מכל אחד מ-6 שדות התעופה לכל אתר. מחיר לרכב.','pf1':'כל 6 שדות התעופה','pf2':'כל 14+ אתרי הסקי','pf3':'סדאן, מיניוואן, מיניבוס, אוטובוס','pf4':'מחיר קבוע לרכב','pf5':'70 דקות המתנה חינם','shar-name':'העברה שיתופית','shar-desc':'שתף את הנסיעה, שתף את העלות. זמין מז׳נבה וליון על טיסות ישירות מתל אביב.','sf1':'GVA ו-LYS בלבד','sf2':'ואל תורנס, לה מניר, לה ארק, טין','sf3':'מחיר לאדם','sf4':'הנחות קבוצה — יותר נוסעים, מחיר נמוך יותר','sf5':'טיסות ישירות מתל אביב בלבד','air-tag':'נקודות יציאה','air-title':'שדות התעופה שלנו','air-sub':'איסוף מכל אחד מ-6 שדות התעופה ישירות לאתר הסקי','res-tag':'יעדים','res-title':'אתרי הסקי שלנו','res-sub':'<span style="color:var(--orange-dark);font-weight:600">מסגרת כתומה</span> = זמין גם כהעברה שיתופית','why-tag':'למה אנחנו','why-title':'למה ווינטרייד','w1t':'מעקב טיסות','w1d':'אנחנו עוקבים אחרי כל טיסה בזמן אמת. הנהג שלך תמיד שם כשאתה נוחת.','w2t':'70 דקות המתנה חינם','w2d':'טיסה מאוחרת? אין לחץ. 70 דקות המתנה חינם לאחר הנחיתה.','w3t':'20 שנות ניסיון','w3d':'שני עשורים של מומחיות בהעברות אלפיניות. אנחנו מכירים כל כביש, כל אתר, כל עונה.','w4t':'תמיכה דו-לשונית 24/7','w4d':'תמיכה בעברית ובצרפתית סביב השעון. אנחנו תמיד זמינים.','w5t':'צי רכבים מלא','w5d':'ממטייל יחיד ועד קבוצה גדולה — סדאן, מיניוואן, מיניבוס או אוטובוס.','w6t':'עמלות שותפים','w6d':'מארגני טיולים וסוכנויות נסיעות: הרוויחו עמלות על כל הזמנה.','ft-tag':'העברות שדה תעופה פרמיום לאלפים.<br>ז׳נבה · ליון · גרנובל · שמברי · מילאנו','fh-services':'שירותים','fl-private':'העברה פרטית','fl-shared':'העברה שיתופית','fl-groups':'הזמנות קבוצות','fl-trade':'שותפים / סיטונאי','fh-resorts':'אתרי סקי מובילים','ft-copy':'© 2025 Winteride. כל הזכויות שמורות.','ft-made':'העברות אלפיניות פרמיום'}
+};
+
+function setLang(lang){
+  document.documentElement.lang=lang;
+  document.documentElement.dir=lang==='he'?'rtl':'ltr';
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()===(lang==='en'?'EN':'עב')));
+  const t=T[lang];
+  Object.keys(t).forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=t[id];});
+  updateResorts();calcPrice();
+}
+
+switchService('private');
+updateResorts();
+document.getElementById('date-input').min=new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>

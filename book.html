@@ -1,0 +1,2546 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Book Your Transfer — Winteride</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#0D2B4E;--blue:#1A5F8A;--light-blue:#5BB8E8;--pale-blue:#D6EEF8;
+  --orange:#F47920;--orange-dark:#C85F0A;--white:#fff;--offwhite:#F4F8FB;
+  --text:#1a1a2e;--muted:#5a6a7a;--border:#d0dde8;--success:#1D9E75;
+}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--offwhite);min-height:100vh}
+/* NAV */
+nav{background:var(--navy);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
+.nav-logo{color:white;font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;text-decoration:none}
+.nav-back{color:rgba(255,255,255,0.7);font-size:13px;text-decoration:none;display:flex;align-items:center;gap:6px;transition:color 0.2s}
+.nav-back:hover{color:var(--orange)}
+
+/* PROGRESS */
+.progress-bar{background:var(--navy);padding:0 2rem 20px;border-bottom:1px solid rgba(255,255,255,0.1)}
+.progress-inner{max-width:700px;margin:0 auto;display:flex;align-items:center;gap:0}
+.step{display:flex;align-items:center;gap:8px;flex:1}
+.step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;transition:all 0.3s}
+.step-num.active{background:var(--orange);color:white}
+.step-num.done{background:var(--success);color:white}
+.step-num.inactive{background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.5)}
+.step-label{font-size:11px;color:rgba(255,255,255,0.6);white-space:nowrap}
+.step-label.active{color:white;font-weight:500}
+.step-divider{flex:1;height:1px;background:rgba(255,255,255,0.15);margin:0 8px}
+
+/* MAIN */
+.main{max-width:700px;margin:0 auto;padding:2rem}
+.step-panel{display:none}
+.step-panel.active{display:block}
+
+/* CARDS */
+.card{background:white;border-radius:16px;padding:28px;border:1.5px solid var(--border);margin-bottom:20px}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--navy);letter-spacing:1px;margin-bottom:6px}
+.card-sub{font-size:13px;color:var(--muted);margin-bottom:24px}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.form-group{margin-bottom:0}
+.form-group.full{grid-column:1/-1}
+label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;display:block}
+input,select,textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);background:white;transition:border 0.2s;outline:none;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--blue)}
+input[type=checkbox]{width:auto;margin-right:8px}
+.input-hint{font-size:11px;color:var(--muted);margin-top:4px}
+
+/* PHONE INPUT */
+.phone-wrap{display:flex;gap:8px}
+.phone-country{width:140px;flex-shrink:0}
+.phone-number{flex:1}
+
+/* SERVICE TABS */
+.svc-tabs{display:flex;gap:10px;margin-bottom:20px}
+.svc-tab{flex:1;padding:10px 14px;border-radius:10px;border:2px solid var(--border);cursor:pointer;text-align:center;transition:all 0.2s;background:white;display:flex;align-items:center;gap:10px}
+.svc-tab:hover{border-color:var(--light-blue)}
+.svc-tab.active{border-color:var(--navy);background:var(--navy)}
+.svc-tab-icon{font-size:20px;flex-shrink:0}
+.svc-tab-name{font-size:13px;font-weight:700;color:var(--navy);text-align:left}
+.svc-tab.active .svc-tab-name{color:white}
+.svc-tab-desc{font-size:11px;color:var(--muted);margin-top:1px;text-align:left}
+.svc-tab.active .svc-tab-desc{color:rgba(255,255,255,0.7)}
+
+/* STEPPER */
+.stepper{display:flex;align-items:center;gap:12px}
+.stepper-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);background:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--navy);font-weight:700;transition:all 0.2s;flex-shrink:0}
+.stepper-btn:hover{border-color:var(--orange);color:var(--orange)}
+.stepper-val{font-size:18px;font-weight:700;color:var(--navy);min-width:24px;text-align:center}
+.stepper-label{font-size:13px;color:var(--muted)}
+
+/* EXTRAS */
+.extras-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.extra-card{background:var(--offwhite);border-radius:10px;padding:14px;border:1.5px solid var(--border);transition:all 0.2s}
+.extra-card.selected{border-color:var(--orange);background:#FFF7F0}
+.extra-title{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:2px}
+.extra-price{font-size:11px;color:var(--orange);font-weight:600}
+.extra-desc{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* FLIGHT LOOKUP */
+.flight-lookup{display:flex;gap:8px;align-items:flex-end}
+.flight-lookup input{flex:1}
+.lookup-btn{padding:11px 18px;background:var(--navy);color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:background 0.2s;flex-shrink:0}
+.lookup-btn:hover{background:var(--blue)}
+.flight-result{background:var(--pale-blue);border-radius:8px;padding:12px 14px;margin-top:8px;font-size:13px;color:var(--navy);display:none}
+.flight-result.visible{display:block}
+
+/* ADDRESS SEARCH */
+.address-wrap{position:relative}
+.address-suggestions{position:absolute;top:100%;left:0;right:0;background:white;border:1.5px solid var(--border);border-top:none;border-radius:0 0 8px 8px;z-index:10;display:none}
+.address-suggestion{padding:10px 14px;font-size:13px;cursor:pointer;transition:background 0.15s;border-bottom:1px solid var(--border)}
+.address-suggestion:last-child{border-bottom:none}
+.address-suggestion:hover{background:var(--offwhite)}
+
+/* SUMMARY */
+.summary-section{margin-bottom:20px}
+.summary-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.summary-row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px}
+.summary-row.total{font-weight:700;font-size:18px;color:var(--navy);border-top:2px solid var(--navy);padding-top:12px;margin-top:8px}
+.summary-label{color:var(--muted)}
+.summary-val{color:var(--text);font-weight:500}
+
+/* PAYMENT */
+.payment-options{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.pay-opt{border:2px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;transition:all 0.2s;background:white}
+.pay-opt:hover{border-color:var(--light-blue)}
+.pay-opt.selected{border-color:var(--orange)}
+.pay-opt-name{font-size:13px;font-weight:600;color:var(--navy);margin-top:6px}
+.pay-logo{font-size:22px}
+
+/* NOTICE */
+.notice{border-radius:8px;padding:12px 14px;font-size:13px;margin-bottom:16px}
+.notice-info{background:var(--pale-blue);color:var(--blue);border:1px solid #B5D4F4}
+.notice-warn{background:#FFF7F0;color:#8B4513;border:1px solid #FFD9B8}
+.notice-success{background:#E1F5EE;color:#0F6E56;border:1px solid #9FE1CB}
+
+/* BUTTONS */
+.btn-next{width:100%;background:var(--orange);color:white;border:none;padding:15px;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Bebas Neue',sans-serif;letter-spacing:1.5px;transition:all 0.2s;margin-top:8px}
+.btn-next:hover{background:var(--orange-dark);transform:translateY(-1px)}
+.btn-back{background:transparent;color:var(--muted);border:1.5px solid var(--border);padding:12px 24px;border-radius:8px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.btn-back:hover{border-color:var(--navy);color:var(--navy)}
+.btn-row{display:flex;gap:12px;align-items:center;margin-top:20px}
+.btn-row .btn-next{flex:1;margin-top:0}
+
+/* CUSTOM CHECKBOXES */
+input[type="checkbox"]{
+  -webkit-appearance:none;appearance:none;
+  width:18px;height:18px;border:2px solid var(--border);border-radius:4px;
+  background:white;cursor:pointer;transition:all 0.15s;flex-shrink:0;
+  display:inline-flex;align-items:center;justify-content:center;
+  vertical-align:middle;position:relative;min-width:18px;
+}
+input[type="checkbox"]:checked{
+  background:var(--orange);border-color:var(--orange);
+}
+input[type="checkbox"]:checked::after{
+  content:'';display:block;
+  width:5px;height:9px;
+  border:2px solid white;border-top:none;border-left:none;
+  transform:rotate(45deg) translate(-50%,-60%);
+  position:absolute;top:50%;left:50%;
+}
+input[type="radio"]{accent-color:var(--orange)}
+
+/* SUCCESS */
+.success-box{text-align:center;padding:40px 20px}
+.success-icon{font-size:64px;margin-bottom:16px}
+.success-title{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--navy);letter-spacing:1px;margin-bottom:8px}
+.success-sub{font-size:15px;color:var(--muted);margin-bottom:24px}
+.booking-ref-box{background:var(--pale-blue);border-radius:10px;padding:16px;display:inline-block;margin-bottom:24px}
+.booking-ref-label{font-size:12px;color:var(--muted);margin-bottom:4px}
+.booking-ref-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--navy);letter-spacing:2px}
+
+/* LANG */
+.lang-btn{background:none;border:1.5px solid var(--border);color:var(--muted);padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.lang-btn.active{background:var(--navy);color:white;border-color:var(--navy)}
+[dir="rtl"] .card-title,[dir="rtl"] .card-sub,[dir="rtl"] label,[dir="rtl"] .notice{text-align:right}
+[dir="rtl"] .btn-row{flex-direction:row-reverse}
+[dir="rtl"] .phone-wrap{direction:rtl}
+[dir="rtl"] .svc-tab{text-align:right}
+[dir="rtl"] .step-label{font-size:11px}
+
+/* SWAP BUTTON */
+.route-wrap{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:end}
+.swap-btn{width:36px;height:40px;border-radius:8px;border:1.5px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--navy);font-size:16px;transition:all 0.2s;flex-shrink:0;margin-bottom:0}
+.swap-btn:hover{border-color:var(--orange);color:var(--orange);transform:rotate(180deg)}
+
+/* MOBILE */
+@media(max-width:600px){
+  .main{padding:1rem}
+  .form-grid,.form-grid-3{grid-template-columns:1fr}
+  .extras-grid{grid-template-columns:1fr}
+  .payment-options{grid-template-columns:1fr 1fr}
+  .svc-tabs{flex-direction:column}
+  .card{padding:18px}
+  .progress-bar{padding:0 1rem 16px}
+  .step-label{display:none}
+  nav{padding:0 1rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">WINTERIDE</a>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="display:flex;gap:4px">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('he')">עב</button>
+    </div>
+    <a href="index.html" class="nav-back" id="nav-back-link">← Back to home</a>
+  </div>
+</nav>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <div class="step">
+      <div class="step-num active" id="snum-1">1</div>
+      <span class="step-label active" id="slbl-1" data-i18n="step1">Transfer</span>
+    </div>
+    <div class="step-divider"></div>
+    <div class="step">
+      <div class="step-num inactive" id="snum-2">2</div>
+      <span class="step-label" id="slbl-2" data-i18n="step2">Flight & Luggage</span>
+    </div>
+    <div class="step-divider"></div>
+    <div class="step">
+      <div class="step-num inactive" id="snum-3">3</div>
+      <span class="step-label" id="slbl-3" data-i18n="step3">Your Details</span>
+    </div>
+    <div class="step-divider"></div>
+    <div class="step">
+      <div class="step-num inactive" id="snum-4">4</div>
+      <span class="step-label" id="slbl-4" data-i18n="step4">Payment</span>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- STEP 1: TRANSFER -->
+<div class="step-panel active" id="panel-1">
+  <div class="card">
+    <div class="card-title" data-i18n="card-title-transfer">Choose Your Transfer</div>
+    <div class="card-sub" data-i18n="card-sub-transfer">Select service type, route and travel date</div>
+
+    <div class="svc-tabs">
+      <div class="svc-tab" id="tab-shared" onclick="setService('shared')">
+        <div class="svc-tab-icon">🚌</div>
+        <div><div class="svc-tab-name" data-i18n="tab-shared-name">Shared Transfer</div>
+        <div class="svc-tab-desc" data-i18n="tab-shared-desc">GVA & LYS · Direct TLV flights only</div></div>
+      </div>
+      <div class="svc-tab active" id="tab-private" onclick="setService('private')">
+        <div class="svc-tab-icon">🚗</div>
+        <div><div class="svc-tab-name" data-i18n="tab-private-name">Private Transfer</div>
+        <div class="svc-tab-desc" data-i18n="tab-private-desc">Exclusive vehicle for your group</div></div>
+      </div>
+    </div>
+
+    <div id="shared-notice" class="notice notice-info" style="display:none">
+      ℹ️ Shared transfers available from Geneva (GVA) & Lyon (LYS) on direct flights <strong>from or to Tel Aviv (TLV) only</strong>.<br>
+      <strong>Season: 20 Nov 2026 – 5 May 2027</strong>
+    </div>
+    <div id="shared-season-warn" class="notice notice-warn" style="display:none;margin-top:8px">
+      ⚠️ Shared transfers are only available between 20 Nov 2026 and 5 May 2027. Please select a date within this period, or choose Private Transfer.
+    </div>
+
+    <!-- Route row: From ↔ To with swap arrow -->
+    <div class="route-wrap" style="margin-bottom:16px">
+      <div class="form-group" style="margin-bottom:0">
+        <label data-i18n="lbl-from">From</label>
+        <select id="b-from" onchange="updateToOptions()">
+          <option value="">— Select origin —</option>
+        </select>
+      </div>
+      <button class="swap-btn" onclick="swapFromTo()" title="Swap" type="button">⇄</button>
+      <div class="form-group" style="margin-bottom:0">
+        <label data-i18n="lbl-to">To</label>
+        <select id="b-to" onchange="onToChange()">
+          <option value="">— Select destination —</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-grid">
+      <!-- Hidden fields for compatibility -->
+      <input type="hidden" id="b-airport">
+      <input type="hidden" id="b-resort">
+      <div class="form-group" id="vehicle-group">
+        <label data-i18n="lbl-vehicle">Vehicle</label>
+        <select id="b-vehicle" onchange="calcPrice()">
+          <option value="sedan">Sedan (1–3 pax)</option>
+          <option value="van">Van (1–8 pax)</option>
+          <option value="minibus">Minibus (1–15 pax)</option>
+          <option value="bus">Bus (large groups)</option>
+        </select>
+      </div>
+      <div class="form-group" style="display:none">
+        <select id="b-direction" onchange="calcPrice()">
+          <option value="one">One way</option>
+          <option value="rt">Return (R/T)</option>
+        </select>
+      </div>
+      <input type="hidden" id="b-ow-direction" value="arrival">
+      <div class="form-group">
+        <label data-i18n="lbl-date">Travel date</label>
+        <input type="date" id="b-date" onchange="onArrivalDateChange()">
+      </div>
+    </div>
+
+    <div style="margin-top:20px">
+      <label data-i18n="lbl-pax">Number of passengers</label>
+      <div class="stepper" style="margin-top:8px">
+        <button class="stepper-btn" onclick="changePax(-1)">−</button>
+        <span class="stepper-val" id="pax-val">1</span>
+        <button class="stepper-btn" onclick="changePax(1)">+</button>
+        <span class="stepper-label" id="pax-label">passenger</span>
+      </div>
+      <div id="min-pax-warn" class="notice notice-warn" style="display:none;margin-top:8px">
+        ⚠️ Les Arcs & Tignes: minimum 3 passengers for shared transfer (outbound and return)
+      </div>
+    </div>
+
+    <!-- Real-time availability (shared only) -->
+    <div id="availability-box" style="display:none;margin-top:12px;border-radius:10px;padding:14px 16px;font-size:13px;border:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div id="avail-dot" style="width:12px;height:12px;border-radius:50%;flex-shrink:0;background:#ccc"></div>
+        <span id="avail-status-badge" style="font-size:12px;font-weight:700;color:var(--navy)"></span>
+      </div>
+      <div id="avail-message" style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5"></div>
+    </div>
+
+    <div id="price-box" style="display:none;margin-top:20px;background:var(--pale-blue);border-radius:10px;padding:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:12px;color:var(--blue);font-weight:600">ESTIMATED PRICE</div>
+          <div id="price-per" style="font-size:11px;color:var(--muted);margin-top:2px"></div>
+        </div>
+        <div id="price-amount" style="font-size:26px;font-weight:700;color:var(--navy)"></div>
+      </div>
+      <div id="request-notice" class="notice notice-warn" style="display:none;margin-top:10px;margin-bottom:0">
+        ⚠️ This booking will be submitted as a <strong>Request</strong> — confirmation pending.
+      </div>
+      <!-- Return trip toggle -->
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(26,95,138,0.15)">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;color:var(--navy);font-weight:500">
+          <input type="checkbox" id="rt-toggle" onchange="toggleReturnTrip()" style="width:16px;height:16px;accent-color:var(--orange)">
+          <span data-i18n="lbl-add-return">Add return trip</span>
+          <span id="rt-price-badge" style="display:none;background:var(--orange);color:white;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px"></span>
+        </label>
+        <div id="rt-return-date-wrap" style="display:none;margin-top:12px">
+          <label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:4px">RETURN DATE</label>
+          <input type="date" id="b-return-date" onchange="calcPrice()" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);width:100%;margin-bottom:12px">
+
+          <!-- Same airport checkbox -->
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--navy);font-weight:500;margin-bottom:10px">
+            <input type="checkbox" id="rt-same-airport" checked onchange="toggleReturnAirport()" style="width:16px;height:16px;accent-color:var(--orange)">
+            Return from same airport
+          </label>
+          <div id="rt-airport-wrap" style="display:none;margin-bottom:12px">
+            <label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:4px">RETURN AIRPORT</label>
+            <select id="b-airport-rt" onchange="calcPrice()" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text)">
+              <option value="">— Select return airport —</option>
+            </select>
+          </div>
+
+          <!-- Return pax -->
+          <label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px">RETURN PASSENGERS <span style="font-weight:400;color:var(--muted)">(if different)</span></label>
+          <div class="stepper">
+            <button class="stepper-btn" onclick="changeReturnPax(-1)">−</button>
+            <span class="stepper-val" id="rt-pax-val">1</span>
+            <button class="stepper-btn" onclick="changeReturnPax(1)">+</button>
+            <span class="stepper-label" id="rt-pax-label">passenger</span>
+          </div>
+          <div id="rt-price-breakdown" style="display:none;margin-top:10px;font-size:12px;color:var(--muted)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="btn-next" onclick="goStep(2)">CONTINUE →</button>
+  <div id="shared-price-note" style="display:none;font-size:12px;color:var(--muted);margin-top:8px;text-align:center">
+    ✓ Price includes 1 suitcase per passenger · Extra charges apply for additional luggage
+  </div>
+</div>
+
+<!-- STEP 2: FLIGHT & LUGGAGE -->
+<div class="step-panel" id="panel-2">
+  <div class="card">
+    <div class="card-title" data-i18n="card-title-flight-out">✈️ Outbound Flight Details</div>
+    <div class="card-sub" id="flight-sub-out" data-i18n="card-sub-flight-out">We'll track your flight and wait for you</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Airline</label>
+        <select id="b-airline">
+          <option value="">— Select airline —</option>
+          <option value="LY">El Al (LY)</option>
+          <option value="FR">Ryanair (FR)</option>
+          <option value="U2">easyJet (U2)</option>
+          <option value="VY">Vueling (VY)</option>
+          <option value="W6">Wizz Air (W6)</option>
+          <option value="AF">Air France (AF)</option>
+          <option value="LH">Lufthansa (LH)</option>
+          <option value="TK">Turkish Airlines (TK)</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Flight number</label>
+        <div class="flight-lookup">
+          <input type="text" id="b-flight" placeholder="e.g. 317" oninput="this.value=this.value.replace(/\D/g,'')" maxlength="4">
+          <button class="lookup-btn" onclick="lookupFlight('out')">Look up ✈</button>
+        </div>
+      </div>
+    </div>
+    <div id="flight-result" class="flight-result"></div>
+    <div id="flight-shared-warn" class="notice notice-warn" style="display:none;margin-top:10px">
+      ⚠️ Shared transfers are only available on <strong>direct flights from/to Tel Aviv (TLV)</strong>. This flight doesn't qualify. 
+      <a href="#" onclick="redirectToPrivate()" style="color:var(--orange);font-weight:600">Switch to Private Transfer →</a>
+    </div>
+  </div>
+
+  <!-- RETURN FLIGHT (shown only if RT) -->
+  <div class="card" id="return-flight-card" style="display:none">
+    <div class="card-title" data-i18n="card-title-flight-rt">✈️ Return Flight Details</div>
+    <div class="card-sub" data-i18n="card-sub-flight-rt">Flight from resort back to Tel Aviv</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Airline</label>
+        <select id="b-airline-rt">
+          <option value="">— Select airline —</option>
+          <option value="LY">El Al (LY)</option>
+          <option value="FR">Ryanair (FR)</option>
+          <option value="U2">easyJet (U2)</option>
+          <option value="VY">Vueling (VY)</option>
+          <option value="W6">Wizz Air (W6)</option>
+          <option value="AF">Air France (AF)</option>
+          <option value="LH">Lufthansa (LH)</option>
+          <option value="TK">Turkish Airlines (TK)</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Flight number</label>
+        <div class="flight-lookup">
+          <input type="text" id="b-flight-rt" placeholder="e.g. 318" oninput="this.value=this.value.replace(/\D/g,'')" maxlength="4">
+          <button class="lookup-btn" onclick="lookupFlight('rt')">Look up ✈</button>
+        </div>
+      </div>
+    </div>
+    <div id="flight-result-rt" class="flight-result"></div>
+    <div id="flight-shared-warn-rt" class="notice notice-warn" style="display:none;margin-top:10px">
+      ⚠️ Return flight must also be a <strong>direct flight to Tel Aviv (TLV)</strong>.
+      <a href="#" onclick="redirectToPrivate()" style="color:var(--orange);font-weight:600">Switch to Private Transfer →</a>
+    </div>
+  </div>
+
+  <!-- LUGGAGE & EXTRAS -->
+  <div class="card">
+    <div class="card-title" data-i18n="card-title-luggage">🧳 Luggage & Extras</div>
+    <div class="card-sub" id="luggage-sub">1 suitcase per passenger included free</div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Extra suitcases <span style="color:var(--muted);font-weight:400">(beyond 1/pax)</span></label>
+        <div class="stepper" style="margin-top:8px">
+          <button class="stepper-btn" onclick="changeStepper('suitcases',-1)">−</button>
+          <span class="stepper-val" id="suitcases-val">0</span>
+          <button class="stepper-btn" onclick="changeStepper('suitcases',1)">+</button>
+          <span class="stepper-label" id="suitcases-price-label">€15/bag</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Ski / Snowboard equipment</label>
+        <div class="stepper" style="margin-top:8px">
+          <button class="stepper-btn" onclick="changeStepper('ski',-1)">−</button>
+          <span class="stepper-val" id="ski-val">0</span>
+          <button class="stepper-btn" onclick="changeStepper('ski',1)">+</button>
+          <span class="stepper-label" id="ski-price-label">€10/item</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <label>Child seats</label>
+      <div class="extras-grid" style="margin-top:8px">
+        <div class="extra-card" id="ec-baby">
+          <div class="extra-title">👶 Baby seat</div>
+          <div class="extra-price" id="baby-price-label">+€10</div>
+          <div class="extra-desc">For children up to 13kg</div>
+          <div class="stepper" style="margin-top:8px">
+            <button class="stepper-btn" onclick="changeStepper('baby',-1)">−</button>
+            <span class="stepper-val" id="baby-val">0</span>
+            <button class="stepper-btn" onclick="changeStepper('baby',1)">+</button>
+          </div>
+        </div>
+        <div class="extra-card" id="ec-booster">
+          <div class="extra-title">🪑 Booster seat</div>
+          <div class="extra-price" id="booster-price-label">+€7</div>
+          <div class="extra-desc">For children 15–36kg</div>
+          <div class="stepper" style="margin-top:8px">
+            <button class="stepper-btn" onclick="changeStepper('booster',-1)">−</button>
+            <span class="stepper-val" id="booster-val">0</span>
+            <button class="stepper-btn" onclick="changeStepper('booster',1)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <label>Extra stop</label>
+      <div class="extras-grid" style="margin-top:8px">
+        <div class="extra-card" id="ec-stop" onclick="toggleStopExtra('stop')">
+          <div class="extra-title">📍 Extra stop (same resort)</div>
+          <div class="extra-price">+€15</div>
+          <div class="extra-desc">Additional drop-off/pick-up point</div>
+          <input type="text" id="stop-address" placeholder="Address of extra stop" style="margin-top:8px;display:none" onclick="event.stopPropagation()">
+        </div>
+        <div class="extra-card" id="ec-roadstop" onclick="toggleStopExtra('roadstop')">
+          <div class="extra-title">🛣️ Road stop (over 20 min)</div>
+          <div class="extra-price">+€60</div>
+          <div class="extra-desc">Subject to availability</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Price summary with extras -->
+    <div id="extras-total" style="display:none;margin-top:16px;background:var(--pale-blue);border-radius:10px;padding:14px">
+      <div style="font-size:12px;color:var(--blue);font-weight:600;margin-bottom:8px">TOTAL WITH EXTRAS</div>
+      <div id="extras-breakdown" style="font-size:12px;color:var(--muted);margin-bottom:6px"></div>
+      <div id="extras-total-amount" style="font-size:22px;font-weight:700;color:var(--navy)"></div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-back" onclick="goStep(1)">← Back</button>
+    <button class="btn-next" onclick="goStep(3)">CONTINUE →</button>
+  </div>
+</div>
+
+<!-- STEP 3: YOUR DETAILS -->
+<div class="step-panel" id="panel-3">
+  <div class="card">
+    <div class="card-title" data-i18n="card-title-details">Your Details</div>
+    <div class="card-sub" data-i18n="card-sub-details">Please fill in your personal information</div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>First name</label>
+        <input type="text" id="b-fname" placeholder="John">
+      </div>
+      <div class="form-group">
+        <label>Last name</label>
+        <input type="text" id="b-lname" placeholder="Smith">
+      </div>
+      <div class="form-group full">
+        <label>Email address</label>
+        <input type="email" id="b-email" placeholder="john@example.com">
+        <div class="input-hint">Your booking confirmation and voucher will be sent here</div>
+      </div>
+      <div class="form-group full">
+        <label>Mobile number</label>
+        <div class="phone-wrap">
+          <select class="phone-country" id="b-country-code">
+            <option value="+972">🇮🇱 +972</option>
+            <option value="+33">🇫🇷 +33</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+49">🇩🇪 +49</option>
+            <option value="+31">🇳🇱 +31</option>
+            <option value="+32">🇧🇪 +32</option>
+            <option value="+41">🇨🇭 +41</option>
+            <option value="+43">🇦🇹 +43</option>
+            <option value="+39">🇮🇹 +39</option>
+            <option value="+34">🇪🇸 +34</option>
+            <option value="+7">🇷🇺 +7</option>
+            <option value="+61">🇦🇺 +61</option>
+            <option value="+other">🌍 Other</option>
+          </select>
+          <input type="tel" class="phone-number" id="b-phone" placeholder="52 678 9001">
+        </div>
+        <div class="wa-check">
+          <input type="checkbox" id="b-whatsapp" checked>
+          <label for="b-whatsapp" style="text-transform:none;letter-spacing:0;font-size:13px;color:var(--text);font-weight:400;margin-bottom:0">This number is available on WhatsApp 💬</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" data-i18n="card-title-destination">Destination</div>
+    <div class="card-sub" data-i18n="card-sub-destination">Where should we drop you off?</div>
+
+    <div class="form-group" id="hotel-input-group">
+      <label>Hotel / Apartment name & address</label>
+      <div class="address-wrap">
+        <input type="text" id="b-hotel" placeholder="Start typing hotel or address..." oninput="searchAddress(this.value)" autocomplete="off">
+        <div class="address-suggestions" id="address-suggestions"></div>
+      </div>
+      <div class="input-hint">Search by hotel name or enter address manually</div>
+    </div>
+
+    <div style="margin-top:10px">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;margin-bottom:0">
+        <input type="checkbox" id="hotel-later" onchange="toggleHotelLater()" style="width:16px;height:16px;accent-color:var(--orange)">
+        I'll add my destination address later
+      </label>
+    </div>
+
+    <div id="b-return-pickup" style="display:none;margin-top:16px">
+      <div class="notice notice-info">
+        🔄 For your return transfer, our driver will pick you up from the same address.
+        <div style="margin-top:8px">
+          <label style="text-transform:none;letter-spacing:0;font-size:13px;color:var(--blue);font-weight:400;margin-bottom:0">
+            <input type="checkbox" id="diff-pickup" onchange="toggleDiffPickup()" style="width:auto;margin-right:6px">
+            Different pickup address for return
+          </label>
+        </div>
+      </div>
+      <div id="diff-pickup-address" style="display:none;margin-top:12px">
+        <label>Return pickup address</label>
+        <input type="text" id="b-return-address" placeholder="Return pickup address">
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <label>Special requests or notes (optional)</label>
+      <textarea id="b-notes" rows="3" placeholder="e.g. late arrival, wheelchair access, meeting point preferences..."></textarea>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-back" onclick="goStep(1)">← Back</button>
+    <button class="btn-next" onclick="goStep(4)">REVIEW & PAY →</button>
+  </div>
+</div>
+
+<!-- STEP 4: PAYMENT -->
+<div class="step-panel" id="panel-4">
+  <div class="card">
+    <div class="card-title" data-i18n="card-title-summary">Booking Summary</div>
+    <div class="card-sub" data-i18n="card-sub-summary">Please review your booking before payment</div>
+    <div id="summary-content"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" data-i18n="card-title-payment">Payment</div>
+    <div class="card-sub" data-i18n="card-sub-payment">Choose how you'd like to pay</div>
+
+    <!-- Pay by Card via Revolut -->
+    <div class="pay-opt-card" id="pay-opt-revolut" onclick="selectPayment('revolut')" style="border:2px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;cursor:pointer;transition:all 0.2s;background:white">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:40px;height:40px;background:#191C1F;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px">🔵</div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:700;color:var(--navy)">Pay by Card</div>
+          <div style="font-size:12px;color:var(--muted)">Credit/Debit card via Revolut Pay link</div>
+        </div>
+        <div id="revolut-check" style="display:none;color:var(--orange);font-size:18px">✓</div>
+      </div>
+      <div id="revolut-detail" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+        <div class="notice notice-info" style="margin-bottom:0">
+          💳 After confirming your booking, you'll receive a secure payment link by email and WhatsApp.<br>
+          <strong>Payment is due within 24 hours to confirm your reservation.</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pay Later -->
+    <div class="pay-opt-card selected" id="pay-opt-later" onclick="selectPayment('later')" style="border:2px solid var(--orange);border-radius:12px;padding:16px;margin-bottom:12px;cursor:pointer;transition:all 0.2s;background:#FFF8F3">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:40px;height:40px;background:var(--orange);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px">📋</div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:700;color:var(--navy)">Request & Pay Later</div>
+          <div style="font-size:12px;color:var(--muted)">Confirm booking now, payment arranged separately</div>
+        </div>
+        <div id="later-check" style="color:var(--orange);font-size:18px">✓</div>
+      </div>
+      <div id="later-detail" style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(244,121,32,0.2)">
+        <div class="notice notice-warn" style="margin-bottom:0">
+          ℹ️ Your booking will be confirmed pending payment. We'll contact you within 2 hours to arrange payment details.
+        </div>
+      </div>
+    </div>
+
+    <div class="notice notice-info" style="margin-top:4px">
+      🔒 Your details are secure. Booking reference sent immediately by email.
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-back" onclick="goStep(3)">← Back</button>
+    <button class="btn-next" onclick="submitBooking()" id="pay-btn">CONFIRM BOOKING →</button>
+  </div>
+</div>
+
+<!-- STEP 5: SUCCESS -->
+<div class="step-panel" id="panel-5">
+  <div class="card">
+    <div class="success-box">
+      <div class="success-icon">🎿</div>
+      <div class="success-title" data-i18n="success-title">Booking Confirmed!</div>
+      <div class="success-sub" data-i18n="success-sub">Your transfer has been booked successfully. Check your email for the voucher.</div>
+      <div class="booking-ref-box">
+        <div class="booking-ref-label" data-i18n="booking-ref-label">Booking Reference</div>
+        <div class="booking-ref-num" id="booking-ref-display">WR-20250101-ABC123</div>
+      </div>
+      <div class="notice notice-success" style="margin-bottom:20px;text-align:left">
+        ✅ <span id="confirm-email-prefix-text" data-i18n="confirm-email-prefix">A confirmation email with your voucher has been sent to</span> <strong id="confirm-email"></strong>
+      </div>
+      <a href="index.html">
+        <button class="btn-next" data-i18n="btn-back-to-home" style="max-width:300px;margin:0 auto">BACK TO HOME</button>
+      </a>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const PRIVATE={
+  GVA:{'val-thorens':{sedan:280,van:300,minibus:null,bus:null},'les-menuires':{sedan:280,van:300,minibus:null,bus:null},'courchevel':{sedan:280,van:300,minibus:null,bus:null},'meribel':{sedan:280,van:300,minibus:null,bus:null},'tignes':{sedan:300,van:320,minibus:null,bus:null},'les-arcs':{sedan:300,van:320,minibus:null,bus:null},'la-plagne':{sedan:300,van:320,minibus:null,bus:null},'les-2-alpes':{sedan:300,van:320,minibus:null,bus:null},'alpe-dhuez':{sedan:300,van:320,minibus:null,bus:null},'val-disere':{sedan:315,van:336,minibus:null,bus:null},'avoriaz':{sedan:230,van:250,minibus:null,bus:null},'morzine':{sedan:230,van:250,minibus:null,bus:null}},
+  GNB:{'val-thorens':{sedan:280,van:300,minibus:null,bus:null},'les-menuires':{sedan:280,van:300,minibus:null,bus:null},'courchevel':{sedan:280,van:300,minibus:null,bus:null},'meribel':{sedan:280,van:300,minibus:null,bus:null},'les-2-alpes':{sedan:280,van:300,minibus:null,bus:null},'alpe-dhuez':{sedan:280,van:300,minibus:null,bus:null}},
+};
+PRIVATE.LYS={...PRIVATE.GVA};
+delete PRIVATE.LYS['avoriaz'];
+delete PRIVATE.LYS['morzine'];
+
+const SHARED_RESORTS={'val-thorens':true,'les-menuires':true,'les-arcs':true,'tignes':true};
+const SHARED_AIRPORTS=['GVA','LYS'];
+const SHARED_P={1:{one:90,rt:180},2:{one:180,rt:350},3:{one:260,rt:510},4:{one:320,rt:620},5:{one:350,rt:680},6:{one:390,rt:750},7:{one:420,rt:800}};
+function sharedPrice(pax,dir){if(pax<=7)return SHARED_P[pax][dir];if(pax<=11)return pax*(dir==='one'?60:115);return pax*(dir==='one'?55:105);}
+function dayMult(d,svc){
+  // We calculate correct price internally but don't show surcharge label
+  if(!d)return 1;
+  const day=new Date(d).getDay();
+  if(day===6)return svc==='shared'?1.25:1.50;
+  if(day===0)return svc==='shared'?1.00:1.25;
+  return 1.00;
+}
+
+function isSharedSeason(dateStr){
+  if(!dateStr) return false;
+  const d = new Date(dateStr);
+  const start = new Date('2026-11-20');
+  const end = new Date('2027-05-05');
+  return d >= start && d <= end;
+}
+
+let rtPax = 1;
+
+const ALL_AIRPORTS = [
+  {v:'GVA', l:'Geneva (GVA)', shared:true},
+  {v:'LYS', l:'Lyon Saint-Exupéry (LYS)', shared:true},
+  {v:'GNB', l:'Grenoble (GNB)', shared:false},
+  {v:'CMF', l:'Chambéry (CMF)', shared:false},
+  {v:'MXP', l:'Milan Malpensa (MXP)', shared:false},
+  {v:'BGY', l:'Milan Bergamo (BGY)', shared:false},
+];
+
+function populateFrom() {
+  const sel = document.getElementById('b-from');
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">' + BOOK_TRANSLATIONS[currentLang]['sel-origin'] + '</option>';
+
+  // Airports group
+  const airportGroup = document.createElement('optgroup');
+  airportGroup.label = BOOK_TRANSLATIONS[currentLang]['optgrp-airports'];
+  ALL_AIRPORTS.forEach(a => {
+    if(svcType === 'shared' && !a.shared) return;
+    const opt = document.createElement('option');
+    opt.value = 'airport:' + a.v;
+    opt.textContent = a.l;
+    airportGroup.appendChild(opt);
+  });
+  sel.appendChild(airportGroup);
+
+  // Resorts group (only for private, or shared resorts for shared)
+  const resortGroup = document.createElement('optgroup');
+  resortGroup.label = BOOK_TRANSLATIONS[currentLang]['optgrp-resorts'];
+  ALL_RESORTS.forEach(r => {
+    if(svcType === 'shared' && !r.shared) return;
+    const opt = document.createElement('option');
+    opt.value = 'resort:' + r.v;
+    opt.textContent = r.l;
+    resortGroup.appendChild(opt);
+  });
+  sel.appendChild(resortGroup);
+
+  if(prev && Array.from(sel.options).find(o=>o.value===prev)) sel.value = prev;
+  else sel.value = '';
+  updateToOptions();
+}
+
+function swapFromTo() {
+  const fromSel = document.getElementById('b-from');
+  const toSel = document.getElementById('b-to');
+  const fromVal = fromSel.value;
+  const toVal = toSel.value;
+  if(!fromVal && !toVal) return;
+  // Repopulate 'from' then try to set the swapped value
+  const savedTo = toVal;
+  fromSel.value = '';
+  updateToOptions(); // rebuild 'to' options based on empty from
+  // Now set from = old to, rebuild to options, then set to = old from
+  // We need to rebuild from options first so savedTo is available
+  populateFrom();
+  setTimeout(()=>{
+    if(savedTo && Array.from(fromSel.options).find(o=>o.value===savedTo)) {
+      fromSel.value = savedTo;
+      updateToOptions();
+      setTimeout(()=>{
+        if(fromVal && Array.from(toSel.options).find(o=>o.value===fromVal)) {
+          toSel.value = fromVal;
+          onToChange();
+        }
+      }, 50);
+    }
+  }, 50);
+}
+
+function updateToOptions() {
+  const fromVal = document.getElementById('b-from').value;
+  const toSel = document.getElementById('b-to');
+  const prev = toSel.value;
+  toSel.innerHTML = '<option value="">' + BOOK_TRANSLATIONS[currentLang]['sel-dest'] + '</option>';
+
+  if(!fromVal) { calcPrice(); return; }
+
+  const isFromAirport = fromVal.startsWith('airport:');
+  const fromCode = fromVal.split(':')[1];
+
+  if(isFromAirport) {
+    // From airport → To shows resorts only
+    document.getElementById('b-ow-direction').value = 'arrival';
+    const group = document.createElement('optgroup');
+    group.label = BOOK_TRANSLATIONS[currentLang]['optgrp-resorts'];
+    ALL_RESORTS.forEach(r => {
+      if(svcType === 'shared'){
+        if(!r.shared || !SHARED_AIRPORTS.includes(fromCode)) return;
+      } else {
+        if(PRIVATE[fromCode] && !PRIVATE[fromCode][r.v]) return;
+      }
+      const opt = document.createElement('option');
+      opt.value = 'resort:' + r.v;
+      opt.textContent = r.l;
+      group.appendChild(opt);
+    });
+    toSel.appendChild(group);
+  } else {
+    // From resort → To shows airports only
+    document.getElementById('b-ow-direction').value = 'departure';
+    const group = document.createElement('optgroup');
+    group.label = BOOK_TRANSLATIONS[currentLang]['optgrp-airports'];
+    ALL_AIRPORTS.forEach(a => {
+      if(svcType === 'shared' && !a.shared) return;
+      const opt = document.createElement('option');
+      opt.value = 'airport:' + a.v;
+      opt.textContent = a.l;
+      group.appendChild(opt);
+    });
+    toSel.appendChild(group);
+  }
+
+  if(prev && Array.from(toSel.options).find(o=>o.value===prev)) toSel.value = prev;
+  onToChange();
+}
+
+function onToChange() {
+  const fromVal = document.getElementById('b-from').value;
+  const toVal = document.getElementById('b-to').value;
+
+  // Set hidden airport and resort fields
+  let airport = '', resort = '';
+  const fromCode = fromVal.split(':')[1] || '';
+  const toCode = toVal.split(':')[1] || '';
+
+  if(fromVal.startsWith('airport:')) {
+    airport = fromCode;
+    resort = toCode;
+  } else {
+    resort = fromCode;
+    airport = toCode;
+  }
+
+  document.getElementById('b-airport').value = airport;
+  document.getElementById('b-resort').value = resort;
+
+  // min-pax warning for shared
+  const warn = document.getElementById('min-pax-warn');
+  const isArcsTignes = resort==='les-arcs'||resort==='tignes';
+  const isRtActive = document.getElementById('b-direction').value==='rt';
+  const paxFail = svcType==='shared' && isArcsTignes && pax<3;
+  const rtPaxFail = svcType==='shared' && isArcsTignes && isRtActive && rtPax<3;
+  if(warn) {
+    if(paxFail) warn.textContent = '⚠️ '+BOOK_TRANSLATIONS[currentLang]['alert-min-pax'];
+    else if(rtPaxFail) warn.textContent = '⚠️ '+(currentLang==='he'?'נסיעת חזור: מינימום 3 נוסעים ל-Les Arcs ו-Tignes — תוגש כבקשה':'Return trip: minimum 3 passengers for Les Arcs & Tignes — will be submitted as a Request');
+    warn.style.display = (paxFail || rtPaxFail) ? 'block' : 'none';
+  }
+
+  checkAvailability();
+  calcPrice();
+}
+
+// Keep updateAirportForService as alias for populateFrom
+function updateAirportForService() { populateFrom(); }
+function updateResorts() { populateFrom(); }
+
+function onArrivalDateChange() {
+  const date = document.getElementById('b-date').value;
+  // Set return date min to day after arrival
+  const returnInput = document.getElementById('b-return-date');
+  if(date) {
+    const next = new Date(date);
+    next.setDate(next.getDate()+1);
+    returnInput.min = next.toISOString().split('T')[0];
+    // If return date is before arrival, clear it
+    if(returnInput.value && returnInput.value <= date) returnInput.value = '';
+  }
+  resetAvailability();
+  checkAvailability();
+  calcPrice();
+}
+
+function changeReturnPax(d) {
+  rtPax = Math.max(1, rtPax + d);
+  document.getElementById('rt-pax-val').textContent = rtPax;
+  document.getElementById('rt-pax-label').textContent = rtPax === 1 ? BOOK_TRANSLATIONS[currentLang]['passenger-rt'] : BOOK_TRANSLATIONS[currentLang]['passengers-rt'];
+  calcPrice();
+}
+
+function setOWDirection(dir) {
+  // Only applies to one-way (not RT)
+  const isRt = document.getElementById('b-direction').value === 'rt';
+  if(isRt) return;
+  document.getElementById('b-ow-direction').value = dir;
+  // Update label styles
+  document.getElementById('dir-arrival-label').style.borderColor = dir==='arrival' ? 'var(--orange)' : 'var(--border)';
+  document.getElementById('dir-departure-label').style.borderColor = dir==='departure' ? 'var(--orange)' : 'var(--border)';
+  calcPrice();
+}
+
+function getTransferDirection() {
+  const isRt = document.getElementById('b-direction').value === 'rt';
+  if(isRt) return 'rt';
+  return document.getElementById('b-ow-direction')?.value || 'arrival';
+}
+
+function toggleReturnAirport() {
+  const same = document.getElementById('rt-same-airport').checked;
+  const wrap = document.getElementById('rt-airport-wrap');
+  wrap.style.display = same ? 'none' : 'block';
+  if(!same) {
+    // Populate return airport options based on service type
+    const sel = document.getElementById('b-airport-rt');
+    const currentAirport = document.getElementById('b-airport').value;
+    sel.innerHTML = '<option value="">— Select return airport —</option>';
+    ALL_AIRPORTS.forEach(a => {
+      if(svcType === 'shared' && !a.shared) return;
+      const opt = document.createElement('option');
+      opt.value = a.v;
+      opt.textContent = a.l;
+      if(a.v === currentAirport) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  }
+  calcPrice();
+}
+
+function getReturnAirport() {
+  const same = document.getElementById('rt-same-airport')?.checked ?? true;
+  if(same) return document.getElementById('b-airport').value;
+  return document.getElementById('b-airport-rt')?.value || document.getElementById('b-airport').value;
+}
+
+function toggleReturnTrip(){
+  const checked = document.getElementById('rt-toggle').checked;
+  document.getElementById('b-direction').value = checked ? 'rt' : 'one';
+  document.getElementById('rt-return-date-wrap').style.display = checked ? 'block' : 'none';
+  // Direction is handled by From/To selectors, no radio buttons to disable
+  if(checked){
+    document.getElementById('rt-same-airport').checked = true;
+    document.getElementById('rt-airport-wrap').style.display = 'none';
+    rtPax = pax;
+    document.getElementById('rt-pax-val').textContent = rtPax;
+    document.getElementById('rt-pax-label').textContent = rtPax===1?BOOK_TRANSLATIONS[currentLang]['passenger-rt']:BOOK_TRANSLATIONS[currentLang]['passengers-rt'];
+    const arrDate = document.getElementById('b-date').value;
+    if(arrDate){
+      const next = new Date(arrDate);
+      next.setDate(next.getDate()+1);
+      document.getElementById('b-return-date').min = next.toISOString().split('T')[0];
+    }
+  }
+  calcPrice();
+}
+
+// ========== CAPACITY RULES ==========
+const MAX_PAX = 8;
+const MAX_SUITCASES = 8;
+
+function maxSkiForSuitcases(suitcases) {
+  if(suitcases <= 4) return 4;
+  if(suitcases === 5) return 3;
+  if(suitcases === 6) return 2;
+  if(suitcases === 7) return 2;
+  return 0; // 8 suitcases = no ski
+}
+
+// Check if current booking fits remaining capacity
+function bookingFitsCapacity(avail, bookingPax, bookingSuitcases, bookingSki) {
+  if(bookingPax > avail.seats) return false;
+  if(bookingSuitcases > avail.suitcases) return false;
+  if(bookingSki > avail.ski) return false;
+  return true;
+}
+
+// Calculate remaining capacity from existing bookings
+function calcRemainingCapacity(existingBookings) {
+  let usedPax = 0, usedSuitcases = 0, usedSki = 0;
+  existingBookings.forEach(b => {
+    usedPax += (b.passengers || 0);
+    usedSuitcases += (b.suitcases || 0);
+    usedSki += (b.ski_equipment || 0);
+  });
+  const remainSuitcases = MAX_SUITCASES - usedSuitcases;
+  const maxSkiAllowed = maxSkiForSuitcases(usedSuitcases);
+  return {
+    seats: MAX_PAX - usedPax,
+    suitcases: remainSuitcases,
+    ski: Math.max(0, maxSkiAllowed - usedSki),
+    usedPax, usedSuitcases, usedSki
+  };
+}
+
+let availabilityCache = null;
+let lastAvailQuery = '';
+
+// Min pax for shared per resort
+const SHARED_MIN_PAX = {
+  'val-thorens': 2, 'les-menuires': 2,
+  'les-arcs': 3, 'tignes': 3
+};
+
+async function checkAvailability() {
+  if(svcType !== 'shared') {
+    document.getElementById('availability-box').style.display = 'none';
+    return;
+  }
+  const airport = document.getElementById('b-airport').value;
+  const resort = document.getElementById('b-resort').value;
+  const date = document.getElementById('b-date').value;
+  if(!airport || !resort || !date) {
+    document.getElementById('availability-box').style.display = 'none';
+    return;
+  }
+  const airline = document.getElementById('b-airline')?.value || '';
+  const flightNum = document.getElementById('b-flight')?.value || '';
+  const flightKey = airline && flightNum ? (airline + flightNum) : '';
+  const queryKey = `${date}-${airport}-${resort}-${flightKey}-${pax}`;
+  if(queryKey === lastAvailQuery && availabilityCache) { updateAvailabilityUI(availabilityCache); return; }
+  const box = document.getElementById('availability-box');
+  box.style.display = 'block';
+  box.style.background = 'var(--offwhite)';
+  document.getElementById('avail-message').textContent = BOOK_TRANSLATIONS[currentLang]['avail-checking'];
+  try {
+    // 1. Fetch shared bookings for this date/airport/resort
+    const r1 = await fetch(`${SUPABASE_URL}/rest/v1/bookings?select=passengers,suitcases,ski_equipment,flight_number,vehicle_id&travel_date=eq.${date}&airport=eq.${airport}&resort=eq.${resort}&service_type=eq.shared&status=neq.cancelled`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+    const routeBookings = Array.isArray(await r1.json()) ? await r1.clone().json() : [];
+    // 2. Fetch total active vans
+    const r2 = await fetch(`${SUPABASE_URL}/rest/v1/vehicles?select=id&status=eq.active&type=eq.van`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+    const allVans = await r2.json();
+    const totalVans = Array.isArray(allVans) ? allVans.length : 2;
+    const maxVansForShared = Math.max(1, totalVans - 1); // always keep 1 for private
+    // 3. Fetch all shared bookings today (all routes) to count vans in use
+    const r3 = await fetch(`${SUPABASE_URL}/rest/v1/bookings?select=vehicle_id,flight_number&travel_date=eq.${date}&service_type=eq.shared&status=neq.cancelled`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+    const allSharedToday = Array.isArray(await r3.json()) ? await r3.clone().json() : [];
+    // Count distinct groups (flight+route combos) as van slots used
+    const vansInUseToday = new Set(allSharedToday.map(b => b.vehicle_id || b.flight_number || 'unknown')).size;
+    const vansAvailableForNewShared = maxVansForShared - vansInUseToday;
+    // 4. Group this route bookings by flight
+    const groups = {};
+    routeBookings.forEach(b => { const k = b.flight_number||'no-flight'; if(!groups[k]) groups[k]=[]; groups[k].push(b); });
+    const relevantGroup = (flightKey && groups[flightKey]) ? groups[flightKey] : (Object.values(groups)[0] || []);
+    const vanAvail = calcRemainingCapacity(relevantGroup);
+    // 5. Resort minimum pax rule
+    const minPaxForResort = SHARED_MIN_PAX[resort] || 1;
+    const meetsMiniPax = pax >= minPaxForResort;
+    const currentSuitcases = steppers.suitcases || 0;
+    const currentSki = steppers.ski || 0;
+    const fitsInCurrentVan = vanAvail.seats >= pax && vanAvail.suitcases >= currentSuitcases && vanAvail.ski >= currentSki;
+    let avail;
+    if(!meetsMiniPax) {
+      avail = { seats: vanAvail.seats, suitcases: vanAvail.suitcases, ski: vanAvail.ski, status: 'min-pax', minPax: minPaxForResort, isRequest: true };
+    } else if(fitsInCurrentVan) {
+      // Check if total pax on this flight is approaching minibus territory (15+)
+      const totalPaxOnFlight = relevantGroup.reduce((s,b) => s+(b.passengers||0), 0) + pax;
+      if(totalPaxOnFlight >= 15) {
+        avail = { seats: vanAvail.seats, suitcases: vanAvail.suitcases, ski: vanAvail.ski, status: 'upgrade-suggested', isRequest: false };
+      } else {
+        // 2 seats left = almost-full (orange), 3+ = available (green)
+        avail = { seats: vanAvail.seats, suitcases: vanAvail.suitcases, ski: vanAvail.ski, status: vanAvail.seats <= 2 ? 'almost-full' : 'available', isRequest: false };
+      }
+    } else if(vansAvailableForNewShared > 0) {
+      avail = { seats: MAX_PAX, suitcases: MAX_SUITCASES, ski: 4, status: 'new-van', vansAvailable: vansAvailableForNewShared, isRequest: false };
+    } else if(vansInUseToday >= maxVansForShared) {
+      // Reserve van available but needs admin approval
+      avail = { seats: 0, suitcases: 0, ski: 0, status: 'admin-required', totalVans, maxVansForShared, isRequest: true };
+    } else {
+      avail = { seats: 0, suitcases: 0, ski: 0, status: 'full', isRequest: true };
+    }
+    availabilityCache = avail;
+    lastAvailQuery = queryKey;
+    updateAvailabilityUI(avail);
+  } catch(e) {
+    console.error('Availability check error:', e);
+    document.getElementById('avail-message').textContent = BOOK_TRANSLATIONS[currentLang]['avail-unavail'];
+    box.style.background = 'var(--offwhite)';
+  }
+}
+
+function updateAvailabilityUI(avail) {
+  const box = document.getElementById('availability-box');
+  const badge = document.getElementById('avail-status-badge');
+  const dot = document.getElementById('avail-dot');
+  let msg = '';
+
+  // Helper to set colors
+  function setGreen() {
+    box.style.background='#E1F5EE'; box.style.borderColor='#9FE1CB';
+    dot.style.background='#1D9E75'; badge.style.color='#0F6E56';
+  }
+  function setOrange() {
+    box.style.background='#FAEEDA'; box.style.borderColor='#FAC775';
+    dot.style.background='#BA7517'; badge.style.color='#BA7517';
+  }
+  function setRed() {
+    box.style.background='#FCEBEB'; box.style.borderColor='#F7C1C1';
+    dot.style.background='#E24B4A'; badge.style.color='#A32D2D';
+  }
+
+  switch(avail.status) {
+    case 'available':
+      setGreen();
+      badge.textContent = BOOK_TRANSLATIONS[currentLang]['avail-available-badge'];
+      msg = BOOK_TRANSLATIONS[currentLang]['avail-available-msg'];
+      break;
+
+    case 'almost-full':
+      setOrange();
+      badge.textContent = BOOK_TRANSLATIONS[currentLang]['avail-almost-full-badge'];
+      msg = BOOK_TRANSLATIONS[currentLang]['avail-almost-full-msg'];
+      break;
+
+    case 'new-van':
+      setGreen();
+      badge.textContent = BOOK_TRANSLATIONS[currentLang]['avail-new-van-badge'];
+      msg = BOOK_TRANSLATIONS[currentLang]['avail-new-van-msg'];
+      break;
+
+    case 'admin-required':
+      setOrange();
+      badge.textContent = BOOK_TRANSLATIONS[currentLang]['avail-admin-badge'];
+      msg = BOOK_TRANSLATIONS[currentLang]['avail-admin-msg'];
+      break;
+
+    case 'upgrade-suggested':
+      setGreen();
+      badge.textContent = BOOK_TRANSLATIONS[currentLang]['avail-upgrade-badge'];
+      msg = BOOK_TRANSLATIONS[currentLang]['avail-upgrade-msg'];
+      break;
+
+    case 'min-pax':
+      setOrange();
+      badge.textContent = BOOK_TRANSLATIONS[currentLang]['avail-min-pax-badge'];
+      msg = (currentLang==='he' ? `מינימום ${avail.minPax} נוסעים נדרשים לאתר זה בהעברה שיתופית. ההזמנה תוגש כבקשה.` : `Minimum ${avail.minPax} passengers required for this resort on shared transfer. Booking submitted as Request.`);
+      break;
+
+    case 'full':
+      setRed();
+      badge.textContent = BOOK_TRANSLATIONS[currentLang]['avail-full-badge'];
+      msg = BOOK_TRANSLATIONS[currentLang]['avail-full-msg'];
+      break;
+
+    default:
+      box.style.background = 'var(--offwhite)';
+      dot.style.background = '#ccc';
+      badge.textContent = ''; msg = '';
+  }
+
+  document.getElementById('avail-message').textContent = msg;
+  box.style.display = 'block';
+
+  // Request notice
+  const reqNotice = document.getElementById('request-notice');
+  if(reqNotice) reqNotice.style.display = avail.isRequest ? 'block' : 'none';
+}
+
+function resetAvailability() {
+  availabilityCache = null;
+  lastAvailQuery = '';
+  document.getElementById('availability-box').style.display = 'none';
+}
+
+function calcPrice(){
+  const airport=document.getElementById('b-airport').value;
+  const resort=document.getElementById('b-resort').value;
+  const date=document.getElementById('b-date').value;
+  const time=(document.getElementById('b-time')?.value||'');
+  const vehicle=document.getElementById('b-vehicle').value;
+  const dir=document.getElementById('b-direction').value;
+  const directions=dir==='rt'?2:1;
+  const box=document.getElementById('price-box');
+  const dm=dayMult(date,svcType);
+  const nm=nightMult(time,svcType);
+  const tm=dm*nm;
+  if(!airport||!resort){box.style.display='none';return;}
+
+  // Shared season check
+  if(svcType==='shared'){
+    const warn=document.getElementById('shared-season-warn');
+    if(date && !isSharedSeason(date)){
+      warn.style.display='block';
+      box.style.display='none';
+      return;
+    } else {
+      warn.style.display='none';
+    }
+  }
+
+  let base=0,isReq=false;
+  if(svcType==='private'){
+    const routes=PRIVATE[airport];
+    if(!routes||!routes[resort]){box.style.display='none';return;}
+    const ow=routes[resort][vehicle]||routes[resort]['van']||0;
+    base=dir==='rt'?Math.round(ow*1.95*tm):Math.round(ow*tm);
+  } else {
+    if(!SHARED_AIRPORTS.includes(airport)||!SHARED_RESORTS[resort]){box.style.display='none';return;}
+    if(dir==='rt'){
+      // Calculate each leg separately with its own date multiplier
+      const returnDate = document.getElementById('b-return-date').value;
+      const dmOut = dayMult(date, 'shared');
+      const dmRet = dayMult(returnDate || date, 'shared');
+      const outboundPrice = Math.round(sharedPrice(pax,'one') * dmOut);
+      const returnPrice = Math.round(sharedPrice(rtPax,'one') * dmRet);
+      base = outboundPrice + returnPrice;
+    } else {
+      base = Math.round(sharedPrice(pax,'one') * dm);
+    }
+    isReq = pax===1;
+  }
+  const isRtCalc = dir==='rt';
+  const extMult = isRtCalc ? 2 : 1;
+  const skiT=steppers.ski*10*extMult;
+  const babyT=steppers.baby*10*extMult;
+  const boostT=steppers.booster*7*extMult;
+  const suitcaseT=steppers.suitcases*15*extMult;
+  const stopT=extras.stop?15:0;
+  const total=base+skiT+babyT+boostT+suitcaseT+stopT;
+  document.getElementById('price-amount').textContent=`€${total}`;
+  // Show shared price note
+  const sharedNote = document.getElementById('shared-price-note');
+  if(sharedNote) sharedNote.style.display = svcType==='shared' ? 'block' : 'none';
+
+  // Show return trip badge with price difference
+  const isRt = dir==='rt';
+  const rtBadge = document.getElementById('rt-price-badge');
+  if(!isRt && airport && resort){
+    let rtBase=0;
+    if(svcType==='private'){
+      const ow=(PRIVATE[airport]||{})[resort]?.[vehicle]||(PRIVATE[airport]||{})[resort]?.['van']||0;
+      rtBase=Math.round(ow*1.95*tm)+skiT+babyT+boostT+stopT;
+    } else {
+      // Return may have different pax
+      const owPrice = Math.round(sharedPrice(pax,'one')*dm);
+      const rtLegPrice = Math.round(sharedPrice(rtPax,'one')*dm);
+      rtBase = owPrice + rtLegPrice;
+    }
+    rtBadge.textContent=`${BOOK_TRANSLATIONS[currentLang]['return-badge-pre']}${rtBase}`;
+    rtBadge.style.display='inline-block';
+  } else if(isRt) {
+    rtBadge.style.display='none';
+    const breakdown = document.getElementById('rt-price-breakdown');
+    if(svcType==='shared'){
+      const returnDate = document.getElementById('b-return-date').value;
+      const dmOut = dayMult(date, 'shared');
+      const dmRet = dayMult(returnDate || date, 'shared');
+      const outboundPrice = Math.round(sharedPrice(pax,'one') * dmOut);
+      const returnPrice = Math.round(sharedPrice(rtPax,'one') * dmRet);
+      const satOut = dmOut > 1 ? ' ⚡' : '';
+      const satRet = dmRet > 1 ? ' ⚡' : '';
+      const tl = BOOK_TRANSLATIONS[currentLang];
+      breakdown.innerHTML = `${tl['outbound-leg']} (${pax} ${tl['sum-pax-lbl']}): €${outboundPrice}${satOut} &nbsp;+&nbsp; ${tl['return-leg']} (${rtPax} ${tl['sum-pax-lbl']}): €${returnPrice}${satRet}`;
+      breakdown.style.display='block';
+    } else {
+      breakdown.style.display='none';
+    }
+  } else {
+    rtBadge.style.display='none';
+  }
+
+  const owDir = getTransferDirection();
+  const t = BOOK_TRANSLATIONS[currentLang];
+  let dirLabel;
+  if(isRtCalc) {
+    dirLabel = svcType==='private' ? t['price-per-private-rt'] : t['price-per-shared-rt'].replace('{pax}',pax).replace('{s}',pax>1&&currentLang==='en'?'s':'');
+  } else if(owDir==='departure') {
+    dirLabel = svcType==='private' ? t['price-per-private-ow-dep'] : t['price-per-shared-dep'].replace('{pax}',pax).replace('{s}',pax>1&&currentLang==='en'?'s':'');
+  } else {
+    dirLabel = svcType==='private' ? t['price-per-private-ow-arr'] : t['price-per-shared-arr'].replace('{pax}',pax).replace('{s}',pax>1&&currentLang==='en'?'s':'');
+  }
+  document.getElementById('price-per').textContent = dirLabel;
+  document.getElementById('request-notice').style.display=isReq?'block':'none';
+  box.style.display='block';
+}
+function nightMult(t,svc){if(svc!=='private'||!t)return 1;const h=parseInt(t.split(':')[0]);return(h>=21||h<6)?1.05:1.00;}
+
+const ALL_RESORTS=[
+  {v:'val-thorens',l:'Val Thorens',shared:true},{v:'les-menuires',l:'Les Menuires',shared:true},
+  {v:'les-arcs',l:'Les Arcs',shared:true},{v:'tignes',l:'Tignes',shared:true},
+  {v:'la-plagne',l:'La Plagne',shared:false},{v:'val-disere',l:"Val d'Isère",shared:false},
+  {v:'courchevel',l:'Courchevel',shared:false},{v:'meribel',l:'Méribel',shared:false},
+  {v:'avoriaz',l:'Avoriaz',shared:false},{v:'morzine',l:'Morzine',shared:false},
+  {v:'les-2-alpes',l:'Les 2 Alpes',shared:false},{v:'alpe-dhuez',l:"Alpe d'Huez",shared:false},
+  {v:'chamonix',l:'Chamonix',shared:false},{v:'samoens',l:'Samoëns',shared:false},{v:'la-tania',l:'La Tania',shared:false},
+];
+
+let svcType='private', pax=1, steppers={suitcases:0,ski:0,baby:0,booster:0};
+let extras={stop:false,roadstop:false};
+let selectedPayment='later';
+let currentStep=1;
+
+function setService(t){
+  svcType=t;
+  rtPax=1; // reset return pax
+  document.getElementById('tab-private').classList.toggle('active',t==='private');
+  document.getElementById('tab-shared').classList.toggle('active',t==='shared');
+  document.getElementById('shared-notice').style.display=t==='shared'?'block':'none';
+  document.getElementById('vehicle-group').style.display=t==='private'?'block':'none';
+
+  const dateInput = document.getElementById('b-date');
+  if(t==='shared'){
+    // Date must start from Nov 20 2026
+    dateInput.min = '2026-11-20';
+    dateInput.max = '2027-05-05';
+    if(dateInput.value && (dateInput.value < '2026-11-20' || dateInput.value > '2027-05-05')) dateInput.value = '';
+  } else {
+    dateInput.min = new Date().toISOString().split('T')[0];
+    dateInput.max = '';
+  }
+
+  if(t !== 'shared') resetAvailability();
+  updateAirportForService(); // this already calls updateResorts and calcPrice
+}
+
+function changePax(d){
+  pax=Math.max(1,pax+d);
+  document.getElementById('pax-val').textContent=pax;
+  document.getElementById('pax-label').textContent=pax===1?BOOK_TRANSLATIONS[currentLang]['passenger']:BOOK_TRANSLATIONS[currentLang]['passengers'];
+  const resort=document.getElementById('b-resort').value;
+  const warn=document.getElementById('min-pax-warn');
+  if(warn) {
+    const show = svcType==='shared'&&(resort==='les-arcs'||resort==='tignes')&&pax<3;
+    warn.style.display = show ? 'block' : 'none';
+    if(show) warn.textContent = '⚠️ '+BOOK_TRANSLATIONS[currentLang]['alert-min-pax'];
+  }
+  if(availabilityCache) updateAvailabilityUI(availabilityCache);
+  calcPrice();
+}
+
+function changeStepper(key,d){
+  steppers[key]=Math.max(0,steppers[key]+d);
+  document.getElementById(key+'-val').textContent=steppers[key];
+  if(key==='suitcases'||key==='ski'){
+    if(availabilityCache) updateAvailabilityUI(availabilityCache);
+  }
+  calcPrice();
+}
+
+function toggleExtra(key){
+  const el=document.getElementById('ec-'+key);
+  el.classList.toggle('selected');
+}
+
+function toggleStopExtra(key){
+  const el=document.getElementById('ec-'+key);
+  el.classList.toggle('selected');
+  extras[key]=el.classList.contains('selected');
+  if(key==='stop'){
+    const addr=document.getElementById('stop-address');
+    if(addr) addr.style.display=extras[key]?'block':'none';
+  }
+}
+
+const RAPIDAPI_KEY = 'c76130bc26mshccbba26ebb16a36p1b6539jsnc94a82bb99b5';
+
+async function lookupFlight(){
+  const airline = document.getElementById('b-airline').value;
+  const flightNum = document.getElementById('b-flight').value.trim();
+  if(!airline){alert('Please select an airline first');return;}
+  if(!flightNum){alert('Please enter the flight number');return;}
+  const fn = airline + flightNum;
+  const dateVal = document.getElementById('b-date').value;
+  const result = document.getElementById('flight-result');
+  if(!fn){alert('Please enter a flight number');return;}
+  if(!dateVal){alert('Please select a date first');return;}
+
+  // AeroDataBox only covers ~7 days past/future
+  const today = new Date();
+  const flightDate = new Date(dateVal);
+  const diffDays = (flightDate - today) / (1000*60*60*24);
+  if(diffDays > 7) {
+    result.innerHTML='<span style="color:#BA7517">⚠️ Flight lookup is available up to 7 days ahead only. For future bookings, we\'ll verify flight details closer to the date.</span>';
+    result.classList.add('visible');
+    return;
+  }
+
+  result.innerHTML='<span style="color:var(--blue)">⏳ Looking up flight...</span>';
+  result.classList.add('visible');
+
+  try {
+    // AeroDataBox expects IATA flight number e.g. "LY317" and date "2024-12-28"
+    const url = `https://aerodatabox.p.rapidapi.com/flights/number/${encodeURIComponent(fn)}/${dateVal}`;
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'X-RapidAPI-Key': RAPIDAPI_KEY,
+        'X-RapidAPI-Host': 'aerodatabox.p.rapidapi.com'
+      }
+    });
+
+    if(!res.ok) {
+      const err = await res.text();
+      throw new Error(`API error ${res.status}: ${err}`);
+    }
+
+    const data = await res.json();
+    const flight = Array.isArray(data) ? data[0] : data;
+
+    if(!flight) {
+      result.innerHTML='<span style="color:var(--red)">✗ Flight not found. Check number and date.</span>';
+      return;
+    }
+
+    // Extract arrival info
+    const arr = flight.arrival || {};
+    const dep = flight.departure || {};
+    const arrAirport = arr.airport || {};
+    const arrTime = arr.scheduledTime?.local || arr.scheduledTime?.utc || '';
+    const arrTimeRevised = arr.revisedTime?.local || arr.revisedTime?.utc || '';
+    const depAirport = dep.airport || {};
+    const status = flight.status || '';
+    const airline = flight.airline?.name || '';
+    const flightNum = flight.number || fn;
+
+    // Parse time HH:MM from datetime string
+    const parseTime = (dt) => dt ? dt.substring(11,16) : '';
+    const scheduledArr = parseTime(arrTime);
+    const revisedArr = parseTime(arrTimeRevised);
+    const displayTime = revisedArr || scheduledArr;
+    const isDelayed = revisedArr && revisedArr !== scheduledArr;
+
+    // Auto-fill airport if we can match it
+    const arrIata = arrAirport.iata || '';
+    const airportSelect = document.getElementById('b-airport');
+    if(arrIata && airportSelect) {
+      const opts = Array.from(airportSelect.options);
+      const match = opts.find(o => o.value === arrIata);
+      if(match) {
+        airportSelect.value = arrIata;
+        updateResorts();
+      }
+    }
+
+    // Auto-fill arrival time
+    if(displayTime) {
+      const timeInput = document.getElementById('b-time');
+      if(timeInput) timeInput.value = displayTime;
+      calcPrice();
+    }
+
+    // Build status badge
+    const statusColor = status==='Active'||status==='Landed' ? '#1D9E75' : status==='Delayed' ? '#BA7517' : '#5a6a7a';
+    const delayNote = isDelayed ? `<span style="color:#BA7517;font-size:11px"> ⚠️ Delayed — revised ${revisedArr}</span>` : '';
+    const terminalNote = arr.terminal ? ` · Terminal ${arr.terminal}` : '';
+    const gateNote = arr.gate ? ` · Gate ${arr.gate}` : '';
+
+    result.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="font-size:15px">✈️</span>
+        <strong style="color:var(--navy)">${flightNum}</strong>
+        <span style="font-size:12px;color:var(--muted)">${airline}</span>
+        <span style="font-size:11px;font-weight:600;color:${statusColor};background:${statusColor}22;padding:2px 8px;border-radius:10px">${status||'Scheduled'}</span>
+      </div>
+      <div style="font-size:13px;color:var(--navy)">
+        <span style="color:var(--muted)">From:</span> <strong>${depAirport.iata||'—'} ${depAirport.name||''}</strong>
+        &nbsp;→&nbsp;
+        <span style="color:var(--muted)">To:</span> <strong>${arrIata||'—'} ${arrAirport.name||''}</strong>
+      </div>
+      <div style="margin-top:6px;font-size:13px">
+        <span style="color:var(--muted)">Scheduled arrival:</span> <strong>${scheduledArr||'—'}</strong>${delayNote}${terminalNote}${gateNote}
+      </div>`;
+
+  } catch(e) {
+    console.error(e);
+    result.innerHTML=`<span style="color:#C85F0A">✗ Could not fetch flight data. Check flight number and date.<br><span style="font-size:11px">${e.message}</span></span>`;
+  }
+}
+
+let searchTimeout;
+function searchAddress(q){
+  const sug=document.getElementById('address-suggestions');
+  clearTimeout(searchTimeout);
+  if(q.length<3){sug.style.display='none';return;}
+  searchTimeout=setTimeout(()=>{
+    const demos=['Hotel Altapura, Val Thorens','Hotel Koh-I Nor, Val Thorens','Chalet Les Airelles, Courchevel','Hotel Val Chavière, Val Thorens','Les Menuires Village','Méribel Village Center','Val d\'Isère Town Center','Tignes Le Lac'];
+    const filtered=demos.filter(d=>d.toLowerCase().includes(q.toLowerCase()));
+    if(filtered.length===0){sug.style.display='none';return;}
+    sug.innerHTML=filtered.map(d=>`<div class="address-suggestion" onclick="selectAddress('${d}')">${d}</div>`).join('');
+    sug.style.display='block';
+  },400);
+}
+
+function selectAddress(addr){
+  document.getElementById('b-hotel').value=addr;
+  document.getElementById('address-suggestions').style.display='none';
+}
+
+function toggleDiffPickup(){
+  const show=document.getElementById('diff-pickup').checked;
+  document.getElementById('diff-pickup-address').style.display=show?'block':'none';
+}
+
+function selectPayment(p){
+  selectedPayment=p;
+  // Update revolut card
+  const revCard = document.getElementById('pay-opt-revolut');
+  const revCheck = document.getElementById('revolut-check');
+  const revDetail = document.getElementById('revolut-detail');
+  if(revCard) {
+    revCard.style.borderColor = p==='revolut' ? 'var(--orange)' : 'var(--border)';
+    revCard.style.background = p==='revolut' ? '#FFF8F3' : 'white';
+    if(revCheck) revCheck.style.display = p==='revolut' ? 'block' : 'none';
+    if(revDetail) revDetail.style.display = p==='revolut' ? 'block' : 'none';
+  }
+  // Update later card
+  const laterCard = document.getElementById('pay-opt-later');
+  const laterCheck = document.getElementById('later-check');
+  const laterDetail = document.getElementById('later-detail');
+  if(laterCard) {
+    laterCard.style.borderColor = p==='later' ? 'var(--orange)' : 'var(--border)';
+    laterCard.style.background = p==='later' ? '#FFF8F3' : 'white';
+    if(laterCheck) laterCheck.style.display = p==='later' ? 'block' : 'none';
+    if(laterDetail) laterDetail.style.display = p==='later' ? 'block' : 'none';
+  }
+  // Update button text
+  const btn = document.getElementById('pay-btn');
+  if(btn) btn.textContent = p==='revolut' ? BOOK_TRANSLATIONS[currentLang]['confirm-and-pay'] : BOOK_TRANSLATIONS[currentLang]['confirm-booking'];
+}
+
+function buildSummary(){
+  const _t = BOOK_TRANSLATIONS[currentLang];
+  // short aliases for summary keys
+  const t = {
+    sum_transfer: _t['sum-transfer'], sum_service: _t['sum-service'],
+    sum_private: _t['sum-private'], sum_shared: _t['sum-shared'],
+    sum_route: _t['sum-route'], sum_direction: _t['sum-direction'],
+    sum_rt: _t['sum-rt'], sum_ow: _t['sum-ow'],
+    sum_vehicle: _t['sum-vehicle'], sum_pax: _t['sum-pax'],
+    sum_arr_date: _t['sum-arr-date'], sum_ret_date: _t['sum-ret-date'],
+    sum_flight: _t['sum-flight'],
+    sum_passenger: _t['sum-passenger'],
+    sum_name: _t['sum-name'], sum_email: _t['sum-email'], sum_phone: _t['sum-phone'],
+    sum_hotel: _t['sum-hotel'], sum_hotel_later: _t['sum-hotel-later'],
+    sum_price: _t['sum-price'], sum_base: _t['sum-base'],
+    sum_out: _t['sum-outbound'], sum_ret: _t['sum-return-leg'],
+    sum_pax_l: _t['sum-pax-lbl'], sum_ret_l: _t['sum-return-leg'],
+    sum_ski: _t['sum-ski'], sum_baby: _t['sum-baby'], sum_booster: _t['sum-booster'],
+    sum_suitcases: _t['sum-suitcases'], sum_stop: _t['sum-stop'],
+    sum_total: _t['sum-total'],
+  };
+  const airport=document.getElementById('b-airport').value;
+  const resortVal=document.getElementById('b-resort').value;
+  // Get resort display name from ALL_RESORTS
+  const resortObj = ALL_RESORTS.find(r=>r.v===resortVal);
+  const resort = resortObj ? resortObj.l : resortVal;
+  // Get From/To display for route
+  const fromVal = document.getElementById('b-from')?.value || '';
+  const toVal = document.getElementById('b-to')?.value || '';
+  const fromLabel = fromVal ? document.getElementById('b-from')?.selectedOptions[0]?.text || fromVal.split(':')[1] : airport;
+  const toLabel = toVal ? document.getElementById('b-to')?.selectedOptions[0]?.text || toVal.split(':')[1] : resort;
+  const date=document.getElementById('b-date').value;
+  const returnDate=document.getElementById('b-return-date')?.value||'';
+  const time=(document.getElementById('b-time')?.value||'');
+  const flight=(document.getElementById('b-airline')?.value||'')+(document.getElementById('b-flight')?.value||'');
+  const flightRt=(document.getElementById('b-airline-rt')?.value||'')+(document.getElementById('b-flight-rt')?.value||'');
+  const fname=document.getElementById('b-fname').value;
+  const lname=document.getElementById('b-lname').value;
+  const email=document.getElementById('b-email').value;
+  const phone=document.getElementById('b-country-code').value+' '+document.getElementById('b-phone').value;
+  const hotel=document.getElementById('b-hotel').value;
+  const dir=document.getElementById('b-direction').value;
+  const vehicle=document.getElementById('b-vehicle');
+  const dm=dayMult(date,svcType);
+  const nm=nightMult(time,svcType);
+  const tm=dm*nm;
+  let base=0, outPrice=0, rtPrice=0;
+  if(svcType==='private'){
+    const routes=PRIVATE[airport];
+    if(routes&&routes[resortVal]){
+      const ow=routes[resortVal][document.getElementById('b-vehicle').value]||routes[resortVal]['van']||0;
+      base=dir==='rt'?Math.round(ow*1.95*tm):Math.round(ow*tm);
+    }
+  } else {
+    if(dir==='rt'){
+      const dmOut=dayMult(date,'shared');
+      const dmRet=dayMult(returnDate||date,'shared');
+      outPrice=Math.round(sharedPrice(pax,'one')*dmOut);
+      rtPrice=Math.round(sharedPrice(rtPax,'one')*dmRet);
+      base=outPrice+rtPrice;
+    } else {
+      base=Math.round(sharedPrice(pax,'one')*dm);
+      outPrice=base;
+    }
+  }
+  const extMult2 = dir==='rt' ? 2 : 1;
+  const skiT=steppers.ski*10*extMult2;
+  const babyT=steppers.baby*10*extMult2;
+  const boostT=steppers.booster*7*extMult2;
+  const suitcaseT=steppers.suitcases*15*extMult2;
+  const stopT=extras.stop?15:0;
+  const total=base+skiT+babyT+boostT+suitcaseT+stopT;
+
+  const sharedBreakdown = svcType==='shared' && dir==='rt'
+    ? `<div class="summary-row"><span class="summary-label">${t.sum_out} (${pax} ${t.sum_pax_l})</span><span class="summary-val">€${outPrice}</span></div>
+       <div class="summary-row"><span class="summary-label">${t.sum_ret} (${rtPax} ${t.sum_pax_l})</span><span class="summary-val">€${rtPrice}</span></div>`
+    : '';
+
+  function fmtDate(d) {
+    if(!d) return '—';
+    const [y,m,dy] = d.split('-');
+    return `${dy}/${m}/${y}`;
+  }
+
+  let html=`
+  <div class="summary-section">
+    <div class="summary-title">${t.sum_transfer}</div>
+    <div class="summary-row"><span class="summary-label">${t.sum_service}</span><span class="summary-val">${svcType==='private'?t.sum_private:t.sum_shared}</span></div>
+    <div class="summary-row"><span class="summary-label">${t.sum_route}</span><span class="summary-val">${fromLabel} → ${toLabel}${dir==='rt'?' → '+getReturnAirport():''}</span></div>
+    <div class="summary-row"><span class="summary-label">${t.sum_direction}</span><span class="summary-val">${dir==='rt'?t.sum_rt:t.sum_ow}</span></div>
+    ${svcType==='private'?`<div class="summary-row"><span class="summary-label">${t.sum_vehicle}</span><span class="summary-val">${document.getElementById('b-vehicle')?.selectedOptions[0]?.text||''}</span></div>`:''}
+    <div class="summary-row"><span class="summary-label">${t.sum_pax}</span><span class="summary-val">${pax}${dir==='rt'&&rtPax!==pax?' / '+rtPax:''}</span></div>
+    <div class="summary-row"><span class="summary-label">${t.sum_arr_date}</span><span class="summary-val">${fmtDate(date)}</span></div>
+    ${dir==='rt'?`<div class="summary-row"><span class="summary-label">${t.sum_ret_date}</span><span class="summary-val">${fmtDate(returnDate)||'—'}</span></div>`:''}
+    <div class="summary-row"><span class="summary-label">${t.sum_flight}</span><span class="summary-val">${flight||'—'}${dir==='rt'&&flightRt?' / '+t.sum_ret_l+': '+flightRt:''}</span></div>
+  </div>
+  <div class="summary-section">
+    <div class="summary-title">${t.sum_passenger}</div>
+    <div class="summary-row"><span class="summary-label">${t.sum_name}</span><span class="summary-val">${fname} ${lname}</span></div>
+    <div class="summary-row"><span class="summary-label">${t.sum_email}</span><span class="summary-val">${email}</span></div>
+    <div class="summary-row"><span class="summary-label">${t.sum_phone}</span><span class="summary-val">${phone}</span></div>
+    <div class="summary-row"><span class="summary-label">${t.sum_hotel}</span><span class="summary-val">${hotel||t.sum_hotel_later}</span></div>
+  </div>
+  <div class="summary-section">
+    <div class="summary-title">${t.sum_price}</div>
+    ${sharedBreakdown||`<div class="summary-row"><span class="summary-label">${t.sum_base}</span><span class="summary-val">€${base}</span></div>`}
+    ${skiT>0?`<div class="summary-row"><span class="summary-label">${t.sum_ski}</span><span class="summary-val">€${skiT}</span></div>`:''}
+    ${babyT>0?`<div class="summary-row"><span class="summary-label">${t.sum_baby}</span><span class="summary-val">€${babyT}</span></div>`:''}
+    ${boostT>0?`<div class="summary-row"><span class="summary-label">${t.sum_booster}</span><span class="summary-val">€${boostT}</span></div>`:''}
+    ${suitcaseT>0?`<div class="summary-row"><span class="summary-label">${t.sum_suitcases}</span><span class="summary-val">€${suitcaseT}</span></div>`:''}
+    ${stopT>0?`<div class="summary-row"><span class="summary-label">${t.sum_stop}</span><span class="summary-val">€15</span></div>`:''}
+    <div class="summary-row total"><span>${t.sum_total}</span><span>€${total}</span></div>
+  </div>`;
+  document.getElementById('summary-content').innerHTML=html;
+  document.getElementById('confirm-email').textContent=email;
+}
+
+function goStep(n){
+  if(n===2){
+    if(!document.getElementById('b-airport').value){alert(BOOK_TRANSLATIONS[currentLang]['alert-select-airport']);return;}
+    if(!document.getElementById('b-resort').value){alert(BOOK_TRANSLATIONS[currentLang]['alert-select-resort']);return;}
+    if(!document.getElementById('b-date').value){alert(BOOK_TRANSLATIONS[currentLang]['alert-select-date']);return;}
+    const resort=document.getElementById('b-resort').value;
+    if(svcType==='shared'&&(resort==='les-arcs'||resort==='tignes')&&pax<3){alert(BOOK_TRANSLATIONS[currentLang]['alert-min-pax']);return;}
+    const isRtCheck = document.getElementById('b-direction').value==='rt';
+    if(isRtCheck && svcType==='shared'&&(resort==='les-arcs'||resort==='tignes')&&rtPax<3){
+      const t=BOOK_TRANSLATIONS[currentLang];
+      if(!confirm(t['alert-rt-low-pax-pre']+rtPax+(rtPax>1?t['passengers']:t['passenger'])+t['alert-rt-low-pax-suf'])) return;
+    }
+    // Show return flight card if RT
+    const isRt = document.getElementById('b-direction').value==='rt';
+    const rtCard = document.getElementById('return-flight-card');
+    if(rtCard) rtCard.style.display = isRt ? 'block' : 'none';
+    updateExtraPriceLabels();
+  }
+  if(n===3){
+    // Validate flight for shared
+    const airline = document.getElementById('b-airline').value;
+    const flight = document.getElementById('b-flight').value;
+    if(!airline || !flight){alert(BOOK_TRANSLATIONS[currentLang]['alert-flight']);return;}
+    if(svcType==='shared'){
+      if(!validateTLVFlight(airline, flight, 'out')) return;
+      const isRt = document.getElementById('b-direction').value==='rt';
+      if(isRt){
+        const airlineRt = document.getElementById('b-airline-rt').value;
+        const flightRt = document.getElementById('b-flight-rt').value;
+        if(!airlineRt || !flightRt){alert(BOOK_TRANSLATIONS[currentLang]['alert-rt-flight']);return;}
+        if(!validateTLVFlight(airlineRt, flightRt, 'rt')) return;
+      }
+    }
+  }
+  if(n===4){
+    if(!document.getElementById('b-fname').value||!document.getElementById('b-lname').value){alert(BOOK_TRANSLATIONS[currentLang]['alert-name']);return;}
+    if(!document.getElementById('b-email').value){alert(BOOK_TRANSLATIONS[currentLang]['alert-email']);return;}
+    if(!document.getElementById('b-phone').value){alert(BOOK_TRANSLATIONS[currentLang]['alert-phone']);return;}
+    buildSummary();
+    const dir=document.getElementById('b-direction').value;
+    const retPickup=document.getElementById('b-return-pickup');
+    if(retPickup) retPickup.style.display=dir==='rt'?'block':'none';
+  }
+  document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+n).classList.add('active');
+  currentStep=n;
+  updateProgress(n);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateProgress(n){
+  for(let i=1;i<=4;i++){
+    const num=document.getElementById('snum-'+i);
+    const lbl=document.getElementById('slbl-'+i);
+    if(!num) continue;
+    if(i<n){num.className='step-num done';num.textContent='✓';}
+    else if(i===n){num.className='step-num active';num.textContent=i;if(lbl)lbl.className='step-label active';}
+    else{num.className='step-num inactive';num.textContent=i;if(lbl)lbl.className='step-label';}
+  }
+}
+
+// TLV direct flight validation for shared transfers
+const TLV_AIRLINES = ['LY','FR','U2','W6','VY']; // airlines with direct TLV routes
+function validateTLVFlight(airline, flight, leg) {
+  if(!TLV_AIRLINES.includes(airline)) {
+    const warnId = leg==='rt' ? 'flight-shared-warn-rt' : 'flight-shared-warn';
+    const warn = document.getElementById(warnId);
+    const t = BOOK_TRANSLATIONS[currentLang];
+    warn.innerHTML = (leg==='rt' ? t['flight-warn-rt'] : t['flight-warn-out']) +
+      ` <a href="#" onclick="redirectToPrivate()" style="color:var(--orange);font-weight:600">${t['flight-warn-switch']}</a>`;
+    warn.style.display = 'block';
+    return false;
+  }
+  return true;
+}
+
+function toggleHotelLater() {
+  const later = document.getElementById('hotel-later').checked;
+  document.getElementById('hotel-input-group').style.opacity = later ? '0.4' : '1';
+  document.getElementById('b-hotel').disabled = later;
+  if(later) document.getElementById('b-hotel').value = '';
+}
+
+function redirectToPrivate() {
+  setService('private');
+  goStep(1);
+  return false;
+}
+
+function updateExtraPriceLabels() {
+  const isRt = document.getElementById('b-direction').value === 'rt';
+  const t = BOOK_TRANSLATIONS[currentLang];
+  const suitcasesLbl = document.getElementById('suitcases-price-label');
+  const skiLbl = document.getElementById('ski-price-label');
+  const babyLbl = document.getElementById('baby-price-label');
+  const boosterLbl = document.getElementById('booster-price-label');
+  if(suitcasesLbl) suitcasesLbl.textContent = isRt ? t['per-bag-rt'] : t['per-bag'];
+  if(skiLbl) skiLbl.textContent = isRt ? t['per-ski-rt'] : t['per-ski'];
+  if(babyLbl) babyLbl.textContent = isRt ? t['baby-price-rt'] : t['baby-price'];
+  if(boosterLbl) boosterLbl.textContent = isRt ? t['booster-price-rt'] : t['booster-price'];
+  const luggageSub = document.getElementById('luggage-sub');
+  if(luggageSub) luggageSub.textContent = isRt ? t['luggage-sub-rt'] : t['luggage-sub-ow'];
+  calcPrice();
+}
+
+const SUPABASE_URL = 'https://tguovceyhyilmdtctlgp.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRndW92Y2V5aHlpbG1kdGN0bGdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMDc3NzcsImV4cCI6MjA5NTc4Mzc3N30.c58sNmyMW1YCC2HihC9CfEyO-Kyt1On8tdGvx58Hstg';
+
+async function submitBooking(){
+  const btn=document.getElementById('pay-btn');
+  btn.textContent=BOOK_TRANSLATIONS[currentLang]['processing'];
+  btn.disabled=true;
+
+  // Generate booking reference
+  const ref='WR-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+Math.random().toString(36).substr(2,6).toUpperCase();
+
+  // Collect all form data
+  const airport=document.getElementById('b-airport').value;
+  const resort=document.getElementById('b-resort').value;
+  const date=document.getElementById('b-date').value;
+  const time=document.getElementById('b-time')?.value||'';
+  const direction=document.getElementById('b-direction')?.value||'one';
+  const airline=document.getElementById('b-airline')?.value||'';
+  const flightNum=document.getElementById('b-flight')?.value||'';
+  const fname=document.getElementById('b-fname')?.value||'';
+  const lname=document.getElementById('b-lname')?.value||'';
+  const email=document.getElementById('b-email')?.value||'';
+  const countryCode=document.getElementById('b-country-code')?.value||'+972';
+  const phone=document.getElementById('b-phone')?.value||'';
+  const whatsapp=document.getElementById('b-whatsapp')?.checked||false;
+  const hotel=document.getElementById('b-hotel')?.value||'';
+  const svcType=document.querySelector('.svc-tab.active')?.dataset?.service||'private';
+  const paxVal=parseInt(document.getElementById('pax-val')?.textContent)||1;
+  const suitcases=parseInt(document.getElementById('suitcases-val')?.textContent)||0;
+  const ski=parseInt(document.getElementById('ski-val')?.textContent)||0;
+  const baby=parseInt(document.getElementById('baby-val')?.textContent)||0;
+  const booster=parseInt(document.getElementById('booster-val')?.textContent)||0;
+  const priceEl=document.getElementById('price-amount');
+  const priceText=priceEl?priceEl.textContent:'';
+
+  const booking = {
+    booking_ref: ref,
+    service_type: window.svcType || 'private',
+    airport: airport || null,
+    resort: resort || null,
+    travel_date: date || null,
+    arrival_time: time || null,
+    direction: direction,
+    flight_airline: airline || null,
+    flight_number: (airline+flightNum) || null,
+    passengers: paxVal,
+    suitcases: suitcases,
+    ski_equipment: ski,
+    baby_seats: baby,
+    boosters: booster,
+    first_name: fname,
+    last_name: lname,
+    email: email,
+    phone: countryCode+phone,
+    whatsapp: whatsapp,
+    hotel_address: hotel || null,
+    price_display: priceText,
+    status: selectedPayment === 'later' ? 'pending_payment' : 'pending',
+    payment_method: selectedPayment,
+    created_at: new Date().toISOString()
+  };
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/bookings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(booking)
+    });
+
+    if(!res.ok) {
+      const err = await res.text();
+      throw new Error(err);
+    }
+
+    // Also save/update customer
+    await fetch(`${SUPABASE_URL}/rest/v1/customers`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer': 'resolution=merge-duplicates,return=minimal'
+      },
+      body: JSON.stringify({
+        email: email,
+        first_name: fname,
+        last_name: lname,
+        phone: countryCode+phone,
+        whatsapp: whatsapp,
+        updated_at: new Date().toISOString()
+      })
+    });
+
+    // Success
+    document.getElementById('booking-ref-display').textContent=ref;
+    document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('panel-5').classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+
+  } catch(e) {
+    console.error('Booking error:', e);
+    btn.textContent=BOOK_TRANSLATIONS[currentLang]['try-again'];
+    btn.disabled=false;
+    const errMsg = e.message || 'Unknown error';
+    alert(BOOK_TRANSLATIONS[currentLang]['alert-booking-fail'].replace('{err}', errMsg));
+  }
+}
+
+document.getElementById('b-date').min=new Date().toISOString().split('T')[0];
+updateResorts();
+calcPrice();
+
+// Pre-fill from index.html params
+(function(){
+  const p=new URLSearchParams(window.location.search);
+  const service=p.get('service');
+  const airport=p.get('airport');
+  const resort=p.get('resort');
+  const date=p.get('date');
+  const pax=p.get('pax');
+  const flight=p.get('flight');
+  const vehicle=p.get('vehicle');
+
+  if(service==='shared'){
+    setService('shared');
+  }
+  if(airport){
+    const el=document.getElementById('b-airport');
+    if(el){el.value=airport;el.dispatchEvent(new Event('change'));}
+  }
+  if(resort){
+    updateResorts();
+    const el=document.getElementById('b-resort');
+    if(el){el.value=resort;el.dispatchEvent(new Event('change'));}
+  }
+  if(date){
+    const el=document.getElementById('b-date');
+    if(el)el.value=date;
+  }
+  if(pax){
+    const paxNum=parseInt(pax);
+    if(!isNaN(paxNum)&&paxNum>0){
+      window.pax=paxNum;
+      document.getElementById('pax-val').textContent=paxNum;
+      document.getElementById('pax-label').textContent=paxNum===1?'passenger':'passengers';
+    }
+  }
+  if(flight){
+    const el=document.getElementById('b-flight');
+    if(el)el.value=flight;
+  }
+  if(vehicle){
+    const el=document.getElementById('b-vehicle');
+    if(el){el.value=vehicle;el.dispatchEvent(new Event('change'));}
+  }
+  if(airport||resort||pax||vehicle) calcPrice();
+})();
+
+// ========== LANGUAGE / i18n ==========
+let currentLang = 'en';
+
+const BOOK_TRANSLATIONS = {
+  en: {
+    'nav-back': '← Back to home',
+    'step1': 'Transfer', 'step2': 'Flight & Luggage', 'step3': 'Your Details', 'step4': 'Payment',
+    'card-title-transfer': 'Choose Your Transfer',
+    'card-sub-transfer': 'Select service type, route and travel date',
+    'tab-shared-name': 'Shared Transfer', 'tab-shared-desc': 'GVA & LYS · Direct TLV flights only',
+    'tab-private-name': 'Private Transfer', 'tab-private-desc': 'Exclusive vehicle for your group',
+    'lbl-from': 'From', 'lbl-to': 'To', 'lbl-vehicle': 'Vehicle', 'lbl-date': 'Travel date',
+    'lbl-pax': 'Number of passengers',
+    'lbl-add-return': 'Add return trip', 'lbl-return-date': 'RETURN DATE',
+    'lbl-same-airport': 'Return from same airport', 'lbl-return-airport': 'RETURN AIRPORT',
+    'lbl-return-pax': 'RETURN PASSENGERS',
+    'shared-price-note': '✓ Price includes 1 suitcase per passenger · Extra charges apply for additional luggage',
+    'btn-continue': 'CONTINUE →',
+    'card-title-flight-out': '✈️ Outbound Flight Details',
+    'card-sub-flight-out': "We'll track your flight and wait for you",
+    'card-title-flight-rt': '✈️ Return Flight Details',
+    'card-sub-flight-rt': 'Flight from resort back to Tel Aviv',
+    'lbl-airline': 'Airline', 'lbl-flight': 'Flight number',
+    'lookup-btn': 'Look up ✈',
+    'card-title-luggage': '🧳 Luggage & Extras',
+    'card-sub-luggage': '1 suitcase per passenger included free',
+    'lbl-extra-suitcases': 'Extra suitcases',
+    'lbl-ski': 'Ski / Snowboard equipment',
+    'lbl-child-seats': 'Child seats',
+    'lbl-extra-stop': 'Extra stop',
+    'card-title-details': 'Your Details',
+    'card-sub-details': 'Please fill in your personal information',
+    'lbl-fname': 'First name', 'lbl-lname': 'Last name',
+    'lbl-email': 'Email address', 'lbl-phone': 'Mobile number',
+    'lbl-whatsapp': 'This number is available on WhatsApp 💬',
+    'card-title-destination': 'Destination',
+    'card-sub-destination': 'Where should we drop you off?',
+    'lbl-hotel': 'Hotel / Apartment name & address',
+    'lbl-hotel-later': "I'll add my destination address later",
+    'lbl-notes': 'Special requests or notes (optional)',
+    'btn-review': 'REVIEW & PAY →',
+    'card-title-summary': 'Booking Summary',
+    'card-sub-summary': 'Please review your booking before payment',
+    'card-title-payment': 'Payment',
+    'card-sub-payment': "Choose how you'd like to pay",
+    'pay-card-title': 'Pay by Card',
+    'pay-card-sub': 'Credit/Debit card via Revolut Pay link',
+    'pay-later-title': 'Request & Pay Later',
+    'pay-later-sub': 'Confirm booking now, payment arranged separately',
+    'btn-confirm': 'CONFIRM BOOKING →',
+    'btn-back': '← Back',
+    'success-title': 'Booking Confirmed!',
+    'avail-checking': 'Checking availability...',
+    'avail-seats': 'seats left', 'avail-bags': 'bag slots left', 'avail-ski': 'ski slots left',
+    // dropdowns
+    'sel-origin': '— Select origin —',
+    'sel-dest': '— Select destination —',
+    'sel-airline': '— Select airline —',
+    'sel-return-airport': '— Select return airport —',
+    'optgrp-airports': '✈️ Airports',
+    'optgrp-resorts': '⛷️ Ski Resorts',
+    // vehicle options
+    'veh-sedan': 'Sedan (1–3 pax)',
+    'veh-van': 'Van (1–8 pax)',
+    'veh-minibus': 'Minibus (1–15 pax)',
+    'veh-bus': 'Bus (large groups)',
+    // static labels
+    'lbl-extra-suitcases-suffix': '(beyond 1/pax)',
+    'lbl-baby-title': '👶 Baby seat',
+    'lbl-baby-desc': 'For children up to 13kg',
+    'lbl-booster-title': '🪑 Booster seat',
+    'lbl-booster-desc': 'For children 15–36kg',
+    'lbl-extra-stop-same': '📍 Extra stop (same resort)',
+    'lbl-extra-stop-desc': 'Additional drop-off/pick-up point',
+    'lbl-road-stop': '🛣️ Road stop (over 20 min)',
+    'lbl-road-stop-desc': 'Subject to availability',
+    'lbl-total-extras': 'TOTAL WITH EXTRAS',
+    'lbl-email-hint': 'Your booking confirmation and voucher will be sent here',
+    'lbl-hotel-hint': 'Search by hotel name or enter address manually',
+    'lbl-hotel-ph': 'Start typing hotel or address...',
+    'lbl-return-pickup': '🔄 For your return transfer, our driver will pick you up from the same address.',
+    'lbl-diff-pickup': 'Different pickup address for return',
+    'lbl-return-address': 'Return pickup address',
+    'lbl-notes-ph': 'e.g. late arrival, wheelchair access, meeting point preferences...',
+    'lbl-return-address-ph': 'Return pickup address',
+    'btn-back-to-home': 'BACK TO HOME',
+    'booking-ref-label': 'Booking Reference',
+    'success-sub': 'Your transfer has been booked successfully. Check your email for the voucher.',
+    'confirm-email-prefix': 'A confirmation email with your voucher has been sent to',
+    'price-per-private-ow-arr': 'Per vehicle · One way (Airport → Resort)',
+    'price-per-private-ow-dep': 'Per vehicle · One way (Resort → Airport)',
+    'price-per-private-rt': 'Per vehicle · Return',
+    'price-per-shared-arr': 'Total for {pax} passenger{s} · One way (Airport → Resort)',
+    'price-per-shared-dep': 'Total for {pax} passenger{s} · One way (Resort → Airport)',
+    'price-per-shared-rt': 'Total for {pax} passenger{s} · Return',
+    'est-price': 'ESTIMATED PRICE',
+    'req-notice': '⚠️ This booking will be submitted as a <strong>Request</strong> — confirmation pending.',
+    'shared-notice': 'ℹ️ Shared transfers available from Geneva (GVA) & Lyon (LYS) on direct flights <strong>from or to Tel Aviv (TLV) only</strong>.<br><strong>Season: 20 Nov 2026 – 5 May 2027</strong>',
+    'season-warn': '⚠️ Shared transfers are only available between 20 Nov 2026 and 5 May 2027. Please select a date within this period, or choose Private Transfer.',
+    'min-pax-warn': '⚠️ Les Arcs & Tignes: minimum 3 passengers for shared transfer (outbound and return)',
+    'flight-warn-out': '⚠️ Shared transfers are only available on <strong>direct flights from/to Tel Aviv (TLV)</strong>. This flight doesn\'t qualify.',
+    'flight-warn-switch': 'Switch to Private Transfer →',
+    'flight-warn-rt': '⚠️ Return flight must also be a <strong>direct flight to Tel Aviv (TLV)</strong>.',
+    'revolut-detail': '💳 After confirming your booking, you\'ll receive a secure payment link by email and WhatsApp.<br><strong>Payment is due within 24 hours to confirm your reservation.</strong>',
+    'pay-later-detail': 'ℹ️ Your booking will be confirmed pending payment. We\'ll contact you within 2 hours to arrange payment details.',
+    'secure-note': '🔒 Your details are secure. Booking reference sent immediately by email.',
+    'confirm-and-pay': 'CONFIRM & GET PAYMENT LINK →',
+    'confirm-booking': 'CONFIRM BOOKING →',
+    'processing': 'PROCESSING...',
+    'try-again': 'TRY AGAIN',
+    'passenger': 'passenger', 'passengers': 'passengers',
+    'passenger-rt': 'passenger', 'passengers-rt': 'passengers',
+    // availability
+    'avail-available-badge': 'Seats available',
+    'avail-available-msg': 'Space available on this departure.',
+    'avail-almost-full-badge': 'Almost full',
+    'avail-almost-full-msg': 'Very limited availability — book now to secure your spot.',
+    'avail-new-van-badge': 'Seats available',
+    'avail-new-van-msg': 'Current van is full — a new vehicle will open for this departure.',
+    'avail-admin-badge': 'On request',
+    'avail-admin-msg': 'Limited availability — booking submitted as a Request. We will confirm within 2 hours.',
+    'avail-upgrade-badge': 'Seats available',
+    'avail-upgrade-msg': 'Large group detected — your booking may be upgraded to a minibus for more comfort.',
+    'avail-min-pax-badge': 'On request',
+    'avail-full-badge': 'Fully booked',
+    'avail-full-msg': 'No availability on this departure. Booking submitted as a Request.',
+    'avail-unavail': 'Availability check unavailable — you can still proceed.',
+    // summary labels
+    'sum-transfer': 'Transfer',
+    'sum-service': 'Service', 'sum-private': 'Private', 'sum-shared': 'Shared',
+    'sum-route': 'Route', 'sum-direction': 'Direction',
+    'sum-rt': 'Return (R/T)', 'sum-ow': 'One way',
+    'sum-vehicle': 'Vehicle', 'sum-pax': 'Passengers',
+    'sum-arr-date': 'Arrival date', 'sum-ret-date': 'Return date',
+    'sum-flight': 'Flight',
+    'sum-passenger': 'Passenger',
+    'sum-name': 'Name', 'sum-email': 'Email', 'sum-phone': 'Phone',
+    'sum-hotel': 'Hotel / Address', 'sum-hotel-later': 'Will be added later',
+    'sum-price': 'Price Breakdown', 'sum-base': 'Base price',
+    'sum-outbound': 'Outbound', 'sum-return-leg': 'Return',
+    'sum-pax-lbl': 'pax',
+    'sum-ski': 'Ski equipment', 'sum-baby': 'Baby seats', 'sum-booster': 'Booster seats',
+    'sum-suitcases': 'Extra suitcases', 'sum-stop': 'Extra stop',
+    'sum-total': 'Total',
+    'sum-return-flight': 'Return: ',
+    // alerts
+    'alert-select-airport': 'Please select an airport',
+    'alert-select-resort': 'Please select a resort',
+    'alert-select-date': 'Please select a travel date',
+    'alert-min-pax': 'Minimum 3 passengers for Les Arcs & Tignes shared transfer',
+    'alert-rt-low-pax-pre': 'Return trip has ',
+    'alert-rt-low-pax-suf': ' — below minimum 3 for Les Arcs & Tignes.\n\nThis will be submitted as a REQUEST (not auto-confirmed). Continue?',
+    'alert-flight': 'Please enter your flight details',
+    'alert-rt-flight': 'Please enter your return flight details',
+    'alert-name': 'Please enter your name',
+    'alert-email': 'Please enter your email',
+    'alert-phone': 'Please enter your phone number',
+    'alert-booking-fail': '⚠️ Booking could not be saved.\n\nError: {err}\n\nPlease try again or contact us on WhatsApp.',
+    // date format
+    'date-format': 'DD/MM/YYYY',
+    // price labels
+    'per-bag': '€15/bag', 'per-bag-rt': '€30/bag (both ways)',
+    'per-ski': '€10/item', 'per-ski-rt': '€20/item (both ways)',
+    'baby-price': '+€10', 'baby-price-rt': '+€20 (both ways)',
+    'booster-price': '+€7', 'booster-price-rt': '+€14 (both ways)',
+    'luggage-sub-rt': '1 suitcase per passenger included free (each way). Extra charges apply per direction.',
+    'luggage-sub-ow': '1 suitcase per passenger included free',
+    'return-badge-pre': 'Return: €',
+    'outbound-leg': 'Outbound',
+    'return-leg': 'Return',
+  },
+  he: {
+    'nav-back': '← חזור לדף הבית',
+    'step1': 'העברה', 'step2': 'טיסה ומטען', 'step3': 'פרטים אישיים', 'step4': 'תשלום',
+    'card-title-transfer': 'בחר את ההעברה שלך',
+    'card-sub-transfer': 'בחר סוג שירות, מסלול ותאריך',
+    'tab-shared-name': 'העברה שיתופית', 'tab-shared-desc': 'GVA ו-LYS · טיסות ישירות מתל אביב בלבד',
+    'tab-private-name': 'העברה פרטית', 'tab-private-desc': 'רכב בלעדי לקבוצה שלך',
+    'lbl-from': 'מ', 'lbl-to': 'אל', 'lbl-vehicle': 'רכב', 'lbl-date': 'תאריך נסיעה',
+    'lbl-pax': 'מספר נוסעים',
+    'lbl-add-return': 'הוסף טיסת חזור', 'lbl-return-date': 'תאריך חזור',
+    'lbl-same-airport': 'חזור מאותו שדה תעופה', 'lbl-return-airport': 'שדה תעופה לחזור',
+    'lbl-return-pax': 'נוסעים בחזור',
+    'shared-price-note': '✓ המחיר כולל מזוודה אחת לנוסע · חיובים נוספים על מטען עודף',
+    'btn-continue': 'המשך →',
+    'card-title-flight-out': '✈️ פרטי טיסת הלוך',
+    'card-sub-flight-out': 'נעקוב אחרי הטיסה שלך ונחכה לך',
+    'card-title-flight-rt': '✈️ פרטי טיסת חזור',
+    'card-sub-flight-rt': 'טיסה מהאתר חזרה לתל אביב',
+    'lbl-airline': 'חברת תעופה', 'lbl-flight': 'מספר טיסה',
+    'lookup-btn': 'בדוק טיסה ✈',
+    'card-title-luggage': '🧳 מטען ותוספות',
+    'card-sub-luggage': 'מזוודה אחת לנוסע כלולה בחינם',
+    'lbl-extra-suitcases': 'מזוודות נוספות',
+    'lbl-ski': 'ציוד סקי / סנובורד',
+    'lbl-child-seats': 'כיסאות ילדים',
+    'lbl-extra-stop': 'עצירה נוספת',
+    'card-title-details': 'הפרטים שלך',
+    'card-sub-details': 'נא למלא את הפרטים האישיים שלך',
+    'lbl-fname': 'שם פרטי', 'lbl-lname': 'שם משפחה',
+    'lbl-email': 'כתובת מייל', 'lbl-phone': 'מספר נייד',
+    'lbl-whatsapp': 'המספר הזה זמין ב-WhatsApp 💬',
+    'card-title-destination': 'יעד',
+    'card-sub-destination': 'איפה להוריד אותך?',
+    'lbl-hotel': 'שם המלון / דירה וכתובת',
+    'lbl-hotel-later': 'אוסיף את כתובת היעד מאוחר יותר',
+    'lbl-notes': 'בקשות מיוחדות או הערות (אופציונלי)',
+    'btn-review': 'סקירה ותשלום →',
+    'card-title-summary': 'סיכום הזמנה',
+    'card-sub-summary': 'אנא בדוק את ההזמנה לפני התשלום',
+    'card-title-payment': 'תשלום',
+    'card-sub-payment': 'בחר את אמצעי התשלום',
+    'pay-card-title': 'תשלום בכרטיס אשראי',
+    'pay-card-sub': 'כרטיס אשראי/דביט דרך קישור Revolut',
+    'pay-later-title': 'בקשה ותשלום מאוחר יותר',
+    'pay-later-sub': 'אשר הזמנה עכשיו, תשלום יסודר בנפרד',
+    'btn-confirm': 'אשר הזמנה →',
+    'btn-back': '→ חזור',
+    'success-title': 'ההזמנה אושרה!',
+    'avail-checking': 'בודק זמינות...',
+    'avail-seats': 'מקומות פנויים', 'avail-bags': 'מקום מזוודות', 'avail-ski': 'מקום ציוד סקי',
+    // dropdowns
+    'sel-origin': '— בחר מוצא —',
+    'sel-dest': '— בחר יעד —',
+    'sel-airline': '— בחר חברת תעופה —',
+    'sel-return-airport': '— בחר שדה תעופה לחזור —',
+    'optgrp-airports': '✈️ שדות תעופה',
+    'optgrp-resorts': '⛷️ אתרי סקי',
+    // vehicle options
+    'veh-sedan': 'סדאן (1–3 נוסעים)',
+    'veh-van': 'ואן (1–8 נוסעים)',
+    'veh-minibus': 'מיניבוס (1–15 נוסעים)',
+    'veh-bus': 'אוטובוס (קבוצות גדולות)',
+    // static labels
+    'lbl-extra-suitcases-suffix': '(מעבר ל-1 לנוסע)',
+    'lbl-baby-title': '👶 כיסא תינוק',
+    'lbl-baby-desc': 'לילדים עד 13 ק"ג',
+    'lbl-booster-title': '🪑 כיסא בוסטר',
+    'lbl-booster-desc': 'לילדים 15–36 ק"ג',
+    'lbl-extra-stop-same': '📍 עצירה נוספת (אותו אתר)',
+    'lbl-extra-stop-desc': 'נקודת הורדה/איסוף נוספת',
+    'lbl-road-stop': '🛣️ עצירת דרך (מעל 20 דקות)',
+    'lbl-road-stop-desc': 'בכפוף לזמינות',
+    'lbl-total-extras': 'סה"כ עם תוספות',
+    'lbl-email-hint': 'אישור ההזמנה והשובר יישלחו לכאן',
+    'lbl-hotel-hint': 'חפש לפי שם מלון או הכנס כתובת ידנית',
+    'lbl-hotel-ph': 'התחל להקליד שם מלון או כתובת...',
+    'lbl-return-pickup': '🔄 בנסיעת החזור, הנהג יאסוף אותך מאותה כתובת.',
+    'lbl-diff-pickup': 'כתובת איסוף שונה לחזור',
+    'lbl-return-address': 'כתובת איסוף לחזור',
+    'lbl-notes-ph': 'למשל: הגעה מאוחרת, גישה לנכים, העדפות נקודת מפגש...',
+    'lbl-return-address-ph': 'כתובת איסוף לחזור',
+    'btn-back-to-home': 'חזור לדף הבית',
+    'booking-ref-label': 'מספר הזמנה',
+    'success-sub': 'ההעברה שלך הוזמנה בהצלחה. בדוק את האימייל שלך לקבלת השובר.',
+    'confirm-email-prefix': 'אימייל אישור עם שובר נשלח אל',
+    'price-per-private-ow-arr': 'לרכב · כיוון אחד (שדה תעופה ← אתר)',
+    'price-per-private-ow-dep': 'לרכב · כיוון אחד (אתר ← שדה תעופה)',
+    'price-per-private-rt': 'לרכב · הלוך ושוב',
+    'price-per-shared-arr': 'סה"כ ל-{pax} נוסע{s} · כיוון אחד (שדה ← אתר)',
+    'price-per-shared-dep': 'סה"כ ל-{pax} נוסע{s} · כיוון אחד (אתר ← שדה)',
+    'price-per-shared-rt': 'סה"כ ל-{pax} נוסע{s} · הלוך ושוב',
+    'est-price': 'מחיר משוער',
+    'req-notice': '⚠️ הזמנה זו תוגש כ<strong>בקשה</strong> — ממתין לאישור.',
+    'shared-notice': 'ℹ️ העברות שיתופיות מ-Geneva (GVA) ו-Lyon (LYS) על טיסות ישירות <strong>מ/אל תל אביב (TLV) בלבד</strong>.<br><strong>עונה: 20 נוב 2026 – 5 מאי 2027</strong>',
+    'season-warn': '⚠️ העברות שיתופיות זמינות בין 20.11.2026 ל-05.05.2027 בלבד. בחר תאריך בתקופה זו, או עבור להעברה פרטית.',
+    'min-pax-warn': '⚠️ Les Arcs ו-Tignes: מינימום 3 נוסעים להעברה שיתופית (הלוך וחזור)',
+    'flight-warn-out': '⚠️ העברות שיתופיות זמינות רק על <strong>טיסות ישירות מ/אל תל אביב (TLV)</strong>. טיסה זו אינה עומדת בתנאי.',
+    'flight-warn-switch': 'עבור להעברה פרטית →',
+    'flight-warn-rt': '⚠️ גם טיסת החזור חייבת להיות <strong>טיסה ישירה אל תל אביב (TLV)</strong>.',
+    'revolut-detail': '💳 לאחר אישור ההזמנה, תקבל קישור תשלום מאובטח באימייל ובוואטסאפ.<br><strong>יש לשלם תוך 24 שעות לאישור ההזמנה.</strong>',
+    'pay-later-detail': 'ℹ️ ההזמנה תאושר בכפוף לתשלום. ניצור איתך קשר תוך שעתיים לסידור פרטי התשלום.',
+    'secure-note': '🔒 הפרטים שלך מאובטחים. מספר הזמנה נשלח מיידית באימייל.',
+    'confirm-and-pay': 'אשר וקבל קישור תשלום →',
+    'confirm-booking': 'אשר הזמנה →',
+    'processing': 'מעבד...',
+    'try-again': 'נסה שוב',
+    'passenger': 'נוסע', 'passengers': 'נוסעים',
+    'passenger-rt': 'נוסע', 'passengers-rt': 'נוסעים',
+    // availability
+    'avail-available-badge': 'מקומות פנויים',
+    'avail-available-msg': 'יש מקום בנסיעה זו.',
+    'avail-almost-full-badge': 'כמעט מלא',
+    'avail-almost-full-msg': 'זמינות מוגבלת מאוד — הזמן עכשיו לשמור מקום.',
+    'avail-new-van-badge': 'מקומות פנויים',
+    'avail-new-van-msg': 'הואן הנוכחי מלא — רכב חדש ייפתח לנסיעה זו.',
+    'avail-admin-badge': 'בבקשה',
+    'avail-admin-msg': 'זמינות מוגבלת — ההזמנה תוגש כבקשה. נאשר תוך שעתיים.',
+    'avail-upgrade-badge': 'מקומות פנויים',
+    'avail-upgrade-msg': 'קבוצה גדולה — ייתכן שההזמנה תשודרג למיניבוס לנוחות רבה יותר.',
+    'avail-min-pax-badge': 'בבקשה',
+    'avail-full-badge': 'מלא',
+    'avail-full-msg': 'אין זמינות בנסיעה זו. ההזמנה תוגש כבקשה.',
+    'avail-unavail': 'בדיקת זמינות אינה זמינה — ניתן להמשיך בכל זאת.',
+    // summary labels
+    'sum-transfer': 'העברה',
+    'sum-service': 'שירות', 'sum-private': 'פרטי', 'sum-shared': 'שיתופי',
+    'sum-route': 'מסלול', 'sum-direction': 'כיוון',
+    'sum-rt': 'הלוך ושוב', 'sum-ow': 'כיוון אחד',
+    'sum-vehicle': 'רכב', 'sum-pax': 'נוסעים',
+    'sum-arr-date': 'תאריך הגעה', 'sum-ret-date': 'תאריך חזור',
+    'sum-flight': 'טיסה',
+    'sum-passenger': 'נוסע',
+    'sum-name': 'שם', 'sum-email': 'אימייל', 'sum-phone': 'טלפון',
+    'sum-hotel': 'מלון / כתובת', 'sum-hotel-later': 'יתווסף מאוחר יותר',
+    'sum-price': 'פירוט מחיר', 'sum-base': 'מחיר בסיס',
+    'sum-outbound': 'הלוך', 'sum-return-leg': 'חזור',
+    'sum-pax-lbl': 'נוסע',
+    'sum-ski': 'ציוד סקי', 'sum-baby': 'כיסאות תינוק', 'sum-booster': 'כיסאות בוסטר',
+    'sum-suitcases': 'מזוודות נוספות', 'sum-stop': 'עצירה נוספת',
+    'sum-total': 'סה"כ',
+    'sum-return-flight': 'חזור: ',
+    // alerts
+    'alert-select-airport': 'נא לבחור שדה תעופה',
+    'alert-select-resort': 'נא לבחור אתר סקי',
+    'alert-select-date': 'נא לבחור תאריך נסיעה',
+    'alert-min-pax': 'מינימום 3 נוסעים להעברה שיתופית ל-Les Arcs ו-Tignes',
+    'alert-rt-low-pax-pre': 'לנסיעת החזור יש ',
+    'alert-rt-low-pax-suf': ' — מתחת למינימום 3 ל-Les Arcs ו-Tignes.\n\nהזמנה זו תוגש כבקשה (לא אישור אוטומטי). להמשיך?',
+    'alert-flight': 'נא להכניס פרטי טיסה',
+    'alert-rt-flight': 'נא להכניס פרטי טיסת חזור',
+    'alert-name': 'נא להכניס שם',
+    'alert-email': 'נא להכניס כתובת אימייל',
+    'alert-phone': 'נא להכניס מספר טלפון',
+    'alert-booking-fail': '⚠️ לא ניתן היה לשמור את ההזמנה.\n\nשגיאה: {err}\n\nנסה שוב או צור קשר דרך WhatsApp.',
+    // date format — for display in summary
+    'date-format': 'DD/MM/YYYY',
+    // price labels
+    'per-bag': '€15 למזוודה', 'per-bag-rt': '€30 למזוודה (שני כיוונים)',
+    'per-ski': '€10 לפריט', 'per-ski-rt': '€20 לפריט (שני כיוונים)',
+    'baby-price': '+€10', 'baby-price-rt': '+€20 (שני כיוונים)',
+    'booster-price': '+€7', 'booster-price-rt': '+€14 (שני כיוונים)',
+    'luggage-sub-rt': 'מזוודה אחת לנוסע כלולה (בכל כיוון). חיוב נוסף לכל כיוון.',
+    'luggage-sub-ow': 'מזוודה אחת לנוסע כלולה בחינם',
+    'return-badge-pre': 'חזור: €',
+    'outbound-leg': 'הלוך',
+    'return-leg': 'חזור',
+  }
+};
+
+function setLang(lang) {
+  currentLang = lang;
+  const isHe = lang === 'he';
+  document.documentElement.dir = isHe ? 'rtl' : 'ltr';
+  document.documentElement.lang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent.trim() === (isHe ? 'עב' : 'EN')));
+
+  const t = BOOK_TRANSLATIONS[lang];
+
+  // Apply translations by data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if(t[key] !== undefined) el.textContent = t[key];
+  });
+  // Apply placeholders by data-i18n-ph
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.dataset.i18nPh;
+    if(t[key] !== undefined) el.placeholder = t[key];
+  });
+  // Nav back
+  const navBack = document.getElementById('nav-back-link');
+  if(navBack) navBack.textContent = t['nav-back'];
+  // Shared price note
+  const note = document.getElementById('shared-price-note');
+  if(note) note.textContent = t['shared-price-note'];
+
+  // ── Dropdown placeholder options ──
+  const bFrom = document.getElementById('b-from');
+  const bTo = document.getElementById('b-to');
+  if(bFrom && bFrom.options[0]) bFrom.options[0].textContent = t['sel-origin'];
+  if(bTo && bTo.options[0]) bTo.options[0].textContent = t['sel-dest'];
+  // Update optgroup labels
+  bFrom && bFrom.querySelectorAll('optgroup').forEach(g => {
+    if(g.label.includes('Airport') || g.label.includes('שד')) g.label = t['optgrp-airports'];
+    if(g.label.includes('Resort') || g.label.includes('אתר')) g.label = t['optgrp-resorts'];
+  });
+  bTo && bTo.querySelectorAll('optgroup').forEach(g => {
+    if(g.label.includes('Airport') || g.label.includes('שד')) g.label = t['optgrp-airports'];
+    if(g.label.includes('Resort') || g.label.includes('אתר')) g.label = t['optgrp-resorts'];
+  });
+
+  // Airline selects
+  ['b-airline','b-airline-rt'].forEach(id => {
+    const sel = document.getElementById(id);
+    if(sel && sel.options[0]) sel.options[0].textContent = t['sel-airline'];
+  });
+  // Return airport select
+  const rtAirport = document.getElementById('b-airport-rt');
+  if(rtAirport && rtAirport.options[0]) rtAirport.options[0].textContent = t['sel-return-airport'];
+
+  // Vehicle options
+  const vehSel = document.getElementById('b-vehicle');
+  if(vehSel) {
+    const vmap = ['sedan','van','minibus','bus'];
+    Array.from(vehSel.options).forEach((opt, i) => {
+      if(vmap[i]) opt.textContent = t['veh-'+vmap[i]];
+    });
+  }
+
+  // ── Static labels not covered by data-i18n ──
+  // Extra suitcases suffix span
+  document.querySelectorAll('[data-i18n-suffix="extra-suitcases"]').forEach(el => el.textContent = t['lbl-extra-suitcases-suffix']);
+  // Baby/booster seat titles & descs
+  const babyTitle = document.querySelector('#ec-baby .extra-title');
+  const babyDesc = document.querySelector('#ec-baby .extra-desc');
+  const boosterTitle = document.querySelector('#ec-booster .extra-title');
+  const boosterDesc = document.querySelector('#ec-booster .extra-desc');
+  if(babyTitle) babyTitle.textContent = t['lbl-baby-title'];
+  if(babyDesc) babyDesc.textContent = t['lbl-baby-desc'];
+  if(boosterTitle) boosterTitle.textContent = t['lbl-booster-title'];
+  if(boosterDesc) boosterDesc.textContent = t['lbl-booster-desc'];
+  // Extra stop cards
+  const stopTitle = document.querySelector('#ec-stop .extra-title');
+  const stopDesc = document.querySelector('#ec-stop .extra-desc');
+  const roadTitle = document.querySelector('#ec-roadstop .extra-title');
+  const roadDesc = document.querySelector('#ec-roadstop .extra-desc');
+  if(stopTitle) stopTitle.textContent = t['lbl-extra-stop-same'];
+  if(stopDesc) stopDesc.textContent = t['lbl-extra-stop-desc'];
+  if(roadTitle) roadTitle.textContent = t['lbl-road-stop'];
+  if(roadDesc) roadDesc.textContent = t['lbl-road-stop-desc'];
+
+  // TOTAL WITH EXTRAS header
+  const extrasHeader = document.querySelector('#extras-total > div:first-child');
+  if(extrasHeader) extrasHeader.textContent = t['lbl-total-extras'];
+
+  // Email hint
+  const emailHint = document.querySelector('#b-email + .input-hint');
+  if(emailHint) emailHint.textContent = t['lbl-email-hint'];
+  // Hotel hint
+  const hotelHint = document.querySelector('#hotel-input-group .input-hint');
+  if(hotelHint) hotelHint.textContent = t['lbl-hotel-hint'];
+  // Hotel placeholder
+  const hotelInput = document.getElementById('b-hotel');
+  if(hotelInput) hotelInput.placeholder = t['lbl-hotel-ph'];
+  // Notes placeholder
+  const notesInput = document.getElementById('b-notes');
+  if(notesInput) notesInput.placeholder = t['lbl-notes-ph'];
+  // Return address placeholder & label
+  const retAddrInput = document.getElementById('b-return-address');
+  if(retAddrInput) retAddrInput.placeholder = t['lbl-return-address-ph'];
+  const retAddrLabel = document.querySelector('label[for="b-return-address"], #diff-pickup-address label');
+  if(retAddrLabel) retAddrLabel.textContent = t['lbl-return-address'];
+  // "different pickup" label
+  const diffPickupLabel = document.querySelector('label[for="diff-pickup"]');
+  // It's an inline label — find the text node
+  const diffPickupChk = document.getElementById('diff-pickup');
+  if(diffPickupChk && diffPickupChk.parentElement && diffPickupChk.parentElement.tagName==='LABEL') {
+    diffPickupChk.parentElement.childNodes.forEach(n => { if(n.nodeType===3 && n.textContent.trim()) n.textContent = ' '+t['lbl-diff-pickup']; });
+  }
+  // Return pickup notice text
+  const retPickupNotice = document.querySelector('#b-return-pickup .notice');
+  if(retPickupNotice) {
+    // preserve the inner label for "diff pickup"
+    const innerLabel = retPickupNotice.querySelector('div');
+    retPickupNotice.childNodes.forEach(n => { if(n.nodeType===3 && n.textContent.trim()) n.textContent = t['lbl-return-pickup']; });
+  }
+
+  // STEP 3 labels that aren't data-i18n
+  const fnLabel = document.querySelector('label[for="b-fname"], #b-fname').previousElementSibling;
+  // Use querySelectorAll to find non-data-i18n labels in step 3
+  document.querySelectorAll('#panel-3 label:not([data-i18n])').forEach(lbl => {
+    const forAttr = lbl.htmlFor;
+    if(forAttr === 'b-fname') lbl.textContent = t['lbl-fname'];
+    else if(forAttr === 'b-lname') lbl.textContent = t['lbl-lname'];
+    else if(forAttr === 'b-email') lbl.textContent = t['lbl-email'];
+  });
+  // Phone label (not data-i18n)
+  document.querySelectorAll('#panel-3 label').forEach(lbl => {
+    if(lbl.textContent.trim() === 'Mobile number' || lbl.textContent.trim() === 'מספר נייד') lbl.textContent = t['lbl-phone'];
+  });
+  // WhatsApp checkbox label
+  const waLabel = document.querySelector('label[for="b-whatsapp"]');
+  if(waLabel) waLabel.textContent = t['lbl-whatsapp'];
+  // Hotel label in step 3
+  document.querySelectorAll('#panel-3 label, #panel-3 .form-group label').forEach(lbl => {
+    const txt = lbl.textContent.trim();
+    if(txt === 'Hotel / Apartment name & address' || txt === 'שם המלון / דירה וכתובת') lbl.textContent = t['lbl-hotel'];
+    if(txt === 'Special requests or notes (optional)' || txt === 'בקשות מיוחדות או הערות (אופציונלי)') lbl.textContent = t['lbl-notes'];
+  });
+  // Hotel later checkbox label (inline text)
+  const hotelLaterChk = document.getElementById('hotel-later');
+  if(hotelLaterChk) {
+    const lbl = hotelLaterChk.closest('label');
+    if(lbl) lbl.childNodes.forEach(n => { if(n.nodeType===3 && n.textContent.trim()) n.textContent = ' '+t['lbl-hotel-later']; });
+  }
+
+  // Payment card static text
+  const revTitle = document.querySelector('#pay-opt-revolut [style*="font-weight:700"]');
+  const revSub = document.querySelector('#pay-opt-revolut [style*="font-size:12px"]');
+  const revDetail = document.querySelector('#revolut-detail .notice');
+  if(revTitle) revTitle.textContent = t['pay-card-title'];
+  if(revSub) revSub.textContent = t['pay-card-sub'];
+  if(revDetail) revDetail.innerHTML = t['revolut-detail'];
+
+  const laterTitle = document.querySelector('#pay-opt-later [style*="font-weight:700"]');
+  const laterSub = document.querySelector('#pay-opt-later [style*="font-size:12px"]');
+  const laterDetail = document.querySelector('#later-detail .notice');
+  if(laterTitle) laterTitle.textContent = t['pay-later-title'];
+  if(laterSub) laterSub.textContent = t['pay-later-sub'];
+  if(laterDetail) laterDetail.innerHTML = t['pay-later-detail'];
+
+  // Secure note
+  const secNote = document.querySelector('#panel-4 .notice-info:last-of-type');
+  if(secNote) secNote.textContent = t['secure-note'];
+
+  // CONFIRM button text (respects currently selected payment)
+  const payBtn = document.getElementById('pay-btn');
+  if(payBtn) payBtn.textContent = selectedPayment === 'revolut' ? t['confirm-and-pay'] : t['confirm-booking'];
+
+  // Success page
+  const successTitle = document.querySelector('.success-title');
+  const successSub = document.querySelector('.success-sub');
+  const refLabel = document.querySelector('.booking-ref-label');
+  const backBtn = document.querySelector('#panel-5 .btn-next');
+  if(successTitle) successTitle.textContent = t['success-title'];
+  if(successSub) successSub.textContent = t['success-sub'];
+  if(refLabel) refLabel.textContent = t['booking-ref-label'];
+  if(backBtn) backBtn.textContent = t['btn-back-to-home'];
+
+  // Shared / season notices (innerHTML to preserve <strong>)
+  const sharedNotice = document.getElementById('shared-notice');
+  if(sharedNotice) sharedNotice.innerHTML = t['shared-notice'];
+  const seasonWarn = document.getElementById('shared-season-warn');
+  if(seasonWarn) seasonWarn.textContent = t['season-warn'];
+
+  // Min pax warning (preserve current text if visible, but set data attr for future updates)
+  const minPaxWarn = document.getElementById('min-pax-warn');
+  if(minPaxWarn && minPaxWarn.style.display !== 'none') minPaxWarn.textContent = '⚠️ '+t['alert-min-pax'];
+
+  // Request notice
+  const reqNotice = document.getElementById('request-notice');
+  if(reqNotice) reqNotice.innerHTML = t['req-notice'];
+
+  // Estimated price label
+  const estPriceLbl = document.querySelector('#price-box [style*="font-weight:600"]');
+  if(estPriceLbl) estPriceLbl.textContent = t['est-price'];
+
+  // RETURN DATE label inside RT wrap
+  const retDateLabel = document.querySelector('#rt-return-date-wrap > label:first-child');
+  // It's done via data-i18n but the inner labels are not; handle the "same airport" one
+  const sameAirportLabel = document.querySelector('label[for="rt-same-airport"]');
+  if(sameAirportLabel) {
+    sameAirportLabel.childNodes.forEach(n => { if(n.nodeType===3 && n.textContent.trim()) n.textContent = ' '+t['lbl-same-airport']; });
+  }
+
+  // RETURN AIRPORT label
+  const retAirportLabel = document.querySelector('#rt-airport-wrap > label');
+  if(retAirportLabel) retAirportLabel.textContent = t['lbl-return-airport'];
+
+  // RETURN PASSENGERS label
+  const retPaxLabel = document.querySelector('#rt-return-date-wrap label[style*="font-size:12px"]:last-of-type, #rt-return-date-wrap > label:nth-of-type(3)');
+
+  // Step 2 airline labels (not data-i18n)
+  document.querySelectorAll('#panel-2 .form-group label:not([data-i18n])').forEach(lbl => {
+    const txt = lbl.textContent.trim();
+    if(txt === 'Airline' || txt === 'חברת תעופה') lbl.textContent = t['lbl-airline'];
+    if(txt === 'Flight number' || txt === 'מספר טיסה') lbl.textContent = t['lbl-flight'];
+  });
+  // Look up buttons
+  document.querySelectorAll('.lookup-btn').forEach(btn => btn.textContent = t['lookup-btn']);
+
+  // Step 2 luggage labels
+  document.querySelectorAll('#panel-2 .form-group label:not([data-i18n])').forEach(lbl => {
+    const txt = lbl.textContent.trim();
+    if(txt.startsWith('Extra suitcases') || txt.startsWith('מזוודות נוספות')) {
+      lbl.innerHTML = t['lbl-extra-suitcases'] + ' <span style="color:var(--muted);font-weight:400" data-i18n-suffix="extra-suitcases">' + t['lbl-extra-suitcases-suffix'] + '</span>';
+    }
+    if(txt === 'Ski / Snowboard equipment' || txt === 'ציוד סקי / סנובורד') lbl.textContent = t['lbl-ski'];
+    if(txt === 'Child seats' || txt === 'כיסאות ילדים') lbl.textContent = t['lbl-child-seats'];
+    if(txt === 'Extra stop' || txt === 'עצירה נוספת') lbl.textContent = t['lbl-extra-stop'];
+  });
+
+  // Step 2 back+continue buttons
+  document.querySelectorAll('#panel-2 .btn-back').forEach(b => b.textContent = t['btn-back']);
+  document.querySelectorAll('#panel-2 .btn-next:not(#pay-btn)').forEach(b => b.textContent = t['btn-continue']);
+  // Step 1 continue button
+  document.querySelectorAll('#panel-1 .btn-next').forEach(b => b.textContent = t['btn-continue']);
+  // Step 3 back + review buttons
+  document.querySelectorAll('#panel-3 .btn-back').forEach(b => b.textContent = t['btn-back']);
+  document.querySelectorAll('#panel-3 .btn-next').forEach(b => b.textContent = t['btn-review']);
+  // Step 4 back button
+  document.querySelectorAll('#panel-4 .btn-back').forEach(b => b.textContent = t['btn-back']);
+
+  // pax label
+  const paxLbl = document.getElementById('pax-label');
+  if(paxLbl) paxLbl.textContent = pax === 1 ? t['passenger'] : t['passengers'];
+  const rtPaxLbl = document.getElementById('rt-pax-label');
+  if(rtPaxLbl) rtPaxLbl.textContent = rtPax === 1 ? t['passenger-rt'] : t['passengers-rt'];
+
+  // Date input: browser shows system format but we can set min attribute text via locale
+  // Force Hebrew locale for date display
+  const dateInputs = document.querySelectorAll('input[type="date"]');
+  dateInputs.forEach(inp => { inp.lang = lang; });
+
+  // Re-run dynamic functions to refresh translated text
+  updateExtraPriceLabels();
+  calcPrice();
+  // Re-build summary if we're on step 4
+  if(currentStep === 4) buildSummary();
+  // Re-check availability message
+  if(availabilityCache) updateAvailabilityUI(availabilityCache);
+}
+</script>
+
+<!-- WhatsApp Floating Button -->
+<a href="https://wa.me/972528900506?text=Hi%20Winteride!%20I%27d%20like%20to%20enquire%20about%20a%20transfer." 
+   target="_blank"
+   style="position:fixed;bottom:24px;right:24px;z-index:9999;width:58px;height:58px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(37,211,102,0.4);transition:transform 0.2s;text-decoration:none"
+   onmouseover="this.style.transform='scale(1.1)'"
+   onmouseout="this.style.transform='scale(1)'"
+   title="Chat with us on WhatsApp">
+  <svg width="30" height="30" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.557 4.126 1.532 5.864L.057 23.516a.75.75 0 00.921.921l5.652-1.475A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.9 0-3.7-.5-5.27-1.395l-.38-.22-3.933 1.026 1.048-3.826-.245-.394A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+  </svg>
+</a>
+
+</body>
+</html>

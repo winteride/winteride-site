@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Winteride — Fleet Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#0D2B4E;--blue:#1A5F8A;--light-blue:#5BB8E8;--pale-blue:#D6EEF8;
+  --orange:#F47920;--orange-dark:#C85F0A;--white:#fff;--offwhite:#F4F8FB;
+  --text:#1a1a2e;--muted:#5a6a7a;--border:#d0dde8;
+  --green:#1D9E75;--green-light:#E1F5EE;
+  --red:#E24B4A;--red-light:#FCEBEB;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --gray:#888780;--gray-light:#F1EFE8;
+  --purple:#534AB7;--purple-light:#EEEDFE;
+}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:#0a1628;min-height:100vh;direction:rtl}
+
+/* TOP BAR */
+.topbar{background:var(--navy);padding:0 1.5rem;height:58px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:24px;color:white;letter-spacing:2px}
+.logo span{color:var(--orange)}
+.topbar-right{display:flex;align-items:center;gap:1rem}
+.badge-admin{background:rgba(244,121,32,0.2);color:var(--orange);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:1px;border:1px solid rgba(244,121,32,0.3)}
+.nav-tabs{display:flex;gap:0;background:rgba(255,255,255,0.06);border-radius:8px;padding:3px}
+.nav-tab{padding:6px 16px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.5);cursor:pointer;border-radius:6px;border:none;background:transparent;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.nav-tab.active{background:var(--orange);color:white}
+.stab-btn{padding:7px 14px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.5);cursor:pointer;border-radius:7px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.stab-btn.active{background:var(--orange);color:white;border-color:var(--orange)}
+.settings-row{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between}
+.settings-row-label{font-size:13px;color:rgba(255,255,255,0.8);font-weight:500}
+.settings-row-sub{font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px}
+.settings-input{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:white;padding:5px 10px;font-size:13px;font-family:'DM Sans',sans-serif;width:90px;text-align:center}
+.settings-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;letter-spacing:0.5px}
+.badge-active{background:rgba(29,158,117,0.2);color:#5DCAA5}
+.badge-inactive{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.3)}
+.badge-maintenance{background:rgba(186,117,23,0.2);color:#FAC775}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:1fr 260px;height:calc(100vh - 58px);direction:ltr}
+
+/* SIDEBAR */
+.sidebar{background:#0f1e35;border-left:1px solid rgba(255,255,255,0.06);overflow-y:auto;padding:1.5rem 1rem}
+.sidebar-section{margin-bottom:1.5rem}
+.sidebar-title{font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;padding:0 4px}
+
+/* VEHICLE CARDS IN SIDEBAR */
+.vehicle-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all 0.2s}
+.vehicle-card:hover{background:rgba(255,255,255,0.08);border-color:rgba(91,184,232,0.3)}
+.vehicle-card.selected{border-color:var(--orange);background:rgba(244,121,32,0.1)}
+.v-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.v-name{font-size:13px;font-weight:600;color:white}
+.v-type-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.v-type-van{background:rgba(91,184,232,0.2);color:var(--light-blue)}
+.v-type-minibus{background:rgba(83,74,183,0.2);color:#9B93F0}
+.v-type-bus{background:rgba(244,121,32,0.2);color:var(--orange)}
+.v-stats{display:flex;gap:8px;font-size:11px;color:rgba(255,255,255,0.4)}
+.v-stat{display:flex;align-items:center;gap:3px}
+.v-base{font-size:11px;color:rgba(255,255,255,0.3);margin-top:4px}
+
+.status-legend{display:flex;flex-direction:column;gap:6px}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,0.5)}
+.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* MAIN CONTENT */
+.main{overflow:auto;background:#0d1e33}
+
+/* CALENDAR HEADER */
+.cal-header{background:#0f1e35;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.06);position:sticky;top:0;z-index:10}
+.month-nav{display:flex;align-items:center;gap:12px}
+.month-nav button{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:white;width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:14px;font-family:'DM Sans',sans-serif;transition:all 0.2s;display:flex;align-items:center;justify-content:center}
+.month-nav button:hover{background:rgba(255,255,255,0.12)}
+.month-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:white;letter-spacing:2px;min-width:200px;text-align:center}
+.view-toggle{display:flex;background:rgba(255,255,255,0.06);border-radius:8px;padding:3px}
+.view-btn{padding:5px 14px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.4);cursor:pointer;border-radius:5px;border:none;background:transparent;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.view-btn.active{background:rgba(255,255,255,0.12);color:white}
+.add-btn{background:var(--orange);color:white;border:none;padding:7px 16px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.2s;display:flex;align-items:center;gap:6px}
+.add-btn:hover{background:var(--orange-dark)}
+
+/* CALENDAR GRID */
+.cal-wrap{padding:1.5rem}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;background:rgba(255,255,255,0.04);border-radius:12px;overflow:hidden}
+.day-header{background:#0f1e35;padding:8px;text-align:center;font-size:11px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:1px}
+.day-cell{background:#0d1e33;min-height:110px;padding:6px;cursor:pointer;transition:background 0.15s;position:relative;border:1px solid transparent}
+.day-cell:hover{background:#112235}
+.day-cell.today{border-color:var(--orange) !important}
+.day-cell.other-month{opacity:0.3}
+.day-cell.selected{background:#112235;border-color:rgba(91,184,232,0.3)}
+.day-num{font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);margin-bottom:4px}
+.day-num.today-num{color:var(--orange);font-weight:700}
+.day-trips{display:flex;flex-direction:column;gap:2px}
+.trip-chip{border-radius:4px;padding:3px 6px;font-size:10px;font-weight:600;cursor:grab;transition:transform 0.1s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative}
+.trip-chip:active{cursor:grabbing;transform:scale(0.97)}
+.trip-chip.free{background:rgba(29,158,117,0.2);color:#5DCAA5;border:1px solid rgba(29,158,117,0.3)}
+.trip-chip.one{background:rgba(186,117,23,0.2);color:#FAC775;border:1px solid rgba(186,117,23,0.3)}
+.trip-chip.full{background:rgba(226,75,74,0.2);color:#F09595;border:1px solid rgba(226,75,74,0.3)}
+.trip-chip.locked{background:rgba(136,135,128,0.2);color:#B4B2A9;border:1px solid rgba(136,135,128,0.3)}
+.trip-chip.warning{background:rgba(244,121,32,0.15);color:var(--orange);border:1px solid rgba(244,121,32,0.3)}
+
+/* AGENTS TAB */
+.agents-table{width:100%;border-collapse:collapse}
+.agents-table th{text-align:left;padding:10px 14px;font-size:11px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.agents-table td{padding:12px 14px;font-size:13px;color:rgba(255,255,255,0.8);border-bottom:1px solid rgba(255,255,255,0.04)}
+.agents-table tr:hover td{background:rgba(255,255,255,0.03)}
+.agent-status{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.agent-pending{background:rgba(186,117,23,0.2);color:#FAC775}
+.agent-active{background:rgba(29,158,117,0.2);color:#5DCAA5}
+.agent-rejected{background:rgba(226,75,74,0.2);color:#F09595}
+.agent-action-btn{padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all 0.2s}
+.btn-approve{background:rgba(29,158,117,0.2);color:#5DCAA5;border:1px solid rgba(29,158,117,0.3)}
+.btn-approve:hover{background:rgba(29,158,117,0.35)}
+.btn-reject{background:rgba(226,75,74,0.15);color:#F09595;border:1px solid rgba(226,75,74,0.3)}
+.btn-reject:hover{background:rgba(226,75,74,0.3)}
+.agent-input{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:white;border-radius:6px;padding:4px 8px;font-size:12px;width:70px;text-align:center;font-family:inherit}
+.agent-input:focus{outline:none;border-color:var(--orange)}
+.agents-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
+.agent-stat-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;text-align:center}
+.agent-stat-num{font-size:24px;font-weight:700;color:white}
+.agent-stat-label{font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;text-transform:uppercase;letter-spacing:0.5px}
+
+/* WEEK VIEW */
+.week-grid{display:grid;gap:2px}
+.week-header-row{display:grid;grid-template-columns:140px repeat(7,1fr);gap:2px}
+.week-vehicle-row{display:grid;grid-template-columns:140px repeat(7,1fr);gap:2px;margin-bottom:2px}
+.week-vehicle-label{background:#0f1e35;padding:10px 12px;border-radius:6px;display:flex;flex-direction:column;justify-content:center}
+.week-vname{font-size:12px;font-weight:600;color:white}
+.week-vtype{font-size:10px;color:rgba(255,255,255,0.3)}
+.week-day-cell{background:#0d1e33;border-radius:6px;padding:6px;min-height:80px;cursor:pointer;transition:background 0.15s;position:relative}
+.week-day-cell:hover{background:#112235}
+.week-day-header{background:#0f1e35;padding:8px;border-radius:6px;text-align:center}
+.week-day-name{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:1px}
+.week-day-num{font-size:16px;font-weight:600;color:white}
+.week-day-header.today-col .week-day-num{color:var(--orange)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;display:none;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#0f1e35;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:28px;width:480px;max-width:95vw;max-height:90vh;overflow-y:auto}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:white;letter-spacing:1px;margin-bottom:4px}
+.modal-sub{font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:24px}
+.form-group{margin-bottom:16px}
+.form-label{font-size:11px;font-weight:600;color:rgba(255,255,255,0.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;display:block}
+.form-input,.form-select{width:100%;padding:10px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:white;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border 0.2s;-webkit-appearance:none}
+.form-input:focus,.form-select:focus{border-color:var(--orange)}
+.form-select option{background:#0f1e35}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:24px}
+.btn-cancel{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:9px 20px;border-radius:7px;cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.btn-cancel:hover{background:rgba(255,255,255,0.12)}
+.btn-save{background:var(--orange);border:none;color:white;padding:9px 24px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;transition:background 0.2s}
+.btn-save:hover{background:var(--orange-dark)}
+.btn-lock{background:rgba(136,135,128,0.2);border:1px solid rgba(136,135,128,0.3);color:#B4B2A9;padding:9px 20px;border-radius:7px;cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.btn-lock:hover{background:rgba(136,135,128,0.3)}
+
+/* TRIP DETAIL PANEL */
+.detail-panel{position:fixed;left:0;top:58px;height:calc(100vh - 58px);width:340px;background:#0f1e35;border-right:1px solid rgba(255,255,255,0.08);z-index:50;transform:translateX(-100%);transition:transform 0.3s;overflow-y:auto;padding:1.5rem}
+.detail-panel.open{transform:translateX(0)}
+.panel-title{font-family:'Bebas Neue',sans-serif;font-size:20px;color:white;letter-spacing:1px;margin-bottom:16px}
+.detail-row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
+.detail-label{font-size:11px;color:rgba(255,255,255,0.35);font-weight:600;letter-spacing:0.5px}
+.detail-value{font-size:13px;color:white;text-align:left;font-weight:500;max-width:60%}
+.timeline-bar{margin:16px 0;background:rgba(255,255,255,0.06);border-radius:8px;overflow:hidden;height:40px;position:relative}
+.timeline-segment{position:absolute;top:0;height:100%;border-radius:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;letter-spacing:0.5px}
+.seg-drive{background:rgba(91,184,232,0.4);color:var(--light-blue)}
+.seg-transfer{background:rgba(29,158,117,0.4);color:#5DCAA5}
+.seg-return{background:rgba(244,121,32,0.3);color:var(--orange)}
+.hours-bar{background:rgba(255,255,255,0.06);border-radius:4px;height:8px;margin-top:6px;overflow:hidden}
+.hours-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--amber));border-radius:4px;transition:width 0.5s}
+.hours-fill.over{background:var(--red)}
+.close-panel{position:absolute;top:1.5rem;left:1rem;background:rgba(255,255,255,0.06);border:none;color:rgba(255,255,255,0.5);width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:14px;font-family:'DM Sans',sans-serif}
+
+/* STATS BAR */
+.stats-bar{background:#0f1e35;border-bottom:1px solid rgba(255,255,255,0.06);padding:10px 1.5rem;display:flex;gap:2rem;align-items:center}
+.stat-item{text-align:center}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:20px;color:white;line-height:1}
+.stat-lbl{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:1px}
+.stat-sep{width:1px;height:30px;background:rgba(255,255,255,0.07)}
+
+/* DRAG OVER */
+.drag-over{background:#162a40 !important;border:1px dashed rgba(91,184,232,0.5) !important}
+
+/* TRAFFIC INDICATOR */
+.traffic-pill{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:700;margin-right:2px}
+.traffic-low{background:rgba(29,158,117,0.2);color:#5DCAA5}
+.traffic-med{background:rgba(186,117,23,0.2);color:#FAC775}
+.traffic-high{background:rgba(226,75,74,0.2);color:#F09595}
+
+/* CONFLICT WARNING */
+.conflict-banner{background:rgba(226,75,74,0.1);border:1px solid rgba(226,75,74,0.3);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#F09595;display:none}
+.conflict-banner.show{display:block}
+
+/* TRIPS TABLE */
+.trips-wrap{padding:1.5rem;overflow:auto}
+.trips-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:12px;flex-wrap:wrap}
+.trips-search{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:white;padding:8px 14px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;width:220px}
+.trips-search::placeholder{color:rgba(255,255,255,0.25)}
+.trips-filter{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:white;padding:8px 12px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;-webkit-appearance:none}
+.trips-filter option{background:#0f1e35}
+.sim-btn{background:rgba(83,74,183,0.2);border:1px solid rgba(83,74,183,0.4);color:#9B93F0;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.sim-btn:hover{background:rgba(83,74,183,0.35)}
+.trips-table{width:100%;border-collapse:collapse;font-size:13px}
+.trips-table th{text-align:right;padding:10px 12px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:1px;border-bottom:1px solid rgba(255,255,255,0.07);white-space:nowrap}
+.trips-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.05);vertical-align:middle;color:rgba(255,255,255,0.8)}
+.trips-table tr:hover td{background:rgba(255,255,255,0.03)}
+.trips-table tr.expanded td{background:rgba(91,184,232,0.05)}
+.expand-row td{background:rgba(13,30,51,0.8) !important;padding:0}
+.expand-inner{padding:16px 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.expand-stat{background:rgba(255,255,255,0.04);border-radius:8px;padding:10px 12px}
+.expand-label{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.5px;margin-bottom:3px}
+.expand-val{font-size:13px;color:white;font-weight:500}
+.status-pill{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;letter-spacing:0.5px}
+.pill-assigned{background:rgba(29,158,117,0.2);color:#5DCAA5;border:1px solid rgba(29,158,117,0.3)}
+.pill-pending{background:rgba(186,117,23,0.2);color:#FAC775;border:1px solid rgba(186,117,23,0.3)}
+.pill-conflict{background:rgba(226,75,74,0.2);color:#F09595;border:1px solid rgba(226,75,74,0.3)}
+.pill-sim{background:rgba(83,74,183,0.2);color:#9B93F0;border:1px solid rgba(83,74,183,0.3)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.sim-log{background:rgba(83,74,183,0.08);border:1px solid rgba(83,74,183,0.2);border-radius:10px;padding:14px;margin-bottom:1rem;font-size:12px;color:rgba(255,255,255,0.6);max-height:160px;overflow-y:auto;display:none}
+.sim-log.show{display:block}
+.sim-log-line{padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;gap:10px}
+.sim-log-line:last-child{border-bottom:none}
+.sim-ok{color:#5DCAA5}
+.sim-warn{color:#FAC775}
+.sim-err{color:#F09595}
+.expand-btn{background:none;border:none;color:rgba(255,255,255,0.3);cursor:pointer;font-size:16px;padding:0 4px;transition:transform 0.2s;font-family:'DM Sans',sans-serif}
+.expand-btn.open{transform:rotate(90deg);color:var(--light-blue)}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="logo">WINTER<span>IDE</span></div>
+    <div class="badge-admin">ADMIN</div>
+  </div>
+  <div class="topbar-right">
+    <div class="nav-tabs">
+      <button class="nav-tab active" id="tab-btn-cal" onclick="switchTab('cal')">Calendar</button>
+      <button class="nav-tab" id="tab-btn-trips" onclick="switchTab('trips')">Trips</button>
+      <button class="nav-tab" onclick="alert('Coming soon — Drivers')">Drivers</button>
+      <button class="nav-tab" id="tab-btn-agents" onclick="switchTab('agents')">Agents</button>
+      <button class="nav-tab" id="tab-btn-settings" onclick="switchTab('settings')">⚙️ Settings</button>
+    </div>
+    <span id="supabase-badge" style="font-size:11px;color:rgba(255,255,255,0.25);cursor:pointer" onclick="fetchFromSupabase()">● Loading...</span>
+  </div>
+</div>
+
+<div class="layout">
+
+<!-- MAIN -->
+<div class="main" id="main-content">
+
+<!-- TAB: CALENDAR -->
+<div class="tab-content active" id="tab-cal">
+
+  <!-- STATS BAR -->
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-item"><div class="stat-num" id="stat-free">—</div><div class="stat-lbl">Available today</div></div>
+    <div class="stat-sep"></div>
+    <div class="stat-item"><div class="stat-num" id="stat-busy">—</div><div class="stat-lbl">On trip</div></div>
+    <div class="stat-sep"></div>
+    <div class="stat-item"><div class="stat-num" id="stat-full">—</div><div class="stat-lbl">Full</div></div>
+    <div class="stat-sep"></div>
+    <div class="stat-item"><div class="stat-num" id="stat-locked">—</div><div class="stat-lbl">Locked</div></div>
+    <div class="stat-sep"></div>
+    <div class="stat-item"><div class="stat-num" id="stat-hours">—</div><div class="stat-lbl">Avg drive hours</div></div>
+  </div>
+
+  <!-- CALENDAR HEADER -->
+  <div class="cal-header">
+    <div class="month-nav">
+      <button onclick="changeMonth(-1)">&#8250;</button>
+      <div class="month-title" id="month-title"></div>
+      <button onclick="changeMonth(1)">&#8249;</button>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <div class="view-toggle">
+        <button class="view-btn" onclick="setView('month',this)">Month</button>
+        <button class="view-btn active" onclick="setView('week',this)">Week</button>
+      </div>
+      <button class="add-btn" onclick="openAddModal()">+ New trip</button>
+    </div>
+  </div>
+
+  <!-- CALENDAR BODY -->
+  <div class="cal-wrap" id="cal-wrap"></div>
+
+</div><!-- end tab-cal -->
+
+<!-- TAB: TRIPS -->
+<div class="tab-content" id="tab-trips">
+  <div class="trips-wrap">
+    <div class="trips-toolbar">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <input class="trips-search" type="text" id="trips-search" placeholder="Search by airport, resort, vehicle..." oninput="renderTripsTable()">
+        <select class="trips-filter" id="trips-filter-status" onchange="renderTripsTable()">
+          <option value="">All statuses</option>
+          <option value="assigned">Assigned</option>
+          <option value="pending">Pending</option>
+          <option value="conflict">Conflict</option>
+          <option value="sim">Simulation</option>
+        </select>
+        <select class="trips-filter" id="trips-filter-airport" onchange="renderTripsTable()">
+          <option value="">All airports</option>
+          <option>GVA</option><option>LYS</option><option>GNB</option>
+          <option>CMF</option><option>MXP</option><option>BGY</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span id="trips-count" style="font-size:12px;color:rgba(255,255,255,0.3)"></span>
+        <button class="sim-btn" onclick="runSimulator()">🎲 Run Simulator</button>
+      </div>
+    </div>
+    <div class="sim-log" id="sim-log"></div>
+    <table class="trips-table" id="trips-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Airport</th>
+          <th>Resort</th>
+          <th>Direction</th>
+          <th>passengers</th>
+          <th>Equipment</th>
+          <th>Assigned Vehicle</th>
+          <th>Duration</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="trips-tbody"></tbody>
+    </table>
+  </div>
+</div><!-- end tab-trips -->
+
+<!-- AGENTS TAB -->
+<div class="tab-content" id="tab-agents" style="padding:1.5rem;overflow-y:auto">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:white;letter-spacing:2px">Agents <span style="color:var(--orange)">AGENTS</span></div>
+    <button onclick="fetchAgents()" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);padding:6px 14px;border-radius:7px;font-size:12px;cursor:pointer;font-family:inherit">↻ Refresh</button>
+  </div>
+  
+  <div class="agents-stats" id="agentsStats">
+    <div class="agent-stat-card"><div class="agent-stat-num" id="statTotal">—</div><div class="agent-stat-label">Total Agents</div></div>
+    <div class="agent-stat-card"><div class="agent-stat-num" style="color:#FAC775" id="statPending">—</div><div class="agent-stat-label">Pending</div></div>
+    <div class="agent-stat-card"><div class="agent-stat-num" style="color:#5DCAA5" id="statActive">—</div><div class="agent-stat-label">Active</div></div>
+    <div class="agent-stat-card"><div class="agent-stat-num" style="color:var(--orange)" id="statCredit">—</div><div class="agent-stat-label">Total Credit Out</div></div>
+  </div>
+
+  <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;overflow:hidden">
+    <table class="agents-table" id="agentsTable">
+      <thead><tr>
+        <th>Name</th><th>Company</th><th>Email</th><th>Phone</th>
+        <th>Status</th><th>Discount %</th><th>Credit Limit</th><th>Credit Used</th><th>Available</th><th>Actions</th>
+      </tr></thead>
+      <tbody id="agentsBody">
+        <tr><td colspan="10" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3)">Loading agents...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- TAB: SETTINGS -->
+<div class="tab-content" id="tab-settings" style="padding:1.5rem;overflow-y:auto">
+
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:white;letter-spacing:2px;margin-bottom:1.5rem">
+    Settings <span style="color:var(--orange)">MANAGEMENT</span>
+  </div>
+
+  <!-- Settings sub-tabs -->
+  <div style="display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap">
+    <button class="stab-btn active" id="stab-fleet" onclick="switchSettingsTab('fleet')">🚐 Fleet</button>
+    <button class="stab-btn" id="stab-airports" onclick="switchSettingsTab('airports')">✈️ Airports</button>
+    <button class="stab-btn" id="stab-resorts" onclick="switchSettingsTab('resorts')">⛷️ Resorts</button>
+    <button class="stab-btn" id="stab-pricing" onclick="switchSettingsTab('pricing')">💶 Private Pricing</button>
+    <button class="stab-btn" id="stab-shared" onclick="switchSettingsTab('shared')">🚌 Shared Pricing</button>
+    <button class="stab-btn" id="stab-extras" onclick="switchSettingsTab('extras')">🎿 Extras</button>
+  </div>
+
+  <!-- FLEET -->
+  <div id="stab-content-fleet" class="stab-content">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <div style="color:rgba(255,255,255,0.7);font-size:13px">Manage fleet — vehicles available for bookings</div>
+      <div style="display:flex;gap:8px">
+        <button onclick="loadFleet()" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.5);padding:7px 14px;border-radius:7px;font-size:12px;cursor:pointer;font-family:inherit">↻ Refresh</button>
+        <button onclick="openAddVehicle()" style="background:var(--orange);border:none;color:white;padding:8px 16px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">+ Add vehicle</button>
+      </div>
+    </div>
+    <div id="fleet-list" style="display:grid;gap:10px"></div>
+  </div>
+
+  <!-- AIRPORTS -->
+  <div id="stab-content-airports" class="stab-content" style="display:none">
+    <div style="color:rgba(255,255,255,0.7);font-size:13px;margin-bottom:1rem">Active airports</div>
+    <div id="airports-list" style="display:grid;gap:8px"></div>
+  </div>
+
+  <!-- RESORTS -->
+  <div id="stab-content-resorts" class="stab-content" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <div style="color:rgba(255,255,255,0.7);font-size:13px">Ski resorts — manage destinations</div>
+    </div>
+    <div id="resorts-list" style="display:grid;gap:8px"></div>
+  </div>
+
+  <!-- PRICING PRIVATE -->
+  <div id="stab-content-pricing" class="stab-content" style="display:none">
+    <div style="color:rgba(255,255,255,0.7);font-size:13px;margin-bottom:1rem">Private transfer prices (base price — van, weekdays)</div>
+    <div id="pricing-list" style="display:grid;gap:6px"></div>
+  </div>
+
+  <!-- SHARED PRICING -->
+  <div id="stab-content-shared" class="stab-content" style="display:none">
+    <div style="color:rgba(255,255,255,0.7);font-size:13px;margin-bottom:1rem">Shared transfer price per passenger (one way)</div>
+    <div id="shared-pricing-list" style="display:grid;gap:6px"></div>
+    <div style="margin-top:1rem;padding:12px;background:rgba(244,121,32,0.08);border:1px solid rgba(244,121,32,0.2);border-radius:8px;font-size:12px;color:rgba(255,255,255,0.5)">
+      ⚡ Saturday ×1.25 | Private Saturday ×1.50 | Return ×1.95 | Night (21:00–06:00) +5%
+    </div>
+  </div>
+
+  <!-- EXTRAS -->
+  <div id="stab-content-extras" class="stab-content" style="display:none">
+    <div style="color:rgba(255,255,255,0.7);font-size:13px;margin-bottom:1rem">Extras & prices</div>
+    <div id="extras-settings-list" style="display:grid;gap:8px"></div>
+  </div>
+
+</div>
+
+<!-- ADD/EDIT VEHICLE MODAL -->
+<div id="vehicle-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;align-items:center;justify-content:center">
+  <div style="background:#1a2942;border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:24px;width:380px;max-width:90vw">
+    <div style="font-size:16px;font-weight:700;color:white;margin-bottom:16px" id="vehicle-modal-title">Add vehicle</div>
+    <input type="hidden" id="vm-id">
+    <div style="margin-bottom:12px">
+      <label style="font-size:11px;color:rgba(255,255,255,0.4);display:block;margin-bottom:4px">Vehicle name</label>
+      <input id="vm-name" type="text" placeholder="e.g. Van 1" style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:white;font-size:13px;font-family:inherit">
+    </div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:11px;color:rgba(255,255,255,0.4);display:block;margin-bottom:4px">Type</label>
+      <select id="vm-type" style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:white;font-size:13px;font-family:inherit">
+        <option value="van">Van (1-8 passengers)</option>
+        <option value="sedan">Sedan (1-3 passengers)</option>
+        <option value="minibus">Minibus (1-15 passengers)</option>
+        <option value="bus">Bus (large groups)</option>
+      </select>
+    </div>
+    <div style="margin-bottom:16px">
+      <label style="font-size:11px;color:rgba(255,255,255,0.4);display:block;margin-bottom:4px">Status</label>
+      <select id="vm-status" style="width:100%;padding:9px 12px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:white;font-size:13px;font-family:inherit">
+        <option value="active">Active ✓</option>
+        <option value="inactive">Inactive</option>
+        <option value="maintenance">Maintenance 🔧</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onclick="saveVehicle()" style="flex:1;background:var(--orange);border:none;color:white;padding:10px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Save</button>
+      <button onclick="closeVehicleModal()" style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:10px;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-title">My Fleet</div>
+    <div id="vehicle-list"></div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-title">Legend</div>
+    <div class="status-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(29,158,117,0.6)"></div>Available</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(186,117,23,0.6)"></div>One trip</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(226,75,74,0.6)"></div>Full (2 Trips)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(136,135,128,0.5)"></div>Manually locked</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(244,121,32,0.6)"></div>Warning / Check</div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-title">Traffic by day</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.4);line-height:1.8">
+      <div>Saturday morning (07-10): <span style="color:#F09595">×2.0</span></div>
+      <div>Saturday afternoon (15-18): <span style="color:#FAC775">×1.6</span></div>
+      <div>Sunday (16-19): <span style="color:#FAC775">×1.5</span></div>
+      <div>Friday afternoon: <span style="color:#FAC775">×1.4</span></div>
+      <div>Weekday morning: <span style="color:#5DCAA5">×1.0</span></div>
+      <div>Weeks peak: <span style="color:#F09595">+30 min</span></div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-title">Quick actions</div>
+    <button onclick="openAddModal()" style="width:100%;background:var(--orange);border:none;color:white;padding:9px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:6px">+ Add trip</button>
+    <button onclick="openLockModal()" style="width:100%;background:rgba(136,135,128,0.15);border:1px solid rgba(136,135,128,0.25);color:#B4B2A9;padding:9px;border-radius:8px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:6px">🔒 Lock vehicle</button>
+    <button onclick="runSimulator()" style="width:100%;background:rgba(83,74,183,0.15);border:1px solid rgba(83,74,183,0.3);color:#9B93F0;padding:9px;border-radius:8px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif">🎲 simulator bookings</button>
+  </div>
+</div>
+
+
+</div>
+
+<!-- DETAIL PANEL -->
+<div class="detail-panel" id="detail-panel">
+  <button class="close-panel" onclick="closePanel()">✕</button>
+  <div class="panel-title" id="panel-title">Day details</div>
+  <div id="panel-content"></div>
+</div>
+
+<!-- ADD TRIP MODAL -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <div class="modal-title">Add trip</div>
+    <div class="modal-sub" id="add-modal-sub">Add trip for selected vehicle & day</div>
+    <div class="conflict-banner" id="conflict-banner">⚠️ Note: Vehicle is already busy — check times</div>
+    <div class="form-group">
+      <label class="form-label">Vehicle <span style="font-size:10px;color:rgba(255,255,255,0.3);font-weight:400">(empty = auto-assign automatic)</span></label>
+      <select class="form-select" id="trip-vehicle">
+        <option value="">🤖 Auto-assign (recommended)</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input type="date" class="form-input" id="trip-date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Pickup time</label>
+        <input type="time" class="form-input" id="trip-time" value="09:00">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Airport</label>
+        <select class="form-select" id="trip-airport">
+          <option value="GVA">GVA — Geneva</option>
+          <option value="LYS">LYS — Lyon</option>
+          <option value="GNB">GNB — Grenoble</option>
+          <option value="CMF">CMF — Chambéry</option>
+          <option value="MXP">MXP — Milan Malpensa</option>
+          <option value="BGY">BGY — Milan Bergamo</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ski resort</label>
+        <select class="form-select" id="trip-resort">
+          <option value="val-thorens">Val Thorens</option>
+          <option value="les-menuires">Les Menuires</option>
+          <option value="courchevel">Courchevel</option>
+          <option value="meribel">Méribel</option>
+          <option value="val-disere">Val d'Isère</option>
+          <option value="tignes">Tignes</option>
+          <option value="les-arcs">Les Arcs</option>
+          <option value="la-plagne">La Plagne</option>
+          <option value="les-2-alpes">Les 2 Alpes</option>
+          <option value="alpe-dhuez">Alpe d'Huez</option>
+          <option value="avoriaz">Avoriaz</option>
+          <option value="morzine">Morzine</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">passengers</label>
+        <input type="number" class="form-input" id="trip-pax" value="4" min="1" max="50">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ski/Snow equipment</label>
+        <input type="number" class="form-input" id="trip-ski" value="0" min="0" max="50">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Direction</label>
+      <select class="form-select" id="trip-dir">
+        <option value="pickup">Pickup (Airport → Resort)</option>
+        <option value="dropoff">Dropoff (Resort → Airport)</option>
+      </select>
+    </div>
+    <div id="trip-estimate" style="background:rgba(255,255,255,0.05);border-radius:8px;padding:12px;font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px">
+      Select details to calculate trip duration
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('add-modal')">Cancel</button>
+      <button class="btn-save" onclick="saveTrip()">Save trip</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOCK MODAL -->
+<div class="modal-overlay" id="lock-modal">
+  <div class="modal">
+    <div class="modal-title">Lock vehicle</div>
+    <div class="modal-sub">Mark vehicle as unavailable for a day or time range</div>
+    <div class="form-group">
+      <label class="form-label">Vehicle</label>
+      <select class="form-select" id="lock-vehicle"></select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">From date</label>
+        <input type="date" class="form-input" id="lock-from">
+      </div>
+      <div class="form-group">
+        <label class="form-label">To date</label>
+        <input type="date" class="form-input" id="lock-to">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">From time (optional)</label>
+        <input type="time" class="form-input" id="lock-time-from" placeholder="All day">
+      </div>
+      <div class="form-group">
+        <label class="form-label">To time</label>
+        <input type="time" class="form-input" id="lock-time-to">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Reason</label>
+      <input type="text" class="form-input" id="lock-reason" placeholder="Maintenance / Holiday / Other">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('lock-modal')">Cancel</button>
+      <button class="btn-lock" onclick="saveLock()">Lock vehicle</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========== DATA ==========
+const VEHICLES = [
+  {id:'V1',name:'Van 1',type:'van',pax:8,ski:3,base:'Saint-Jorioz',color:'#5BB8E8'},
+  {id:'V2',name:'Van 2',type:'van',pax:8,ski:3,base:'Saint-Jorioz',color:'#5BB8E8'},
+  {id:'V3',name:'Van 3',type:'van',pax:8,ski:3,base:'Saint-Jorioz',color:'#5BB8E8'},
+  {id:'V4',name:'Van 4',type:'van',pax:8,ski:3,base:'Saint-Jorioz',color:'#5BB8E8'},
+  {id:'V5',name:'Van 5',type:'van',pax:8,ski:3,base:'Saint-Jorioz',color:'#5BB8E8'},
+  {id:'V6',name:'Van 6',type:'van',pax:8,ski:3,base:'Saint-Jorioz',color:'#5BB8E8'},
+  {id:'M1',name:'Minibus 1',type:'minibus',pax:15,ski:5,base:'Saint-Jorioz',color:'#9B93F0'},
+  {id:'M2',name:'Minibus 2',type:'minibus',pax:15,ski:5,base:'Saint-Jorioz',color:'#9B93F0'},
+  {id:'B1',name:'Bus 1',type:'bus',pax:50,ski:15,base:'Saint-Jorioz',color:'#F47920'},
+  {id:'B2',name:'Bus 2',type:'bus',pax:50,ski:15,base:'Saint-Jorioz',color:'#F47920'},
+  {id:'B3',name:'Bus 3',type:'bus',pax:50,ski:15,base:'Saint-Jorioz',color:'#F47920'},
+];
+
+// base travel times in minutes (airport → resort, no traffic)
+const BASE_TIMES = {
+  'GVA':{'val-thorens':145,'les-menuires':140,'courchevel':135,'meribel':130,'val-disere':145,'tignes':140,'les-arcs':135,'la-plagne':130,'les-2-alpes':160,'alpe-dhuez':155,'avoriaz':75,'morzine':70},
+  'LYS':{'val-thorens':145,'les-menuires':140,'courchevel':140,'meribel':135,'val-disere':155,'tignes':150,'les-arcs':150,'la-plagne':145,'les-2-alpes':160,'alpe-dhuez':155,'avoriaz':125,'morzine':120},
+  'GNB':{'val-thorens':155,'les-menuires':150,'courchevel':165,'meribel':160,'val-disere':175,'tignes':170,'les-arcs':170,'la-plagne':165,'les-2-alpes':70,'alpe-dhuez':65,'avoriaz':195,'morzine':190},
+  'CMF':{'val-thorens':120,'les-menuires':115,'courchevel':100,'meribel':95,'val-disere':110,'tignes':105,'les-arcs':105,'la-plagne':100,'les-2-alpes':140,'alpe-dhuez':135,'avoriaz':150,'morzine':145},
+  'MXP':{'val-thorens':240,'les-menuires':235,'courchevel':240,'meribel':235,'val-disere':235,'tignes':230,'les-arcs':230,'la-plagne':225,'les-2-alpes':265,'alpe-dhuez':260,'avoriaz':200,'morzine':195},
+  'BGY':{'val-thorens':260,'les-menuires':255,'courchevel':260,'meribel':255,'val-disere':255,'tignes':250,'les-arcs':250,'la-plagne':245,'les-2-alpes':285,'alpe-dhuez':280,'avoriaz':220,'morzine':215},
+};
+// drive time from vehicle base (Saint-Jorioz / Annecy) to each airport, in minutes
+const AIRPORT_TO_BASE = {'GVA':45,'LYS':90,'GNB':60,'CMF':50,'MXP':120,'BGY':130};
+const BASE_TO_RESORT_RETURN = 15;
+
+// traffic multipliers
+function trafficMult(date, hour) {
+  if(!date) return 1.0;
+  const d = new Date(date);
+  const dow = d.getDay(); // 0=Sun,6=Sat
+  const isPeakWeek = isPeakSeason(date);
+  let mult = 1.0;
+  if(dow===6) { // Saturday
+    if(hour>=7&&hour<10) mult=2.0;
+    else if(hour>=15&&hour<18) mult=1.6;
+    else mult=1.3;
+  } else if(dow===0) { // Sunday
+    if(hour>=16&&hour<19) mult=1.5;
+    else mult=1.1;
+  } else if(dow===5) { // Friday
+    if(hour>=14&&hour<18) mult=1.4;
+    else mult=1.1;
+  } else {
+    if(hour>=7&&hour<9) mult=1.2;
+    else mult=1.0;
+  }
+  if(isPeakWeek) mult = Math.min(mult*1.15, 2.5);
+  return mult;
+}
+
+function isPeakSeason(dateStr) {
+  const d = new Date(dateStr);
+  const mo = d.getMonth()+1, day = d.getDate();
+  if(mo===12&&day>=20) return true;
+  if(mo===1&&day<=5) return true;
+  if(mo===2&&day>=8&&day<=22) return true;
+  return false;
+}
+
+function trafficLabel(mult) {
+  if(mult>=1.8) return {label:'Heavy traffic',cls:'traffic-high'};
+  if(mult>=1.3) return {label:'Traffic',cls:'traffic-med'};
+  return {label:'Clear',cls:'traffic-low'};
+}
+
+function calcTripDuration(airport, resort, date, hour) {
+  const base = (BASE_TIMES[airport]||{})[resort] || 150;
+  const airportDrive = AIRPORT_TO_BASE[airport]||20;
+  const mult = trafficMult(date, hour);
+  const tripTime = Math.round(base * mult);
+  const total = airportDrive + tripTime + BASE_TO_RESORT_RETURN;
+  return {airportDrive, tripTime, returnTime: BASE_TO_RESORT_RETURN, total, mult};
+}
+
+// ========== STATE ==========
+let currentDate = new Date();
+let currentView = 'week';
+let trips = {}; // key: "YYYY-MM-DD_VID" → array of trip objects
+let locks = {}; // key: "YYYY-MM-DD_VID" → lock object
+let selectedVehicles = new Set(VEHICLES.map(v=>v.id));
+let dragData = null;
+
+// seed some demo data
+function seedData() {
+  const today = new Date();
+  const fmt = d => d.toISOString().split('T')[0];
+  function addTrip(vid, date, airport, resort, hour, pax, dir='pickup') {
+    const key = `${date}_${vid}`;
+    if(!trips[key]) trips[key]=[];
+    trips[key].push({airport,resort,hour,pax,dir,id:Math.random().toString(36).substr(2,6)});
+  }
+  // demo trips this week
+  for(let i=0;i<7;i++){
+    const d=new Date(today); d.setDate(today.getDate()+i);
+    const ds=fmt(d);
+    addTrip('V1',ds,'GVA','val-thorens',8,6);
+    if(i%3===0) addTrip('V1',ds,'GVA','courchevel',15,4);
+    addTrip('V3',ds,'LYS','les-menuires',10,8);
+    if(i%2===0) addTrip('M1',ds,'GVA','val-thorens',9,12);
+    if(i===2||i===5) addTrip('V2',ds,'GVA','tignes',11,5);
+  }
+  // lock V5 for 3 days
+  const ld=new Date(today); ld.setDate(today.getDate()+2);
+  for(let i=0;i<3;i++){const d=new Date(ld);d.setDate(ld.getDate()+i);locks[`${fmt(d)}_V5`]={reason:'Maintenance',timeFrom:'',timeTo:''};}
+}
+seedData();
+
+// ========== VEHICLE SIDEBAR ==========
+function renderSidebar() {
+  const list = document.getElementById('vehicle-list');
+  list.innerHTML = VEHICLES.map(v=>`
+    <div class="vehicle-card ${selectedVehicles.has(v.id)?'selected':''}" onclick="toggleVehicle('${v.id}')">
+      <div class="v-header">
+        <div class="v-name">${v.name}</div>
+        <div class="v-type-badge v-type-${v.type}">${v.type==='van'?'VAN':v.type==='minibus'?'MINI':'BUS'}</div>
+      </div>
+      <div class="v-stats">
+        <div class="v-stat">👤 ${v.pax}</div>
+        <div class="v-stat">🎿 ${v.ski}</div>
+      </div>
+      <div class="v-base">Saint-Jorioz (Annecy)</div>
+    </div>
+  `).join('');
+
+  // populate selects
+  ['trip-vehicle','lock-vehicle'].forEach(id=>{
+    const sel=document.getElementById(id);
+    if(!sel)return;
+    const isTrip=id==='trip-vehicle';
+    sel.innerHTML=(isTrip?'<option value="">🤖 Auto-assign (recommended)</option>':'<option value="">— Select vehicle —</option>')+VEHICLES.map(v=>`<option value="${v.id}">${v.name} (${v.type})</option>`).join('');
+  });
+}
+
+function toggleVehicle(vid) {
+  if(selectedVehicles.has(vid)) selectedVehicles.delete(vid);
+  else selectedVehicles.add(vid);
+  renderSidebar();
+  renderCalendar();
+}
+
+// ========== CALENDAR ==========
+const HE_MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const HE_DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+function setView(v, btn) {
+  currentView=v;
+  document.querySelectorAll('.view-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCalendar();
+}
+
+function changeMonth(dir) {
+  if(currentView==='month') currentDate.setMonth(currentDate.getMonth()+dir);
+  else currentDate.setDate(currentDate.getDate()+7*dir);
+  renderCalendar();
+}
+
+function getDayStatus(dateStr, vid) {
+  if(locks[`${dateStr}_${vid}`]) return 'locked';
+  const dayTrips=(trips[`${dateStr}_${vid}`]||[]);
+  if(dayTrips.length>=2) return 'full';
+  if(dayTrips.length===1) return 'one';
+  return 'free';
+}
+
+function getStatusColor(status) {
+  if(status==='free') return 'rgba(29,158,117,0.25)';
+  if(status==='one') return 'rgba(186,117,23,0.25)';
+  if(status==='full') return 'rgba(226,75,74,0.25)';
+  if(status==='locked') return 'rgba(136,135,128,0.2)';
+  return 'transparent';
+}
+
+function getStatusLabel(status) {
+  if(status==='free') return 'Available';
+  if(status==='one') return '1 trip';
+  if(status==='full') return 'Full';
+  if(status==='locked') return '🔒 Locked';
+  return '';
+}
+
+function fmt(d) { return d.toISOString().split('T')[0]; }
+
+function renderCalendar() {
+  const wrap = document.getElementById('cal-wrap');
+  document.getElementById('month-title').textContent = `${HE_MONTHS[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+  if(currentView==='month') renderMonthView(wrap);
+  else renderWeekView(wrap);
+  updateStats();
+}
+
+function renderMonthView(wrap) {
+  const year=currentDate.getFullYear(), month=currentDate.getMonth();
+  const first=new Date(year,month,1);
+  const last=new Date(year,month+1,0);
+  const today=fmt(new Date());
+  const startDow=first.getDay();
+
+  let html=`<div class="cal-grid">`;
+  HE_DAYS.forEach(d=>html+=`<div class="day-header">${d}</div>`);
+
+  // empty cells before
+  for(let i=0;i<startDow;i++){
+    const prev=new Date(year,month,1-startDow+i);
+    html+=`<div class="day-cell other-month"><div class="day-num">${prev.getDate()}</div></div>`;
+  }
+
+  for(let d=1;d<=last.getDate();d++){
+    const date=new Date(year,month,d);
+    const ds=fmt(date);
+    const isToday=ds===today;
+    const vis=VEHICLES.filter(v=>selectedVehicles.has(v.id));
+    
+    // collect chips for all visible vehicles
+    let chips='';
+    vis.forEach(v=>{
+      const status=getDayStatus(ds,v.id);
+      const lk=locks[`${ds}_${v.id}`];
+      const dayTrips=trips[`${ds}_${v.id}`]||[];
+      const traf=trafficMult(ds,8);
+      const tl=trafficLabel(traf);
+      const chipClass=status==='free'?'free':status==='one'?'one':status==='full'?'full':'locked';
+      const label=lk?`🔒 ${v.name}`:dayTrips.length?`${v.name} · ${dayTrips.length} trip`:`${v.name}`;
+      chips+=`<div class="trip-chip ${chipClass}" 
+        draggable="true"
+        ondragstart="dragStart(event,'${ds}','${v.id}')"
+        ondragend="dragEnd(event)"
+        onclick="event.stopPropagation();openDayPanel('${ds}','${v.id}')">
+        ${label}
+      </div>`;
+    });
+
+    // traffic indicator for the day
+    const traf=trafficMult(ds,8);
+    const tl=trafficLabel(traf);
+    const trafficHtml=`<span class="traffic-pill ${tl.cls}">${tl.label}</span>`;
+
+    html+=`<div class="day-cell ${isToday?'today':''}" 
+      ondragover="event.preventDefault();this.classList.add('drag-over')"
+      ondragleave="this.classList.remove('drag-over')"
+      ondrop="dropOnDay(event,'${ds}')"
+      onclick="openDayPanel('${ds}')">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+        <div class="day-num ${isToday?'today-num':''}">${d}</div>
+        ${trafficHtml}
+      </div>
+      <div class="day-trips">${chips}</div>
+    </div>`;
+  }
+
+  // fill remaining
+  const totalCells=Math.ceil((startDow+last.getDate())/7)*7;
+  for(let i=last.getDate()+1;i<=totalCells-startDow;i++){
+    html+=`<div class="day-cell other-month"><div class="day-num">${i}</div></div>`;
+  }
+  html+=`</div>`;
+  wrap.innerHTML=html;
+}
+
+function renderWeekView(wrap) {
+  const d=new Date(currentDate);
+  d.setDate(d.getDate()-d.getDay());
+  const today=fmt(new Date());
+  const vis=VEHICLES.filter(v=>selectedVehicles.has(v.id));
+  
+  let html=`<div class="week-grid">`;
+  html+=`<div class="week-header-row">`;
+  html+=`<div style="background:#0f1e35;border-radius:6px;padding:8px 12px;font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:1px;display:flex;align-items:center">Vehicle</div>`;
+  for(let i=0;i<7;i++){
+    const day=new Date(d); day.setDate(d.getDate()+i);
+    const ds=fmt(day);
+    const isT=ds===today;
+    html+=`<div class="week-day-header ${isT?'today-col':''}">
+      <div class="week-day-name">${HE_DAYS[day.getDay()]}</div>
+      <div class="week-day-num">${day.getDate()}</div>
+    </div>`;
+  }
+  html+=`</div>`;
+
+  vis.forEach(v=>{
+    html+=`<div class="week-vehicle-row">`;
+    html+=`<div class="week-vehicle-label"><div class="week-vname">${v.name}</div><div class="week-vtype">${v.type}</div></div>`;
+    for(let i=0;i<7;i++){
+      const day=new Date(d); day.setDate(d.getDate()+i);
+      const ds=fmt(day);
+      const status=getDayStatus(ds,v.id);
+      const dayTrips=trips[`${ds}_${v.id}`]||[];
+      const bg=getStatusColor(status);
+      let content='';
+      if(status==='locked') content=`<div style="font-size:10px;color:rgba(255,255,255,0.3)">🔒 Locked</div>`;
+      else dayTrips.forEach(t=>{
+        content+=`<div style="font-size:10px;background:rgba(255,255,255,0.07);border-radius:3px;padding:2px 5px;margin-bottom:2px;color:rgba(255,255,255,0.6)">${t.hour}:00 ${t.airport}→${t.resort.split('-').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ')}</div>`;
+      });
+      html+=`<div class="week-day-cell" style="background:${bg}" 
+        onclick="openDayPanel('${ds}','${v.id}')"
+        ondragover="event.preventDefault();this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')"
+        ondrop="dropOnDay(event,'${ds}','${v.id}')">
+        ${content||'<div style="font-size:9px;color:rgba(255,255,255,0.15)">Available</div>'}
+      </div>`;
+    }
+    html+=`</div>`;
+  });
+  html+=`</div>`;
+  wrap.innerHTML=html;
+}
+
+// ========== STATS ==========
+function updateStats() {
+  const today=fmt(new Date());
+  let free=0,busy=0,full=0,locked=0,totalHours=0,countHours=0;
+  VEHICLES.forEach(v=>{
+    const s=getDayStatus(today,v.id);
+    if(s==='free') free++;
+    else if(s==='one') busy++;
+    else if(s==='full') full++;
+    else if(s==='locked') locked++;
+    const dayTrips=trips[`${today}_${v.id}`]||[];
+    if(dayTrips.length){
+      let h=0;
+      dayTrips.forEach(t=>{
+        const dur=calcTripDuration(t.airport,t.resort,today,t.hour);
+        h+=dur.total/60;
+      });
+      totalHours+=h; countHours++;
+    }
+  });
+  document.getElementById('stat-free').textContent=free;
+  document.getElementById('stat-busy').textContent=busy;
+  document.getElementById('stat-full').textContent=full;
+  document.getElementById('stat-locked').textContent=locked;
+  document.getElementById('stat-hours').textContent=countHours?`${(totalHours/countHours).toFixed(1)}h`:'—';
+}
+
+// ========== DETAIL PANEL ==========
+function openDayPanel(dateStr, vid) {
+  const panel=document.getElementById('detail-panel');
+  const title=document.getElementById('panel-title');
+  const content=document.getElementById('panel-content');
+  const d=new Date(dateStr);
+  const traf=trafficMult(dateStr,8);
+  const tl=trafficLabel(traf);
+
+  title.textContent=`${d.getDate()} ${HE_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+
+  let html=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+    <span class="traffic-pill ${tl.cls}" style="font-size:11px;padding:3px 10px">${tl.label}</span>
+    <span style="font-size:11px;color:rgba(255,255,255,0.3)">Multiplier ×${traf.toFixed(1)}</span>
+  </div>`;
+
+  const toShow = vid ? VEHICLES.filter(v=>v.id===vid) : VEHICLES.filter(v=>selectedVehicles.has(v.id));
+
+  toShow.forEach(v=>{
+    const status=getDayStatus(dateStr,v.id);
+    const lk=locks[`${dateStr}_${v.id}`];
+    const dayTrips=trips[`${dateStr}_${v.id}`]||[];
+    const statusColors={'free':'#1D9E75','one':'#BA7517','full':'#E24B4A','locked':'#888780'};
+    const statusLabels={'free':'Available','one':'1 trip','full':'Full','locked':'Locked'};
+
+    html+=`<div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.07)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:14px;font-weight:600;color:white">${v.name}</div>
+        <div style="font-size:11px;font-weight:700;color:${statusColors[status]}">${statusLabels[status]}</div>
+      </div>`;
+
+    if(lk){
+      html+=`<div style="font-size:12px;color:rgba(255,255,255,0.4)">🔒 Locked: ${lk.reason||'—'}</div>`;
+    } else {
+      let totalHours=0;
+      dayTrips.forEach((t,i)=>{
+        const dur=calcTripDuration(t.airport,t.resort,dateStr,t.hour);
+        totalHours+=dur.total/60;
+        html+=`<div style="margin-bottom:8px">
+          <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:4px">Trip ${i+1}</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px">
+            <span style="font-size:12px;color:white">${t.hour}:00 ${t.airport} → ${t.resort}</span>
+            <span style="font-size:11px;color:rgba(255,255,255,0.4)">${t.pax} passengers</span>
+          </div>
+          <div style="display:flex;gap:4px;font-size:10px;color:rgba(255,255,255,0.4)">
+            <span>Trip: ${dur.tripTime} min</span>
+            <span>·</span>
+            <span>Total: ${Math.round(dur.total/60*10)/10} hrs</span>
+          </div>
+          <div class="timeline-bar" style="height:28px;margin-top:6px">
+            <div class="timeline-segment seg-drive" style="right:0;width:${Math.round(dur.airportDrive/dur.total*100)}%">Base</div>
+            <div class="timeline-segment seg-transfer" style="right:${Math.round(dur.airportDrive/dur.total*100)}%;width:${Math.round(dur.tripTime/dur.total*100)}%">Trip</div>
+            <div class="timeline-segment seg-return" style="right:${Math.round((dur.airportDrive+dur.tripTime)/dur.total*100)}%;width:${Math.round(dur.returnTime/dur.total*100)}%">Return</div>
+          </div>
+        </div>`;
+      });
+      if(totalHours>0){
+        const pct=Math.min(totalHours/12*100,100);
+        const over=totalHours>10;
+        html+=`<div style="margin-top:8px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:4px">
+            <span>Drive hours</span>
+            <span style="color:${over?'#F09595':'#5DCAA5'}">${totalHours.toFixed(1)} / 12</span>
+          </div>
+          <div class="hours-bar"><div class="hours-fill ${over?'over':''}" style="width:${pct}%"></div></div>
+        </div>`;
+      }
+      html+=`<div style="display:flex;gap:6px;margin-top:10px">
+        <button onclick="openAddModalFor('${dateStr}','${v.id}')" style="flex:1;background:rgba(244,121,32,0.15);border:1px solid rgba(244,121,32,0.3);color:var(--orange);padding:6px;border-radius:6px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">+ Trip</button>
+        <button onclick="lockDay('${dateStr}','${v.id}')" style="flex:1;background:rgba(136,135,128,0.1);border:1px solid rgba(136,135,128,0.2);color:#B4B2A9;padding:6px;border-radius:6px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">🔒 Lock</button>
+      </div>`;
+    }
+    html+=`</div>`;
+  });
+
+  content.innerHTML=html;
+  panel.classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('detail-panel').classList.remove('open');
+}
+
+// ========== MODALS ==========
+function openAddModal() {
+  document.getElementById('trip-date').value=fmt(new Date());
+  document.getElementById('add-modal').classList.add('open');
+  updateTripEstimate();
+}
+
+function openAddModalFor(dateStr, vid) {
+  document.getElementById('trip-date').value=dateStr;
+  document.getElementById('trip-vehicle').value=vid;
+  checkConflict();
+  updateTripEstimate();
+  document.getElementById('add-modal').classList.add('open');
+}
+
+function openLockModal() {
+  const today=fmt(new Date());
+  document.getElementById('lock-from').value=today;
+  document.getElementById('lock-to').value=today;
+  document.getElementById('lock-modal').classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function checkConflict() {
+  const vid=document.getElementById('trip-vehicle').value;
+  const dateStr=document.getElementById('trip-date').value;
+  if(!vid||!dateStr) return;
+  const status=getDayStatus(dateStr,vid);
+  const banner=document.getElementById('conflict-banner');
+  if(status==='full') {banner.textContent='⛔ Vehicle already has 2 trips this day';banner.classList.add('show');}
+  else if(status==='locked') {banner.textContent='🔒 Vehicle is locked this day';banner.classList.add('show');}
+  else if(status==='one') {banner.textContent='⚠️ One trip exists — check times before saving';banner.classList.add('show');}
+  else banner.classList.remove('show');
+}
+
+function updateTripEstimate() {
+  const airport=document.getElementById('trip-airport').value;
+  const resort=document.getElementById('trip-resort').value;
+  const date=document.getElementById('trip-date').value;
+  const hour=parseInt(document.getElementById('trip-time').value)||9;
+  const el=document.getElementById('trip-estimate');
+  if(!airport||!resort){el.textContent='Select airport & resort to calculate';return;}
+  const dur=calcTripDuration(airport,resort,date,hour);
+  const traf=trafficMult(date,hour);
+  const tl=trafficLabel(traf);
+  el.innerHTML=`<div style="display:flex;justify-content:space-between;margin-bottom:6px">
+    <span>Estimated trip duration:</span>
+    <strong style="color:white">${dur.tripTime} min</strong>
+  </div>
+  <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+    <span>Total incl. base:</span>
+    <strong style="color:white">${Math.round(dur.total/60*10)/10} hours</strong>
+  </div>
+  <div style="display:flex;justify-content:space-between">
+    <span>Traffic:</span>
+    <span class="traffic-pill ${tl.cls}" style="font-size:11px;padding:2px 8px">${tl.label} ×${traf.toFixed(1)}</span>
+  </div>`;
+}
+
+['trip-airport','trip-resort','trip-date','trip-time'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('change',updateTripEstimate);
+});
+document.getElementById('trip-vehicle')?.addEventListener('change',checkConflict);
+document.getElementById('trip-date')?.addEventListener('change',checkConflict);
+
+function saveTrip() {
+  const vid=document.getElementById('trip-vehicle').value;
+  const date=document.getElementById('trip-date').value;
+  const airport=document.getElementById('trip-airport').value;
+  const resort=document.getElementById('trip-resort').value;
+  const hour=parseInt(document.getElementById('trip-time').value)||9;
+  const pax=parseInt(document.getElementById('trip-pax').value)||4;
+  const ski=parseInt(document.getElementById('trip-ski').value)||0;
+  const dir=document.getElementById('trip-dir').value;
+  if(!date){alert('Select a date');return;}
+
+  if(!vid) {
+    // auto-assign
+    const result=autoAssign(date,airport,resort,hour,pax,ski,dir);
+    if(!result){
+      alert('⛔ No available vehicle found for this booking');return;
+    }
+    closeModal('add-modal');
+    rebuildBookings();
+    renderCalendar();
+    showAssignToast(result.name, result.reasons);
+    if(document.getElementById('detail-panel').classList.contains('open')) openDayPanel(date,result.vid);
+    return;
+  }
+
+  const key=`${date}_${vid}`;
+  if(!trips[key]) trips[key]=[];
+  trips[key].push({airport,resort,hour,pax,ski,dir,id:Math.random().toString(36).substr(2,6)});
+  closeModal('add-modal');
+  rebuildBookings();
+  renderCalendar();
+  if(document.getElementById('detail-panel').classList.contains('open')) openDayPanel(date,vid);
+}
+
+function showAssignToast(name, reasons) {
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1D9E75;color:white;padding:12px 24px;border-radius:10px;font-size:13px;font-family:DM Sans,sans-serif;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,0.4)';
+  t.innerHTML=`✓ Assigned to <strong>${name}</strong> · ${reasons}`;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),4000);
+}
+
+function saveLock() {
+  const vid=document.getElementById('lock-vehicle').value;
+  const from=document.getElementById('lock-from').value;
+  const to=document.getElementById('lock-to').value;
+  const reason=document.getElementById('lock-reason').value;
+  const tf=document.getElementById('lock-time-from').value;
+  const tt=document.getElementById('lock-time-to').value;
+  if(!vid||!from){alert('Select vehicle and date');return;}
+  const start=new Date(from), end=new Date(to||from);
+  for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)){
+    locks[`${fmt(d)}_${vid}`]={reason,timeFrom:tf,timeTo:tt};
+  }
+  closeModal('lock-modal');
+  renderCalendar();
+}
+
+function lockDay(dateStr, vid) {
+  locks[`${dateStr}_${vid}`]={reason:'Manually locked',timeFrom:'',timeTo:''};
+  renderCalendar();
+  openDayPanel(dateStr,vid);
+}
+
+// ========== DRAG & DROP ==========
+function dragStart(e, dateStr, vid) {
+  dragData={dateStr,vid};
+  e.dataTransfer.effectAllowed='move';
+}
+function dragEnd(e) { dragData=null; }
+function dropOnDay(e, targetDate, targetVid) {
+  e.currentTarget.classList.remove('drag-over');
+  if(!dragData) return;
+  const {dateStr:srcDate, vid:srcVid}=dragData;
+  const targetV=targetVid||srcVid;
+  if(srcDate===targetDate&&srcVid===targetV) return;
+  // move all trips
+  const key=`${srcDate}_${srcVid}`;
+  const targetKey=`${targetDate}_${targetV}`;
+  if(!trips[targetKey]) trips[targetKey]=[];
+  (trips[key]||[]).forEach(t=>trips[targetKey].push({...t}));
+  delete trips[key];
+  renderCalendar();
+}
+
+// ========== AUTO-ASSIGN ENGINE ==========
+
+// Distance between resorts/airports (rough km, for proximity scoring)
+const LOCATION_COORDS = {
+  'GVA':{lat:46.24,lng:6.11},'LYS':{lat:45.72,lng:5.08},'GNB':{lat:45.36,lng:5.33},
+  'CMF':{lat:45.64,lng:5.88},'MXP':{lat:45.63,lng:8.73},'BGY':{lat:45.67,lng:9.70},
+  'val-thorens':{lat:45.29,lng:6.58},'les-menuires':{lat:45.32,lng:6.53},
+  'courchevel':{lat:45.41,lng:6.63},'meribel':{lat:45.39,lng:6.56},
+  'val-disere':{lat:45.45,lng:6.98},'tignes':{lat:45.47,lng:6.90},
+  'les-arcs':{lat:45.56,lng:6.80},'la-plagne':{lat:45.51,lng:6.68},
+  'les-2-alpes':{lat:45.01,lng:6.12},'alpe-dhuez':{lat:45.09,lng:6.07},
+  'avoriaz':{lat:46.19,lng:6.77},'morzine':{lat:46.17,lng:6.71},
+  'saint-jorioz':{lat:45.82,lng:6.16}
+};
+
+function distKm(a, b) {
+  const la=LOCATION_COORDS[a], lb=LOCATION_COORDS[b];
+  if(!la||!lb) return 999;
+  const R=6371, dLat=(lb.lat-la.lat)*Math.PI/180, dLng=(lb.lng-la.lng)*Math.PI/180;
+  const x=Math.sin(dLat/2)**2+Math.cos(la.lat*Math.PI/180)*Math.cos(lb.lat*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+}
+
+function vehicleCapacityOk(v, pax, ski) {
+  // van: max 8 pax, but if ski>3 then max 5 pax
+  if(v.type==='van') return pax<=(ski>3?5:v.pax) && ski<=v.ski;
+  if(v.type==='minibus') return pax<=v.pax && ski<=v.ski;
+  if(v.type==='bus') return pax<=v.pax && ski<=v.ski;
+  return false;
+}
+
+function getVehicleDayHours(vid, dateStr) {
+  const dayTrips = trips[`${dateStr}_${vid}`]||[];
+  let total=0;
+  dayTrips.forEach(t=>{
+    const dur=calcTripDuration(t.airport,t.resort,dateStr,t.hour);
+    total+=dur.total/60;
+  });
+  return total;
+}
+
+function getVehicleLastLocation(vid, dateStr) {
+  // returns the last known location of vehicle after its last trip today
+  const dayTrips = trips[`${dateStr}_${vid}`]||[];
+  if(!dayTrips.length) return 'saint-jorioz';
+  const last=[...dayTrips].sort((a,b)=>b.hour-a.hour)[0];
+  // after a pickup trip the vehicle is at the resort, after dropoff at the airport
+  return last.dir==='pickup' ? last.resort : last.airport.toLowerCase();
+}
+
+function scoreVehicle(v, dateStr, airport, resort, hour, pax, ski) {
+  // Returns {score, reason} — lower score = better
+  const status=getDayStatus(dateStr,v.id);
+  if(status==='full'||status==='locked') return null; // not available
+
+  const hoursUsed=getVehicleHours(v.id,dateStr);
+  const dur=calcTripDuration(airport,resort,dateStr,hour);
+  const newHours=hoursUsed+(dur.total/60);
+  if(newHours>12) return null; // driver limit exceeded
+  if(!vehicleCapacityOk(v,pax,ski||0)) return null; // too small
+
+  let score=0;
+  let reasons=[];
+
+  // 1. Proximity bonus — if vehicle is near pickup point after previous trip
+  const lastLoc=getVehicleLastLocation(v.id,dateStr);
+  const distToAirport=distKm(lastLoc,airport.toLowerCase());
+  score+=distToAirport*2; // km penalty
+  if(distToAirport<50) reasons.push(`Close to airport (${Math.round(distToAirport)}km)`);
+
+  // 2. Smallest suitable vehicle bonus
+  const sizeOrder={van:1,minibus:2,bus:3};
+  score+=sizeOrder[v.type]*20;
+
+  // 3. Fewer hours = more flexible
+  score+=hoursUsed*5;
+
+  // 4. Type match bonus
+  const typeLabel={van:'Van',minibus:'Minibus',bus:'Bus'};
+  reasons.push(typeLabel[v.type]);
+  reasons.push(`${Math.round(newHours*10)/10} hrs driving`);
+
+  return {score, reasons: reasons.join(' · ')};
+}
+
+function getVehicleHours(vid, dateStr) {
+  return getVehicleDayHours(vid, dateStr);
+}
+
+function autoAssign(dateStr, airport, resort, hour, pax, ski, dir) {
+  const candidates=[];
+  VEHICLES.forEach(v=>{
+    const result=scoreVehicle(v,dateStr,airport,resort,hour,pax,ski);
+    if(result) candidates.push({v,score:result.score,reasons:result.reasons});
+  });
+  if(!candidates.length) return null;
+  candidates.sort((a,b)=>a.score-b.score);
+  const best=candidates[0];
+  // assign
+  const key=`${dateStr}_${best.v.id}`;
+  if(!trips[key]) trips[key]=[];
+  trips[key].push({airport,resort,hour,pax,ski:ski||0,dir,id:Math.random().toString(36).substr(2,6),autoAssigned:true});
+  return {vid:best.v.id,name:best.v.name,reasons:best.reasons,candidates};
+}
+
+// ========== BOOKINGS LIST (flat array for trips table) ==========
+let bookings = []; // {id, date, hour, airport, resort, dir, pax, ski, vid, status, autoAssigned, simulated, duration}
+
+function tripToBooking(vid, dateStr, trip) {
+  const dur = calcTripDuration(trip.airport, trip.resort, dateStr, trip.hour);
+  return {
+    id: trip.id,
+    date: dateStr,
+    hour: trip.hour,
+    airport: trip.airport,
+    resort: trip.resort,
+    dir: trip.dir||'pickup',
+    pax: trip.pax||1,
+    ski: trip.ski||0,
+    vid: vid,
+    status: trip.autoAssigned ? 'assigned' : 'assigned',
+    simulated: trip.simulated||false,
+    duration: dur,
+    autoAssigned: trip.autoAssigned||false
+  };
+}
+
+function rebuildBookings() {
+  bookings = [];
+  Object.keys(trips).forEach(key => {
+    const [dateStr, vid] = key.split('_').reduce((acc,p,i,arr)=>i===arr.length-1?[acc[0],p]:[acc[0]+'_'+p,''], ['','']).map((v,i)=>i===0?v.slice(1):v);
+    // safer split
+    const parts = key.split('_');
+    const vId = parts[parts.length-1];
+    const dStr = parts.slice(0,-1).join('_');
+    (trips[key]||[]).forEach(t => bookings.push(tripToBooking(vId, dStr, t)));
+  });
+  bookings.sort((a,b)=>a.date.localeCompare(b.date)||a.hour-b.hour);
+}
+
+// ========== TAB SWITCHING ==========
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('tab-btn-'+tab).classList.add('active');
+  if(tab==='trips') { rebuildBookings(); mergeAndRenderTrips(); }
+  if(tab==='agents') { fetchAgents(); }
+  if(tab==='settings') { loadSettingsTab('fleet'); }
+}
+
+// ========== SETTINGS ==========
+function switchSettingsTab(name) {
+  document.querySelectorAll('.stab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.stab-content').forEach(c=>c.style.display='none');
+  document.getElementById('stab-'+name).classList.add('active');
+  document.getElementById('stab-content-'+name).style.display='grid';
+  loadSettingsTab(name);
+}
+
+async function loadSettingsTab(name) {
+  if(name==='fleet') loadFleet();
+  else if(name==='airports') loadAirports();
+  else if(name==='resorts') loadResorts();
+  else if(name==='pricing') loadPricing();
+  else if(name==='shared') loadSharedPricing();
+  else if(name==='extras') loadExtras();
+}
+
+// --- FLEET ---
+async function loadFleet() {
+  const el = document.getElementById('fleet-list');
+  el.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:13px">Loading...</div>';
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/vehicles?order=type,display_name`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    const vehicles = await res.json();
+    if(!vehicles.length) { el.innerHTML = '<div style="color:rgba(255,255,255,0.3)">No vehicles</div>'; return; }
+    el.innerHTML = vehicles.map(v => {
+      const badgeCls = v.status==='active' ? 'badge-active' : v.status==='maintenance' ? 'badge-maintenance' : 'badge-inactive';
+      const badgeTxt = v.status==='active' ? 'Active' : v.status==='maintenance' ? 'Maintenance' : 'Inactive';
+      return `<div class="settings-row">
+        <div>
+          <div class="settings-row-label">${v.display_name||v.type}</div>
+          <div class="settings-row-sub">${v.type} · Capacity: ${v.capacity||8}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="settings-badge ${badgeCls}">${badgeTxt}</span>
+          <button onclick="editVehicle(${JSON.stringify(v).replace(/"/g,'&quot;')})" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:5px 12px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit">✏️ Edit</button>
+          <button onclick="deleteVehicle('${v.id}','${v.display_name||v.type}')" style="background:rgba(226,75,74,0.1);border:1px solid rgba(226,75,74,0.2);color:#F09595;padding:5px 12px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit">🗑️</button>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) { el.innerHTML = '<div style="color:#F09595">Error loading</div>'; }
+}
+
+function openAddVehicle() {
+  document.getElementById('vm-id').value = '';
+  document.getElementById('vm-name').value = '';
+  document.getElementById('vm-type').value = 'van';
+  document.getElementById('vm-status').value = 'active';
+  document.getElementById('vehicle-modal-title').textContent = 'Add vehicle';
+  document.getElementById('vehicle-modal').style.display = 'flex';
+}
+
+function editVehicle(v) {
+  document.getElementById('vm-id').value = v.id;
+  document.getElementById('vm-name').value = v.display_name||'';
+  document.getElementById('vm-type').value = v.type||'van';
+  document.getElementById('vm-status').value = v.status||'active';
+  document.getElementById('vehicle-modal-title').textContent = 'Edit vehicle';
+  document.getElementById('vehicle-modal').style.display = 'flex';
+}
+
+function closeVehicleModal() { document.getElementById('vehicle-modal').style.display = 'none'; }
+
+async function saveVehicle() {
+  const id = document.getElementById('vm-id').value;
+  const data = {
+    display_name: document.getElementById('vm-name').value,
+    type: document.getElementById('vm-type').value,
+    status: document.getElementById('vm-status').value,
+    capacity: 8
+  };
+  try {
+    if(id) {
+      await fetch(`${SUPABASE_URL}/rest/v1/vehicles?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify(data)
+      });
+    } else {
+      await fetch(`${SUPABASE_URL}/rest/v1/vehicles`, {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify(data)
+      });
+    }
+    closeVehicleModal();
+    loadFleet();
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+async function deleteVehicle(id, name) {
+  if(!confirm(`Delete "${name}"?`)) return;
+  await fetch(`${SUPABASE_URL}/rest/v1/vehicles?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+  });
+  loadFleet();
+}
+
+// --- AIRPORTS ---
+const AIRPORTS_DATA = [
+  {code:'GVA', name:'Geneva', shared:true},
+  {code:'LYS', name:'Lyon Saint-Exupéry', shared:true},
+  {code:'GNB', name:'Grenoble', shared:false},
+  {code:'CMF', name:'Chambéry', shared:false},
+  {code:'MXP', name:'Milan Malpensa', shared:false},
+  {code:'BGY', name:'Milan Bergamo', shared:false},
+];
+function loadAirports() {
+  document.getElementById('airports-list').innerHTML = AIRPORTS_DATA.map(a => `
+    <div class="settings-row">
+      <div>
+        <div class="settings-row-label">${a.code} — ${a.name}</div>
+        <div class="settings-row-sub">${a.shared ? '✓ Available for shared transfers' : 'Private only'}</div>
+      </div>
+      <span class="settings-badge ${a.shared ? 'badge-active' : 'badge-inactive'}">${a.shared ? 'SHARED' : 'PRIVATE'}</span>
+    </div>`).join('');
+}
+
+// --- RESORTS ---
+const RESORTS_DATA = [
+  {v:'val-thorens', l:'Val Thorens', shared:true},
+  {v:'les-menuires', l:'Les Menuires', shared:true},
+  {v:'les-arcs', l:'Les Arcs', shared:true, minPax:3},
+  {v:'tignes', l:'Tignes', shared:true, minPax:3},
+  {v:'courchevel', l:'Courchevel', shared:false},
+  {v:'meribel', l:'Méribel', shared:false},
+  {v:'val-disere', l:"Val d'Isère", shared:false},
+  {v:'la-plagne', l:'La Plagne', shared:false},
+  {v:'avoriaz', l:'Avoriaz', shared:false},
+  {v:'morzine', l:'Morzine', shared:false},
+  {v:'les-2-alpes', l:"Les 2 Alpes", shared:false},
+  {v:'alpe-dhuez', l:"Alpe d'Huez", shared:false},
+];
+function loadResorts() {
+  document.getElementById('resorts-list').innerHTML = RESORTS_DATA.map(r => `
+    <div class="settings-row">
+      <div>
+        <div class="settings-row-label">${r.l}</div>
+        <div class="settings-row-sub">${r.shared ? '✓ Shared' : 'Private only'}${r.minPax ? ` · min. ${r.minPax} passengers` : ''}</div>
+      </div>
+      <span class="settings-badge ${r.shared ? 'badge-active' : 'badge-inactive'}">${r.shared ? 'SHARED' : 'PRIVATE'}</span>
+    </div>`).join('');
+}
+
+// --- PRIVATE PRICING ---
+const PRIVATE_ROUTES = [
+  {from:'GVA', to:'Val Thorens', price:300}, {from:'GVA', to:'Les Menuires', price:300},
+  {from:'GVA', to:'Courchevel', price:300}, {from:'GVA', to:'Méribel', price:300},
+  {from:'GVA', to:'Tignes', price:320}, {from:'GVA', to:'Les Arcs', price:320},
+  {from:'GVA', to:"Val d'Isère", price:336}, {from:'GVA', to:'La Plagne', price:320},
+  {from:'GVA', to:'Avoriaz', price:250}, {from:'GVA', to:'Morzine', price:250},
+  {from:'LYS', to:'Val Thorens', price:300}, {from:'LYS', to:'Les Menuires', price:300},
+  {from:'LYS', to:'Tignes', price:320}, {from:'LYS', to:'Les Arcs', price:320},
+  {from:'GNB', to:'Val Thorens', price:300}, {from:'GNB', to:'Les Menuires', price:300},
+  {from:'GNB', to:"Les 2 Alpes", price:300}, {from:'GNB', to:"Alpe d'Huez", price:300},
+];
+function loadPricing() {
+  document.getElementById('pricing-list').innerHTML = PRIVATE_ROUTES.map((r,i) => `
+    <div class="settings-row">
+      <div class="settings-row-label">${r.from} → ${r.to}</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="color:rgba(255,255,255,0.3);font-size:12px">€</span>
+        <input class="settings-input" type="number" value="${r.price}" id="price-${i}" onchange="updatePrivatePrice(${i}, this.value)">
+      </div>
+    </div>`).join('');
+}
+function updatePrivatePrice(i, val) { PRIVATE_ROUTES[i].price = parseInt(val); }
+
+// --- SHARED PRICING ---
+const SHARED_PAX_DATA = [
+  {pax:1, one:90},{pax:2, one:180},{pax:3, one:260},{pax:4, one:320},
+  {pax:5, one:350},{pax:6, one:390},{pax:7, one:420},{pax:8, one:450},
+];
+function loadSharedPricing() {
+  document.getElementById('shared-pricing-list').innerHTML = SHARED_PAX_DATA.map((r,i) => `
+    <div class="settings-row">
+      <div class="settings-row-label">${r.pax} passenger${r.pax>1?'s':''}</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="color:rgba(255,255,255,0.3);font-size:12px">One way €</span>
+        <input class="settings-input" type="number" value="${r.one}" id="shared-${i}" onchange="updateSharedPrice(${i}, this.value)">
+      </div>
+    </div>`).join('');
+}
+function updateSharedPrice(i, val) { SHARED_PAX_DATA[i].one = parseInt(val); }
+
+// --- EXTRAS ---
+const EXTRAS_DATA = [
+  {key:'suitcase', label:'Extra suitcase', price:15, unit:'per direction'},
+  {key:'ski', label:'Ski/Snowboard equipment', price:10, unit:'per item/direction'},
+  {key:'baby', label:'Baby seat', price:10, unit:'per direction'},
+  {key:'booster', label:'Booster seat', price:7, unit:'per direction'},
+  {key:'stop', label:'Extra stop (same resort)', price:15, unit:'flat fee'},
+  {key:'roadstop', label:'stop on route (over 20 min)', price:60, unit:'subject to availability'},
+  {key:'wait', label:'Free waiting time', price:70, unit:'minutes'},
+];
+function loadExtras() {
+  document.getElementById('extras-settings-list').innerHTML = EXTRAS_DATA.map((e,i) => `
+    <div class="settings-row">
+      <div>
+        <div class="settings-row-label">${e.label}</div>
+        <div class="settings-row-sub">${e.unit}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="color:rgba(255,255,255,0.3);font-size:12px">${e.key==='wait'?'min':'€'}</span>
+        <input class="settings-input" type="number" value="${e.price}" id="extra-${i}">
+      </div>
+    </div>`).join('');
+}
+
+
+
+// ========== TRIPS TABLE ==========
+const RESORT_LABELS = {
+  'val-thorens':'Val Thorens','les-menuires':'Les Menuires','courchevel':'Courchevel',
+  'meribel':'Méribel','val-disere':"Val d'Isère",'tignes':'Tignes','les-arcs':'Les Arcs',
+  'la-plagne':'La Plagne','les-2-alpes':'Les 2 Alpes','alpe-dhuez':"Alpe d'Huez",
+  'avoriaz':'Avoriaz','morzine':'Morzine'
+};
+
+let expandedRows = new Set();
+
+function renderTripsTable() {
+  const search = (document.getElementById('trips-search')?.value||'').toLowerCase();
+  const filterStatus = document.getElementById('trips-filter-status')?.value||'';
+  const filterAirport = document.getElementById('trips-filter-airport')?.value||'';
+
+  let filtered = bookings.filter(b => {
+    if(filterStatus && b.status!==filterStatus && !(filterStatus==='sim'&&b.simulated)) return false;
+    if(filterStatus==='sim' && !b.simulated) return false;
+    if(filterAirport && b.airport!==filterAirport) return false;
+    if(search) {
+      const vName = (VEHICLES.find(v=>v.id===b.vid)||{name:''}).name.toLowerCase();
+      const resort = (RESORT_LABELS[b.resort]||b.resort).toLowerCase();
+      if(!b.airport.toLowerCase().includes(search) && !resort.includes(search) && !vName.includes(search)) return false;
+    }
+    return true;
+  });
+
+  document.getElementById('trips-count').textContent = `${filtered.length} Trips`;
+
+  const tbody = document.getElementById('trips-tbody');
+  if(!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="12" style="text-align:center;padding:40px;color:rgba(255,255,255,0.2);font-size:13px">No Trips</td></tr>`;
+    return;
+  }
+
+  let html = '';
+  filtered.forEach((b,i) => {
+    const v = VEHICLES.find(veh=>veh.id===b.vid);
+    const vName = v ? v.name : '—';
+    const resortLabel = RESORT_LABELS[b.resort]||b.resort;
+    const dirLabel = b.dir==='pickup' ? '↓ Pickup' : '↑ Dropoff';
+    const durH = Math.round(b.duration.total/60*10)/10;
+    const isExp = expandedRows.has(b.id);
+    const statusPill = b.simulated
+      ? `<span class="status-pill pill-sim">Simulation</span>`
+      : b.status==='assigned'
+        ? `<span class="status-pill pill-assigned">Assigned</span>`
+        : b.status==='conflict'
+          ? `<span class="status-pill pill-conflict">Conflict</span>`
+          : `<span class="status-pill pill-pending">Pending</span>`;
+
+    const dateObj = new Date(b.date);
+    const dateStr = `${dateObj.getDate()}/${dateObj.getMonth()+1}/${dateObj.getFullYear()}`;
+    const traf = trafficMult(b.date, b.hour);
+    const tl = trafficLabel(traf);
+
+    html += `<tr class="${isExp?'expanded':''}" style="cursor:pointer" onclick="toggleExpand('${b.id}')">
+      <td><button class="expand-btn ${isExp?'open':''}" onclick="event.stopPropagation();toggleExpand('${b.id}')">▶</button></td>
+      <td style="color:white;font-weight:500">${dateStr}</td>
+      <td>${String(b.hour).padStart(2,'0')}:00</td>
+      <td><span style="font-weight:600;color:var(--light-blue)">${b.airport}</span></td>
+      <td>${resortLabel}</td>
+      <td style="font-size:12px">${dirLabel}</td>
+      <td>${b.pax} 👤</td>
+      <td>${b.ski ? b.ski+' 🎿' : '—'}</td>
+      <td style="color:${v?'white':'#F09595'}">${vName}${b.autoAssigned?' <span style="font-size:9px;color:rgba(255,255,255,0.3)">AUTO</span>':''}</td>
+      <td style="font-size:12px">${durH}h <span class="traffic-pill ${tl.cls}">${tl.label}</span></td>
+      <td>${statusPill}</td>
+      <td>
+        <button onclick="event.stopPropagation();removeBooking('${b.id}')" style="background:rgba(226,75,74,0.15);border:1px solid rgba(226,75,74,0.25);color:#F09595;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Remove</button>
+        ${b.source==='supabase' && !b.vid ? `<button onclick="event.stopPropagation();assignToBooking('${b.id}')" style="background:rgba(29,158,117,0.15);border:1px solid rgba(29,158,117,0.25);color:#5DCAA5;padding:3px 10px;border-radius:5px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-right:4px">Assign Vehicle</button>` : ''}
+        ${b.source==='supabase' ? `<select onchange="event.stopPropagation();updateBookingStatus('${b.id}',this.value)" style="background:#0f1e35;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:3px 6px;border-radius:5px;font-size:11px;font-family:'DM Sans',sans-serif;margin-right:4px">
+          <option value="pending" ${b.status==='pending'?'selected':''}>Pending</option>
+          <option value="confirmed" ${b.status==='confirmed'?'selected':''}>Confirmed</option>
+          <option value="cancelled" ${b.status==='cancelled'?'selected':''}>Cancelled</option>
+        </select>` : ''}
+      </td>
+    </tr>`;
+
+    if(isExp) {
+      const hoursUsed = getVehicleDayHours(b.vid, b.date);
+      const hoursLeft = 12 - hoursUsed;
+      html += `<tr class="expand-row">
+        <td colspan="12">
+          <div class="expand-inner">
+            <div class="expand-stat"><div class="expand-label">Trip (with traffic)</div><div class="expand-val">${b.duration.tripTime} min</div></div>
+            <div class="expand-stat"><div class="expand-label">Drive to airport from base</div><div class="expand-val">${b.duration.airportDrive} min</div></div>
+            <div class="expand-stat"><div class="expand-label">Total incl. base</div><div class="expand-val">${durH} hours</div></div>
+            <div class="expand-stat"><div class="expand-label">Remaining drive hours</div><div class="expand-val" style="color:${hoursLeft<2?'#F09595':'#5DCAA5'}">${Math.round(hoursLeft*10)/10}h</div></div>
+            <div class="expand-stat"><div class="expand-label">Traffic multiplier</div><div class="expand-val">×${traf.toFixed(2)}</div></div>
+            <div class="expand-stat"><div class="expand-label">Auto-assigned</div><div class="expand-val">${b.autoAssigned?'Yes':'Manual'}</div></div>
+            <div class="expand-stat"><div class="expand-label">Base location</div><div class="expand-val">Saint-Jorioz</div></div>
+            <div class="expand-stat"><div class="expand-label">ID</div><div class="expand-val" style="font-size:11px;color:rgba(255,255,255,0.3)">${b.id}</div></div>
+          </div>
+        </td>
+      </tr>`;
+    }
+  });
+  tbody.innerHTML = html;
+}
+
+function toggleExpand(id) {
+  if(expandedRows.has(id)) expandedRows.delete(id);
+  else expandedRows.add(id);
+  renderTripsTable();
+}
+
+function assignToBooking(bookingId) {
+  const b = bookings.find(b=>b.id===bookingId);
+  if(!b) return;
+  const result = autoAssign(b.date, b.airport, b.resort, b.hour, b.pax, b.ski, b.dir);
+  if(!result) { alert('⛔ No available vehicle'); return; }
+  b.vid = result.vid;
+  // Update in Supabase
+  fetch(`${SUPABASE_URL}/rest/v1/bookings?id=eq.${bookingId}`, {
+    method: 'PATCH',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({ status: 'confirmed', updated_at: new Date().toISOString() })
+  });
+  renderCalendar();
+  mergeAndRenderTrips();
+  showAssignToast(result.name, result.reasons);
+}
+
+function removeBooking(id) {
+  // remove from trips object
+  Object.keys(trips).forEach(key => {
+    trips[key] = (trips[key]||[]).filter(t=>t.id!==id);
+    if(!trips[key].length) delete trips[key];
+  });
+  bookings = bookings.filter(b=>b.id!==id);
+  renderTripsTable();
+  renderCalendar();
+}
+
+// ========== SIMULATOR ==========
+const SIM_AIRPORTS = ['GVA','GVA','GVA','LYS','LYS','GNB','CMF'];
+const SIM_RESORTS = ['val-thorens','val-thorens','courchevel','meribel','tignes','les-arcs','les-menuires','la-plagne','les-2-alpes','avoriaz'];
+const SIM_HOURS = [6,7,8,9,10,11,14,15,16,17];
+const SIM_DIRS = ['pickup','pickup','pickup','dropoff'];
+
+function runSimulator() {
+  const log = document.getElementById('sim-log');
+  log.classList.add('show');
+  log.innerHTML = '';
+
+  // generate 8-12 random bookings over next 14 days
+  const count = 8 + Math.floor(Math.random()*5);
+  const logLines = [];
+  let assigned=0, failed=0;
+
+  for(let i=0;i<count;i++){
+    const daysAhead = 1 + Math.floor(Math.random()*14);
+    const d = new Date(); d.setDate(d.getDate()+daysAhead);
+    const dateStr = fmt(d);
+    const airport = SIM_AIRPORTS[Math.floor(Math.random()*SIM_AIRPORTS.length)];
+    const resort = SIM_RESORTS[Math.floor(Math.random()*SIM_RESORTS.length)];
+    const hour = SIM_HOURS[Math.floor(Math.random()*SIM_HOURS.length)];
+    const pax = 1 + Math.floor(Math.random()*7);
+    const ski = Math.floor(Math.random()*pax);
+    const dir = SIM_DIRS[Math.floor(Math.random()*SIM_DIRS.length)];
+    const resortLabel = RESORT_LABELS[resort]||resort;
+
+    const result = autoAssign(dateStr, airport, resort, hour, pax, ski, dir);
+    // mark as simulated
+    if(result) {
+      const key = `${dateStr}_${result.vid}`;
+      const t = (trips[key]||[]).find(t=>t.autoAssigned&&!t.simulated);
+      if(t) t.simulated=true;
+      assigned++;
+      logLines.push(`<div class="sim-log-line"><span class="sim-ok">✓</span><span>${d.getDate()}/${d.getMonth()+1} ${airport}→${resortLabel}, ${pax}👤 ${ski?ski+'🎿':''}</span><span style="color:rgba(255,255,255,0.4)">→ ${result.name}</span></div>`);
+    } else {
+      failed++;
+      logLines.push(`<div class="sim-log-line"><span class="sim-err">✗</span><span>${d.getDate()}/${d.getMonth()+1} ${airport}→${resortLabel}, ${pax}👤</span><span style="color:#F09595">No Vehicle available</span></div>`);
+    }
+  }
+
+  log.innerHTML = `<div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:8px;letter-spacing:1px">Simulation: ${count} bookings — ✓ ${assigned} assigned, ✗ ${failed} failed</div>`+logLines.join('');
+
+  rebuildBookings();
+  renderCalendar();
+  renderTripsTable();
+
+  // switch to trips tab to show results
+  switchTab('trips');
+  showAssignToast(`${assigned} bookings`, `${failed ? failed+' No assigned' : 'All assigned successfully'}`);
+}
+
+// ========== SUPABASE INTEGRATION ==========
+const SUPABASE_URL = 'https://tguovceyhyilmdtctlgp.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRndW92Y2V5aHlpbG1kdGN0bGdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMDc3NzcsImV4cCI6MjA5NTc4Mzc3N30.c58sNmyMW1YCC2HihC9CfEyO-Kyt1On8tdGvx58Hstg';
+
+let supabaseBookings = []; // real bookings from Supabase
+let lastFetch = null;
+
+async function fetchFromSupabase() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/bookings?select=*&order=created_at.desc`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    if(!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+    supabaseBookings = data;
+    lastFetch = new Date();
+    updateSupabaseBadge();
+    // If on Trips tab — refresh
+    if(document.getElementById('tab-trips').classList.contains('active')) {
+      mergeAndRenderTrips();
+    }
+    return data;
+  } catch(e) {
+    console.error('Supabase fetch error:', e);
+    return [];
+  }
+}
+
+async function updateBookingStatus(id, status) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/bookings?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ status, updated_at: new Date().toISOString() })
+    });
+    if(!res.ok) throw new Error(await res.text());
+    await fetchFromSupabase();
+    showAssignToast('Status updated', status);
+  } catch(e) {
+    alert('Error updating: '+e.message);
+  }
+}
+
+function updateSupabaseBadge() {
+  const badge = document.getElementById('supabase-badge');
+  if(badge) {
+    badge.textContent = `● ${supabaseBookings.length} bookings`;
+    badge.style.color = '#5DCAA5';
+  }
+}
+
+function mergeAndRenderTrips() {
+  // Merge Supabase bookings with local (simulator)
+  const supaRows = supabaseBookings.map(b => ({
+    id: b.id,
+    date: b.travel_date,
+    hour: b.arrival_time ? parseInt(b.arrival_time.split(':')[0]) : 10,
+    airport: b.airport || '—',
+    resort: b.resort || '—',
+    dir: b.direction || 'pickup',
+    pax: b.passengers || 1,
+    ski: b.ski_equipment || 0,
+    vid: null, // not yet assigned
+    status: b.status || 'pending',
+    simulated: false,
+    autoAssigned: false,
+    source: 'supabase',
+    raw: b,
+    duration: b.airport && b.resort ? calcTripDuration(b.airport, b.resort, b.travel_date, b.arrival_time ? parseInt(b.arrival_time.split(':')[0]) : 10) : {total:0,tripTime:0,airportDrive:0,returnTime:0}
+  }));
+
+  // Add Supabase bookings to list (no duplicates)
+  const existingIds = new Set(bookings.map(b=>b.id));
+  supaRows.forEach(b => { if(!existingIds.has(b.id)) bookings.unshift(b); });
+
+  renderTripsTable();
+}
+
+
+// ========== AGENTS ==========
+async function fetchAgents() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/agents?order=created_at.desc&select=*`, {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+  });
+  const agents = await res.json();
+  if (!Array.isArray(agents)) { console.error('Agents error:', agents); return; }
+
+  // Stats
+  const total = agents.length;
+  const pending = agents.filter(a=>a.status==='pending').length;
+  const active = agents.filter(a=>a.status==='active').length;
+  const totalCredit = agents.reduce((sum,a)=>(a.credit_used||0)+sum, 0);
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statPending').textContent = pending;
+  document.getElementById('statActive').textContent = active;
+  document.getElementById('statCredit').textContent = `€${totalCredit.toLocaleString()}`;
+
+  const tbody = document.getElementById('agentsBody');
+  if (!agents.length) {
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3)">No agents yet</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = agents.map(a => {
+    const available = (a.credit_limit||0) - (a.credit_used||0);
+    const statusClass = a.status==='pending'?'agent-pending':a.status==='active'?'agent-active':'agent-rejected';
+    return `<tr>
+      <td style="font-weight:600;color:white">${a.full_name}</td>
+      <td>${a.company||'—'}</td>
+      <td style="font-size:12px">${a.email}</td>
+      <td style="font-size:12px">${a.phone||'—'}</td>
+      <td><span class="agent-status ${statusClass}">${a.status}</span></td>
+      <td>
+        <input class="agent-input" type="number" value="${a.discount_pct||0}" min="0" max="50" step="0.5"
+          onchange="updateAgent('${a.id}','discount_pct',this.value)" style="width:60px"> %
+      </td>
+      <td>
+        € <input class="agent-input" type="number" value="${a.credit_limit||0}" min="0" step="100"
+          onchange="updateAgent('${a.id}','credit_limit',this.value)" style="width:80px">
+      </td>
+      <td style="color:${(a.credit_used||0)>0?'#FAC775':'rgba(255,255,255,0.4)'}">€${(a.credit_used||0).toLocaleString()}</td>
+      <td style="color:${available>0?'#5DCAA5':'#F09595'};font-weight:600">€${available.toLocaleString()}</td>
+      <td style="display:flex;gap:6px;align-items:center">
+        ${a.status==='pending'?`
+          <button class="agent-action-btn btn-approve" onclick="setAgentStatus('${a.id}','active')">✓ Approve</button>
+          <button class="agent-action-btn btn-reject" onclick="setAgentStatus('${a.id}','rejected')">✗ Reject</button>
+        `:a.status==='active'?`
+          <button class="agent-action-btn btn-reject" onclick="setAgentStatus('${a.id}','rejected')">Deactivate</button>
+        `:`
+          <button class="agent-action-btn btn-approve" onclick="setAgentStatus('${a.id}','active')">Reactivate</button>
+        `}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function updateAgent(id, field, value) {
+  const body = {};
+  body[field] = parseFloat(value);
+  await fetch(`${SUPABASE_URL}/rest/v1/agents?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  showAssignToast(`✓ Updated`);
+}
+
+async function setAgentStatus(id, status) {
+  await fetch(`${SUPABASE_URL}/rest/v1/agents?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status })
+  });
+  showAssignToast(`✓ Agent ${status}`);
+  fetchAgents();
+}
+
+// ========== INIT ==========
+renderSidebar();
+renderCalendar();
+
+// Load bookings from Supabase
+fetchFromSupabase();
+
+// Auto-refresh every 30 seconds
+setInterval(fetchFromSupabase, 30000);
+
+// close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  m.addEventListener('click',e=>{if(e.target===m) m.classList.remove('open');});
+});
+</script>
+</body>
+</html>
