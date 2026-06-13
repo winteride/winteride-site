@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>משימה — Winteride</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#0D2B4E;--blue:#1A5F8A;--orange:#F47920;--white:#fff;--offwhite:#F4F8FB;--text:#1a1a2e;--muted:#5a6a7a;--border:#d0dde8;--green:#10b981;--red:#ef4444}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--offwhite);min-height:100vh;display:flex;flex-direction:column}
+nav{background:var(--navy);padding:0 2rem;height:56px;display:flex;align-items:center}
+.logo{color:white;font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;display:flex;align-items:center;gap:8px}
+.logo-sub{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1.5px;color:rgba(255,255,255,0.5);font-weight:500}
+.main{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem}
+.card{background:white;border-radius:16px;padding:36px;width:100%;max-width:520px;border:1.5px solid var(--border)}
+.status-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:20px}
+.status-todo{background:#eff6ff;color:#1e40af}
+.status-in_progress{background:#fff7ed;color:#c2410c}
+.status-done{background:#f0fdf4;color:#166534}
+.task-title{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--navy);letter-spacing:1px;line-height:1.1;margin-bottom:12px}
+.task-meta{display:flex;flex-direction:column;gap:8px;margin-bottom:28px;padding-bottom:24px;border-bottom:1.5px solid var(--border)}
+.meta-row{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.meta-label{font-weight:700;color:var(--text);min-width:80px}
+.priority-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.notes-section{margin-bottom:28px}
+.notes-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px}
+.notes-text{font-size:14px;color:var(--text);line-height:1.7;background:var(--offwhite);border-radius:8px;padding:14px;border:1.5px solid var(--border)}
+.btn-done{width:100%;background:var(--navy);color:white;border:none;border-radius:10px;padding:16px;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;cursor:pointer;transition:background 0.2s;margin-bottom:10px}
+.btn-done:hover{background:var(--blue)}
+.btn-done:disabled{background:#94a3b8;cursor:not-allowed}
+.btn-progress{width:100%;background:white;color:var(--orange);border:1.5px solid var(--orange);border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s}
+.btn-progress:hover{background:#fff7ed}
+.success-state{text-align:center;padding:20px 0}
+.success-icon{font-size:48px;margin-bottom:12px}
+.success-title{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--green);letter-spacing:1px;margin-bottom:6px}
+.success-text{font-size:14px;color:var(--muted)}
+.error-state{text-align:center;padding:40px 20px;color:var(--muted)}
+.loading-state{text-align:center;padding:40px 20px;color:var(--muted)}
+.file-badge{background:#eff6ff;color:#1e40af;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;font-family:monospace}
+footer{background:var(--navy);padding:16px 2rem;text-align:center}
+.footer-text{color:rgba(255,255,255,0.4);font-size:12px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    ⛷ WINTERIDE
+    <span class="logo-sub">Task Portal</span>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="card">
+    <div id="content">
+      <div class="loading-state">
+        <div style="font-size:32px;margin-bottom:12px">⏳</div>
+        <div>טוען משימה...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-text">Winteride Project System · michael@winteride.com</div>
+</footer>
+
+<script>
+const SUPABASE_URL = "https://tguovceyhyilmdtctlgp.supabase.co";
+const SUPABASE_KEY = "sb_publishable_4XyicFm3xCyD38SNBQ7ZDw_2lh-w-q_";
+const HEADERS = { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY, "Content-Type": "application/json" };
+
+const token = new URLSearchParams(window.location.search).get("token");
+
+const PRIORITY_MAP = { high: { label: "גבוהה", color: "#dc2626" }, medium: { label: "בינונית", color: "#d97706" }, low: { label: "נמוכה", color: "#16a34a" } };
+const STATUS_MAP = { todo: "לביצוע", in_progress: "בעבודה", done: "הושלם" };
+
+async function load() {
+  const el = document.getElementById("content");
+  if (!token) {
+    el.innerHTML = `<div class="error-state"><div style="font-size:32px;margin-bottom:12px">⚠️</div><div>לינק לא תקין</div></div>`;
+    return;
+  }
+
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/wr_tasks?token=eq.${token}&select=*`, { headers: HEADERS });
+    const tasks = await r.json();
+
+    if (!tasks || tasks.length === 0) {
+      el.innerHTML = `<div class="error-state"><div style="font-size:32px;margin-bottom:12px">🔍</div><div>משימה לא נמצאה</div></div>`;
+      return;
+    }
+
+    const task = tasks[0];
+    const priority = PRIORITY_MAP[task.priority] || PRIORITY_MAP.medium;
+    const isDone = task.status === "done";
+
+    el.innerHTML = `
+      <span class="status-badge status-${task.status}">${STATUS_MAP[task.status] || task.status}</span>
+      <div class="task-title">${task.title}</div>
+      <div class="task-meta">
+        <div class="meta-row">
+          <span class="meta-label">עדיפות</span>
+          <span class="priority-dot" style="background:${priority.color}"></span>
+          <span>${priority.label}</span>
+        </div>
+        ${task.assignee_name ? `<div class="meta-row"><span class="meta-label">מיועד ל</span><span>${task.assignee_name}</span></div>` : ""}
+        ${task.due_date ? `<div class="meta-row"><span class="meta-label">תאריך יעד</span><span>${new Date(task.due_date).toLocaleDateString("he-IL")}</span></div>` : ""}
+        ${task.file_id ? `<div class="meta-row"><span class="meta-label">קובץ</span><span class="file-badge">${task.file_id}</span></div>` : ""}
+        <div class="meta-row"><span class="meta-label">נוצר</span><span>${new Date(task.created_at).toLocaleDateString("he-IL")}</span></div>
+      </div>
+      ${task.notes ? `<div class="notes-section"><div class="notes-label">הערות</div><div class="notes-text">${task.notes}</div></div>` : ""}
+      ${isDone
+        ? `<div class="success-state">
+            <div class="success-icon">✅</div>
+            <div class="success-title">הושלם!</div>
+            <div class="success-text">המשימה סומנה כהושלמה ב-${new Date(task.completed_at).toLocaleString("he-IL")}</div>
+          </div>`
+        : `<button class="btn-done" onclick="markDone('${task.id}')">✓ סיימתי את המשימה</button>
+           ${task.status === "todo" ? `<button class="btn-progress" onclick="markInProgress('${task.id}')">⚡ התחלתי לעבוד</button>` : ""}`
+      }`;
+  } catch(e) {
+    el.innerHTML = `<div class="error-state"><div style="font-size:32px;margin-bottom:12px">⚠️</div><div>שגיאת חיבור</div></div>`;
+  }
+}
+
+async function markDone(id) {
+  document.querySelector(".btn-done").disabled = true;
+  document.querySelector(".btn-done").textContent = "שומר...";
+  const now = new Date().toISOString();
+  await fetch(`${SUPABASE_URL}/rest/v1/wr_tasks?id=eq.${id}`, {
+    method: "PATCH",
+    headers: { ...HEADERS, "Prefer": "return=representation" },
+    body: JSON.stringify({ status: "done", completed_at: now, updated_at: now })
+  });
+  document.getElementById("content").innerHTML = `
+    <div class="success-state">
+      <div class="success-icon">✅</div>
+      <div class="success-title">כל הכבוד!</div>
+      <div class="success-text">המשימה סומנה כהושלמה.<br>מיכאל יקבל עדכון אוטומטי.</div>
+    </div>`;
+  notifyOwner(id);
+}
+
+async function markInProgress(id) {
+  await fetch(`${SUPABASE_URL}/rest/v1/wr_tasks?id=eq.${id}`, {
+    method: "PATCH",
+    headers: { ...HEADERS, "Prefer": "return=representation" },
+    body: JSON.stringify({ status: "in_progress", updated_at: new Date().toISOString() })
+  });
+  load();
+}
+
+async function notifyOwner(taskId) {
+  // Apps Script webhook יקבל את ההתראה
+  // בינתיים — Supabase מעודכן והטריגר של Apps Script יישלח מייל בפעם הבאה
+  console.log("Task " + taskId + " completed — Apps Script will notify on next run");
+}
+
+load();
+</script>
+</body>
+</html>
