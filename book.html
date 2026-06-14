@@ -2540,6 +2540,19 @@ async function validateFlightSchedule(flightNumber, selectedDate, airline) {
   }
   return true;
 }
+// ===== Flight Schedule Validation (14/6/26) =====
+async function validateFlightSchedule(flightNumber, selectedDate, airline) {
+  const dateObj = new Date(selectedDate);
+  const dayOfWeek = dateObj.getDay();
+  if (dayOfWeek === 6) {
+    const { data } = await supabase.from('flight_schedules').select('*').eq('flight_number', flightNumber.toUpperCase()).single();
+    if (data && data.operating_days && !data.operating_days.includes(6)) {
+      showError(`✈️ ${airline} does not operate on Saturdays.`);
+      return false;
+    }
+  }
+  return true;
+}
 document.getElementById('flight-input')?.addEventListener('blur', async (e) => {
   const flightNumber = e.target.value;
   const selectedDate = document.getElementById('date-input').value;
@@ -2548,6 +2561,7 @@ document.getElementById('flight-input')?.addEventListener('blur', async (e) => {
     if (!isValid) e.target.value = '';
   }
 });
+</script>
 </script>
 
 <!-- WhatsApp Floating Button -->
