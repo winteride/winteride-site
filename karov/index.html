@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>קרוב | ההסעה השכונתית</title>
+<meta name="description" content="קרוב — אפליקציה עירונית שמחברת נהגים מקומיים מאומתים לנוער וותושבים שצריכים הסעה בלילה ובשבתות. אב טיפוס.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+--bg:#070B18;--bg2:#0D1326;--card:#141B33;--card2:#1B2342;--line:#28325A;
+--txt:#EDF1FC;--mut:#8E99C0;--dim:#636E96;
+--acc:#FFC53D;--acc-d:#E0A91B;--mint:#4FDCA8;--violet:#8A7CFF;--danger:#FF6B6B;
+--r:16px;
+}
+body{font-family:'Heebo',system-ui,sans-serif;background:
+ radial-gradient(900px 500px at 80% -10%,rgba(138,124,255,.18),transparent 60%),
+ radial-gradient(700px 400px at 10% 10%,rgba(255,197,61,.10),transparent 60%),var(--bg);
+ color:var(--txt);min-height:100vh;padding:24px 16px 60px}
+.layout{max-width:1060px;margin:0 auto;display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:start}
+@media(max-width:900px){.layout{grid-template-columns:1fr;gap:24px}.side{order:2}}
+
+/* ---------- side (pitch) ---------- */
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.logo-mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--acc),#FF8A3D);display:flex;align-items:center;justify-content:center;font-weight:800;color:#2A1C00;font-size:20px}
+.logo-txt{font-size:26px;font-weight:800;letter-spacing:-.5px}
+.logo-sub{font-size:11px;color:var(--mut);letter-spacing:2px;margin-top:-4px}
+.side h1{font-size:clamp(26px,4vw,40px);font-weight:800;line-height:1.15;margin-bottom:14px}
+.side h1 em{font-style:normal;color:var(--acc)}
+.side p.lead{color:var(--mut);font-size:16px;line-height:1.75;max-width:520px;margin-bottom:22px}
+.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+.pill{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:30px;padding:7px 14px;font-size:12.5px;color:var(--txt)}
+.pill b{color:var(--acc)}
+.block{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.block h3{font-size:14px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.block h3 span{width:22px;height:22px;border-radius:7px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:12px}
+.block ul{list-style:none;display:grid;gap:8px}
+.block li{font-size:13.5px;color:var(--mut);line-height:1.6;padding-right:16px;position:relative}
+.block li:before{content:"";position:absolute;right:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--acc)}
+.block li b{color:var(--txt);font-weight:500}
+.note{font-size:12px;color:var(--dim);line-height:1.7}
+
+/* ---------- phone ---------- */
+.stage{position:sticky;top:24px}
+.roles{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:30px;padding:5px;margin-bottom:14px;overflow:auto;scrollbar-width:none}
+.roles::-webkit-scrollbar{display:none}
+.role{flex:1;min-width:66px;border:none;background:transparent;color:var(--mut);font-family:inherit;font-size:12.5px;font-weight:500;padding:9px 6px;border-radius:24px;cursor:pointer;white-space:nowrap;transition:.18s}
+.role.on{background:var(--acc);color:#2A1C00;font-weight:700}
+.phone{background:#000;border:10px solid #1A1F35;border-radius:44px;box-shadow:0 30px 70px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.06);overflow:hidden;position:relative}
+.statusbar{background:var(--bg2);display:flex;justify-content:space-between;align-items:center;padding:10px 22px 4px;font-size:11px;color:var(--mut);font-weight:500}
+.screen{background:var(--bg2);height:640px;overflow-y:auto;overflow-x:hidden;padding:4px 0 84px;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.tabbar{position:absolute;bottom:0;left:0;right:0;background:rgba(13,19,38,.94);backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;padding:9px 6px 16px}
+.tab{flex:1;background:none;border:none;color:var(--dim);font-family:inherit;font-size:10.5px;cursor:pointer;display:grid;gap:3px;justify-items:center}
+.tab i{font-size:17px;font-style:normal;line-height:1}
+.tab.on{color:var(--acc)}
+.demo-tag{position:absolute;top:14px;left:14px;z-index:5;background:rgba(0,0,0,.5);border:1px solid var(--line);color:var(--mut);font-size:9.5px;padding:3px 8px;border-radius:20px;letter-spacing:.4px}
+
+/* ---------- in-app ---------- */
+.pad{padding:14px 18px}
+.hd{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:16px}
+.hd h2{font-size:21px;font-weight:800;line-height:1.25}
+.hd p{font-size:12.5px;color:var(--mut);margin-top:3px}
+.avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--violet),#5B4BD6);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+.avatar.m{background:linear-gradient(135deg,var(--mint),#1EA47A);color:#04231A}
+.avatar.a{background:linear-gradient(135deg,var(--acc),#E08A1B);color:#2A1C00}
+.avatar.sm{width:30px;height:30px;font-size:12px}
+.avatar.lg{width:52px;height:52px;font-size:18px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.card.hi{background:linear-gradient(160deg,var(--card2),var(--card));border-color:#36437A}
+.card.acc{background:linear-gradient(160deg,rgba(255,197,61,.14),rgba(255,197,61,.04));border-color:rgba(255,197,61,.35)}
+.card.mint{background:linear-gradient(160deg,rgba(79,220,168,.13),rgba(79,220,168,.03));border-color:rgba(79,220,168,.3)}
+.card-t{font-size:13px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:7px}
+.card-s{font-size:12px;color:var(--mut);line-height:1.6}
+
+.field{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:11px;margin-bottom:8px}
+.field i{font-style:normal;font-size:14px}
+.field .lbl{font-size:10px;color:var(--dim);display:block;margin-bottom:1px}
+.field .val{font-size:14px;font-weight:500}
+.field.ghost{border-style:dashed;color:var(--mut)}
+
+.btn{width:100%;border:none;border-radius:13px;padding:15px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;background:var(--acc);color:#2A1C00;transition:.15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn:active{transform:scale(.985)}
+.btn.sec{background:var(--card2);color:var(--txt);border:1px solid var(--line);font-weight:500}
+.btn.dng{background:rgba(255,107,107,.14);color:var(--danger);border:1px solid rgba(255,107,107,.4)}
+.btn.mint{background:var(--mint);color:#04231A}
+.btn.sl{padding:11px;font-size:13px;border-radius:11px}
+.row{display:flex;gap:8px}
+.row>*{flex:1}
+
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.chip{background:var(--card);border:1px solid var(--line);color:var(--mut);border-radius:20px;padding:7px 13px;font-size:12px;cursor:pointer;font-family:inherit}
+.chip.on{background:rgba(255,197,61,.16);border-color:var(--acc);color:var(--acc)}
+
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:500;padding:4px 9px;border-radius:20px;background:rgba(79,220,168,.13);color:var(--mint);border:1px solid rgba(79,220,168,.25)}
+.badge.v{background:rgba(138,124,255,.14);color:#AFA5FF;border-color:rgba(138,124,255,.3)}
+.badge.a{background:rgba(255,197,61,.13);color:var(--acc);border-color:rgba(255,197,61,.3)}
+.badges{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+
+.sec-t{font-size:11px;color:var(--dim);letter-spacing:1.2px;font-weight:700;margin:20px 0 9px}
+.list-item{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid rgba(40,50,90,.6)}
+.list-item:last-child{border:none}
+.li-main{flex:1;min-width:0}
+.li-t{font-size:13.5px;font-weight:500}
+.li-s{font-size:11.5px;color:var(--mut);margin-top:2px}
+.li-e{font-size:12px;color:var(--mut);text-align:left;flex-shrink:0}
+.li-e b{display:block;color:var(--txt);font-size:13px}
+
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px}
+.kpi .n{font-size:24px;font-weight:800;letter-spacing:-.5px}
+.kpi .n small{font-size:13px;font-weight:500;color:var(--mut)}
+.kpi .l{font-size:11px;color:var(--mut);margin-top:2px}
+.kpi.up .n{color:var(--mint)}
+.kpi.acc .n{color:var(--acc)}
+
+.map{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);margin-bottom:12px;background:#0A0F20}
+.map svg{display:block;width:100%}
+.map-ov{position:absolute;bottom:10px;right:10px;left:10px;background:rgba(10,15,32,.92);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px}
+.eta{font-size:19px;font-weight:800;color:var(--acc);line-height:1}
+.eta small{font-size:11px;color:var(--mut);font-weight:500}
+
+.timeline{display:grid;gap:0;margin:4px 0}
+.tl{display:flex;gap:11px}
+.tl-dot{display:grid;justify-items:center;gap:0;flex-shrink:0;padding-top:4px}
+.tl-dot b{width:10px;height:10px;border-radius:50%;background:var(--line);display:block}
+.tl-dot i{width:2px;flex:1;background:var(--line);min-height:26px;display:block}
+.tl.done .tl-dot b{background:var(--mint)}
+.tl.now .tl-dot b{background:var(--acc);box-shadow:0 0 0 4px rgba(255,197,61,.18)}
+.tl-c{padding-bottom:14px;flex:1}
+.tl-t{font-size:13px;font-weight:500}
+.tl-s{font-size:11.5px;color:var(--mut);margin-top:1px}
+
+.switch{width:46px;height:27px;border-radius:20px;background:var(--line);position:relative;cursor:pointer;flex-shrink:0;transition:.2s;border:none}
+.switch:after{content:"";position:absolute;top:3px;right:3px;width:21px;height:21px;border-radius:50%;background:#fff;transition:.2s}
+.switch.on{background:var(--mint)}
+.switch.on:after{right:22px}
+
+.pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--mint);animation:p 1.6s infinite}
+@keyframes p{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.5)}}
+.spin{width:52px;height:52px;border:3px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:s 1s linear infinite;margin:0 auto}
+@keyframes s{to{transform:rotate(360deg)}}
+.fade{animation:f .3s ease}
+@keyframes f{from{opacity:0;transform:translateY(8px)}}
+.center{text-align:center}
+.big-emoji{font-size:44px;margin-bottom:12px;display:block}
+.bar{height:6px;background:var(--line);border-radius:10px;overflow:hidden;margin-top:7px}
+.bar i{display:block;height:100%;background:var(--acc);border-radius:10px}
+.money{font-size:30px;font-weight:800;letter-spacing:-1px}
+.hr{height:1px;background:var(--line);margin:14px 0}
+a.lnk{color:var(--acc);font-size:12px;text-decoration:none;border-bottom:1px dashed rgba(255,197,61,.4)}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ============ SIDE ============ -->
+<div class="side">
+  <div class="logo">
+    <div class="logo-mark">ק</div>
+    <div><div class="logo-txt">קרוב</div><div class="logo-sub">ההסעה השכונתית</div></div>
+  </div>
+  <h1>בלילה ובשבת אין תחבורה בעיר.<br><em>לשכנים יש רכב.</em></h1>
+  <p class="lead">קרוב מחברת תושבים מאומתים שנוסעים בכל מקרה, לנוער ולמי שצריך הסעה קצרה בתוך העיר — בשקיפות מלאה להורים: מי הנהג, איזה רכב, איפה הם עכשיו, ומתי הם מגיעים הביתה.</p>
+  <div class="pill-row">
+    <div class="pill">הסעה בתוך העיר · <b>10 ₪</b></div>
+    <div class="pill">נהגים <b>מאומתים</b></div>
+    <div class="pill">מעקב חי <b>להורים</b></div>
+    <div class="pill">איסוף <b>בדרך</b></div>
+    <div class="pill"><b>ליווי</b> ברגל / בטלפון</div>
+  </div>
+
+  <div class="block">
+    <h3><span>⚖️</span> המודל הכספי — כך הוא עומד בחוק</h3>
+    <ul>
+      <li><b>לא "שכר" אלא השתתפות בהוצאות.</b> תקנה 84ב לתקנות התעבורה מכירה בהסעה שיתופית ברכב פרטי — בתנאי שהתשלום לא עולה על חלקו היחסי של הנוסע בהוצאות הישירות של הנסיעה, ומשולם רק על ידי הנוסעים.</li>
+      <li><b>תקרה של 2 הסעות ביום לנהג.</b> האפליקציה חוסמת אוטומטית נהג שהגיע למגבלה — זה מה שמבדיל קהילה מ"מונית פיראטית".</li>
+      <li><b>עד 4 נוסעים</b> ותיאום מראש דרך האפליקציה בלבד — לא איסוף מהרחוב.</li>
+      <li><b>קרדיט במקום כסף</b> כברירת מחדל: הנהג מקבל קרדיט לשימוש המשפחה. פחות חשיפה, יותר הדדיות, והכסף נשאר בקהילה.</li>
+      <li><b>לפני השקה:</b> חוות דעת של עו"ד תעבורה + אישור בכתב מחברת הביטוח לגבי נסיעה שיתופית.</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h3><span>🛡️</span> שכבות האמון</h3>
+    <ul>
+      <li>ת"ז + רישיון + בעלות על הרכב, אימות סלפי מול ת"ז</li>
+      <li>היעדר עבירות מין (אישור משטרה) + היסטוריית עבירות תנועה</li>
+      <li>שתי המלצות מתושבים שכבר במערכת (רשת סגורה)</li>
+      <li>שיוך לכתובת בעיר — רק תושבים</li>
+      <li>כל נסיעה מוקלטת בנתונים: מי, מתי, איפה, עם מי</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h3><span>🏛️</span> איך מגיעים לעירייה</h3>
+    <ul>
+      <li><b>לא מבקשים כסף — מבקשים חסות.</b> פיילוט של 90 יום בשכונה אחת, על חשבוננו.</li>
+      <li><b>הדלת הנכונה:</b> מנהל/ת אגף נוער וצעירים ומועצת הנוער העירונית → ואז מחזיק תיק התחבורה. לא מתחילים מראש העיר.</li>
+      <li><b>השפה שלהם:</b> "קו לילה עולה לעירייה מאות אלפי ש"ח בשנה ונוסע ריק. אנחנו נותנים כיסוי לילי בעלות אפס, עם דאשבורד בזמן אמת."</li>
+      <li><b>מה מבקשים:</b> לוגו, הפצה בערוצי העירייה ובבתי הספר, וחיבור לקב"ט העיר ולמשטרה הקהילתית.</li>
+      <li><b>שלב ב':</b> עסקים מקומיים קונים חסות על נסיעות ("הנסיעה הזו על חשבון הפיצרייה") — העירייה מקבלת קרדיט על כלכלה מקומית.</li>
+    </ul>
+    <p class="note" style="margin-top:10px">מצגת לעירייה מוכנה לשליחה: <a class="lnk" href="pitch.html">pitch.html</a></p>
+  </div>
+  <p class="note">אב טיפוס להמחשה. כל הנתונים באפליקציה הם דמה. אין כאן תשלום אמיתי, מיקום אמיתי או נהגים אמיתיים.</p>
+</div>
+
+<!-- ============ PHONE ============ -->
+<div class="stage">
+  <div class="roles" id="roles"></div>
+  <div class="phone">
+    <div class="statusbar"><span id="clock">23:04</span><span>אב טיפוס · נתוני דמה</span></div>
+    <div class="screen" id="screen"></div>
+    <nav class="tabbar" id="tabbar"></nav>
+  </div>
+</div>
+
+</div>
+<script>
+/* ============================================================
+   קרוב — אב טיפוס. כל הנתונים דמה.
+   ============================================================ */
+const ROLES=[
+ {id:'rider', label:'נוסע', tabs:[['בית','🏠','rider_home'],['הנסיעה','🚗','rider_live'],['ליווי','🛡️','escort_home'],['ארנק','💳','wallet']]},
+ {id:'parent',label:'הורה', tabs:[['מצב חי','📍','parent_live'],['עדכונים','🔔','parent_alerts'],['כללים','⚙️','parent_settings']]},
+ {id:'driver',label:'נהג',  tabs:[['זמינות','🟢','driver_home'],['מסלול','🗺️','driver_route'],['ארנק','💳','driver_wallet']]},
+ {id:'escort',label:'ליווי', tabs:[['בקשת ליווי','🛡️','escort_home'],['איך זה עובד','ℹ️','escort_how']]},
+ {id:'city',  label:'עירייה',tabs:[['דאשבורד','📊','city_home'],['נהגים','🪪','city_drivers'],['עסקים','🏪','city_biz']]}
+];
+const D={
+ rider:{name:'נועם',init:'נ'},
+ driver:{name:'רונית ל.',init:'ר',car:'טויוטה קורולה · אפורה',plate:'84-612-73',rate:'4.9',rides:126,
+         who:'אמא של יואב מ-ט\'2 · תיכון הדרים'},
+ riders2:[{n:'מאיה',i:'מ',s:'איסוף · רח\' הדקל 4'},{n:'איתי',i:'א',s:'איסוף · כיכר השרון'}]
+};
+let S={role:'rider',screen:'rider_home',avail:true,escortType:'call',price:'credit',when:'now'};
+let ANIM=null;
+
+/* ---------- map ---------- */
+function mapSVG(h){h=h||190;return `
+<div class="map"><svg viewBox="0 0 320 ${h}" preserveAspectRatio="none">
+ <rect width="320" height="${h}" fill="#0A0F20"/>
+ <g stroke="#17203C" stroke-width="7" stroke-linecap="round">
+  <path d="M-10 44 H330"/><path d="M-10 100 H330"/>
+  <path d="M40 -10 V${h+10}"/><path d="M150 -10 V${h+10}"/><path d="M278 -10 V${h+10}"/>
+ </g>
+ <g stroke="#111833" stroke-width="3">
+  <path d="M-10 72 H330"/><path d="M95 -10 V${h+10}"/><path d="M215 -10 V${h+10}"/>
+ </g>
+ <g fill="#121A33">
+  <rect x="54" y="52" width="32" height="16" rx="3"/><rect x="162" y="52" width="44" height="16" rx="3"/>
+  <rect x="106" y="108" width="34" height="20" rx="3"/><rect x="228" y="108" width="42" height="20" rx="3"/>
+ </g>
+ <path id="route" d="M40 ${h-55} L40 100 L150 100 L150 44 L278 44" fill="none"
+   stroke="#FFC53D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+ <circle cx="40" cy="${h-55}" r="6" fill="#4FDCA8" stroke="#04231A" stroke-width="2"/>
+ <circle cx="278" cy="44" r="8" fill="#fff" stroke="#070B18" stroke-width="2"/>
+ <text x="278" y="48" font-size="9" text-anchor="middle">🏠</text>
+ <g id="car" transform="translate(40,${h-55})">
+   <circle r="14" fill="#FFC53D" opacity=".22"/>
+   <circle r="7.5" fill="#fff" stroke="#E0A91B" stroke-width="2.5"/>
+ </g>
+</svg><div class="map-ov" id="mapov"></div></div>`}
+
+function runMap(txt,sub,from){
+ const p=document.getElementById('route'),car=document.getElementById('car');
+ if(!p||!car)return;
+ const len=p.getTotalLength();let t=(from===undefined?0:from);
+ const ov=document.getElementById('mapov');
+ const step=()=>{
+   t+=0.0016;if(t>1)t=1;
+   const pt=p.getPointAtLength(len*t);
+   car.setAttribute('transform',`translate(${pt.x},${pt.y})`);
+   const min=Math.max(1,Math.round((1-t)*7));
+   if(ov)ov.innerHTML=`<div class="eta">${min} <small>דק'</small></div>
+     <div style="flex:1;font-size:11.5px;color:var(--mut);line-height:1.5">${t<1?txt:'הגעה ליעד'}<br><span style="color:var(--txt)">${sub}</span></div>
+     <div class="badge"><span class="pulse"></span> חי</div>`;
+   if(t<1)ANIM=requestAnimationFrame(step);
+ };step();
+}
+
+/* ---------- driver card ---------- */
+function driverCard(extra){return `
+<div class="card hi">
+  <div style="display:flex;gap:11px;align-items:center">
+    <div class="avatar lg m">${D.driver.init}</div>
+    <div style="flex:1">
+      <div style="font-size:15.5px;font-weight:700">${D.driver.name} <span style="color:var(--acc);font-size:12px">★ ${D.driver.rate}</span></div>
+      <div style="font-size:12px;color:var(--mut);margin-top:2px">${D.driver.car}</div>
+      <div style="font-size:12px;color:var(--txt);margin-top:2px;letter-spacing:.5px">${D.driver.plate}</div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="badge">✓ מאומתת</span>
+    <span class="badge">✓ אישור משטרה</span>
+    <span class="badge v">🏫 ${D.driver.who}</span>
+    <span class="badge a">${D.driver.rides} נסיעות</span>
+  </div>
+  ${extra||''}
+</div>`}
+
+/* ============================================================
+   SCREENS
+   ============================================================ */
+const SC={};
+
+/* ---------------- נוסע ---------------- */
+SC.rider_home=()=>`<div class="pad fade">
+ <div class="hd">
+   <div><h2>לאן, נועם?</h2><p>23:04 · שבת · אין תחבורה ציבורית</p></div>
+   <div class="avatar">נ</div>
+ </div>
+ <div class="field"><i>🟢</i><div><span class="lbl">איסוף</span><span class="val">מרכז מוסיקה, הרימון 12</span></div></div>
+ <div class="field"><i>🏠</i><div><span class="lbl">יעד</span><span class="val">הבית · נווה נאמן</span></div></div>
+ <div class="chips">
+   <button class="chip ${S.when==='now'?'on':''}" onclick="set('when','now')">עכשיו</button>
+   <button class="chip ${S.when==='15'?'on':''}" onclick="set('when','15')">בעוד 15 דק'</button>
+   <button class="chip ${S.when==='after'?'on':''}" onclick="set('when','after')">בסוף החוג</button>
+ </div>
+ <div class="card acc" style="display:flex;align-items:center;gap:12px">
+   <div class="money" style="color:var(--acc)">10 ₪</div>
+   <div class="card-s" style="flex:1">מחיר אחיד לכל נסיעה בתוך העיר.<br>אפשר לשלם בקרדיט משפחתי שצברתם.</div>
+ </div>
+ <button class="btn" onclick="go('rider_match')">מצא נהג בסביבה</button>
+ <div class="row" style="margin-top:8px">
+   <button class="btn sec sl" onclick="go('escort_home')">🛡️ רק ליווי, בלי נסיעה</button>
+   <button class="btn sec sl" onclick="go('trust')">מי הנהגים?</button>
+ </div>
+ <div class="sec-t">זמינים כרגע בעיר · 7</div>
+ ${[['ר','רונית ל.','נווה נאמן · 3 דק\' ממך','4.9'],['ד','דני א.','מגדיאל · 6 דק\' ממך','5.0'],['ש','שירה ב.','גיל עמל · 8 דק\' ממך','4.8']]
+  .map(d=>`<div class="list-item"><div class="avatar sm m">${d[0]}</div>
+   <div class="li-main"><div class="li-t">${d[1]}</div><div class="li-s">${d[2]}</div></div>
+   <div class="li-e"><b>★ ${d[3]}</b>מאומת</div></div>`).join('')}
+</div>`;
+
+SC.rider_match=()=>{setTimeout(()=>go('rider_live'),2600);return `<div class="pad fade" style="padding-top:70px">
+ <div class="center"><div class="spin"></div>
+ <h2 style="font-size:18px;margin-top:18px">מחפש נהג מאומת בסביבה…</h2>
+ <p style="font-size:12.5px;color:var(--mut);margin-top:6px;line-height:1.7">שולח בקשה ל-7 תושבים שסימנו<br>את עצמם כזמינים כרגע</p></div>
+ <div class="card" style="margin-top:26px">
+   <div class="card-t">⏳ ממתין לאישור</div>
+   <div class="card-s">ברגע שנהג יאשר — אתה והורים שלך תקבלו את השם, הרכב, מספר הרישוי וקישור למעקב חי.</div>
+   <div class="bar"><i style="width:62%"></i></div>
+ </div></div>`};
+
+SC.rider_live=()=>{setTimeout(()=>runMap('רונית בדרך אליך','אחרי האיסוף: מאיה ואיתי'),60);
+ return `<div class="pad fade">
+ <div class="hd"><div><h2>רונית בדרך אליך</h2><p>טויוטה קורולה אפורה · 84-612-73</p></div>
+ <div class="badge"><span class="pulse"></span> חי</div></div>
+ ${mapSVG(200)}
+ ${driverCard(`<div class="row" style="margin-top:12px">
+   <button class="btn sec sl">📞 התקשר</button>
+   <button class="btn sec sl">💬 הודעה</button>
+   <button class="btn mint sl" onclick="go('rider_shared')">👨‍👩‍👦 שתף</button></div>`)}
+ <div class="sec-t">מי עוד בנסיעה</div>
+ <div class="card">
+  ${D.riders2.map(r=>`<div class="list-item"><div class="avatar sm">${r.i}</div>
+   <div class="li-main"><div class="li-t">${r.n}</div><div class="li-s">${r.s}</div></div>
+   <div class="li-e">+0 ₪</div></div>`).join('')}
+  <div class="card-s" style="margin-top:8px">נוסעים נוספים בדרך לא מייקרים לך את הנסיעה — הם מקטינים את ההוצאה לכולם.</div>
+ </div>
+ <button class="btn dng" onclick="go('rider_done')">סיום נסיעה (דמו)</button>
+</div>`};
+
+SC.rider_shared=()=>`<div class="pad fade">
+ <div class="hd"><div><h2>שותף עם ההורים</h2><p>אמא ואבא מקבלים את אותו מידע</p></div></div>
+ <div class="card mint center" style="padding:20px">
+   <span class="big-emoji">✅</span>
+   <div class="card-t" style="justify-content:center">נשלח ל-2 אנשי קשר</div>
+   <div class="card-s">אורית (אמא) · יוסי (אבא)</div>
+ </div>
+ <div class="card">
+  <div class="card-t">מה הם רואים</div>
+  <div class="card-s" style="margin-bottom:10px">בדיוק את אותו מסך, בלי להתקין כלום — קישור בוואטסאפ:</div>
+  <div class="timeline">
+   ${[['שם הנהגת ותמונה','רונית ל. · מאומתת ע"י העירייה'],['רכב ומספר רישוי','טויוטה קורולה אפורה · 84-612-73'],['מעקב חי על המפה','מתעדכן כל 3 שניות'],['מי עוד ברכב','מאיה, איתי'],['התראה בהגעה הביתה','אוטומטית, גם אם נועם שכח']]
+   .map((t,i)=>`<div class="tl done"><div class="tl-dot"><b></b>${i<4?'<i></i>':''}</div>
+    <div class="tl-c"><div class="tl-t">${t[0]}</div><div class="tl-s">${t[1]}</div></div></div>`).join('')}
+  </div>
+ </div>
+ <button class="btn sec" onclick="go('rider_live')">חזרה לנסיעה</button>
+</div>`;
+
+SC.rider_done=()=>`<div class="pad fade center" style="padding-top:34px">
+ <span class="big-emoji">🏠</span>
+ <h2 style="font-size:21px">הגעת הביתה · 23:19</h2>
+ <p style="font-size:12.5px;color:var(--mut);margin-top:6px">ההורים קיבלו עדכון אוטומטי</p>
+ <div class="card" style="margin-top:20px;text-align:right">
+  <div class="list-item"><div class="li-main"><div class="li-t">השתתפות בהוצאות</div><div class="li-s">4.2 ק"מ · התחלק בין 3 נוסעים</div></div><div class="li-e"><b>10 ₪</b></div></div>
+  <div class="list-item"><div class="li-main"><div class="li-t">שולם מהארנק המשפחתי</div><div class="li-s">נשארו 4 קרדיטים</div></div><div class="li-e">✓</div></div>
+ </div>
+ <div class="card" style="text-align:right">
+  <div class="card-t">איך היה עם רונית?</div>
+  <div style="font-size:26px;letter-spacing:6px;margin:8px 0;color:var(--acc)">★★★★★</div>
+  <div class="card-s">דירוג נמוך מ-4 פותח בדיקה אנושית. 2 דיווחי בטיחות = השעיה מיידית.</div>
+ </div>
+ <button class="btn" onclick="go('rider_home')">סיום</button>
+</div>`;
+
+SC.wallet=()=>`<div class="pad fade">
+ <div class="hd"><div><h2>הארנק המשפחתי</h2><p>משפחת לוי · 3 בני בית</p></div></div>
+ <div class="card acc center" style="padding:20px">
+   <div class="money" style="color:var(--acc)">4 קרדיטים</div>
+   <div class="card-s" style="margin-top:4px">= 4 הסעות · שווי 40 ₪ · לכל בני המשפחה</div>
+ </div>
+ <div class="row" style="margin-bottom:12px">
+   <button class="btn sl">+ טען 5 נסיעות · 50 ₪</button>
+   <button class="btn sec sl" onclick="go('driver_home')">הרווח בנהיגה</button>
+ </div>
+ <div class="sec-t">תנועות</div>
+ <div class="card">
+  ${[['הסעה · נועם הביתה','שבת 23:19','-1'],['אמא הסיעה 2 נערים','שישי 22:40','+2'],['הסעה · מאיה לחוג','חמישי 17:10','-1'],['קרדיט מתנה · עיריית הוד השרון','פתיחת חשבון','+2']]
+   .map(t=>`<div class="list-item"><div class="li-main"><div class="li-t">${t[0]}</div><div class="li-s">${t[1]}</div></div>
+   <div class="li-e"><b style="color:${t[2][0]==='+'?'var(--mint)':'var(--txt)'}">${t[2]}</b></div></div>`).join('')}
+ </div>
+ <div class="card mint">
+  <div class="card-t">🏪 שלב ב' · עסקים מקומיים</div>
+  <div class="card-s">אפשר להמיר קרדיטים אצל עסקים בעיר, או לקבל נסיעה במתנה מעסק שמחזיר לקהילה.</div>
+  <button class="btn sec sl" style="margin-top:10px" onclick="go('city_biz')">ראה מי בפנים</button>
+ </div>
+</div>`;
+
+SC.trust=()=>`<div class="pad fade">
+ <div class="hd"><div><h2>למה אפשר לסמוך</h2><p>רשת סגורה של תושבי העיר בלבד</p></div></div>
+ <div class="card">
+  <div class="timeline">
+  ${[['אימות זהות','ת"ז + סלפי מול התמונה + רישיון נהיגה בתוקף'],
+     ['בעלות ורכב','רישיון רכב, ביטוח בתוקף, בדיקת תקינות'],
+     ['היעדר עבירות מין','אישור משטרה — חובה לכל נהג'],
+     ['עבר תעבורתי','שלילות, תאונות, נקודות'],
+     ['2 ממליצים','תושבים שכבר במערכת מאשרים אותך'],
+     ['תושבות','אישור כתובת בעיר — רק מי שגר כאן'],
+     ['תיעוד כל נסיעה','מי, מתי, איפה, עם מי — נשמר ונגיש להורים']]
+   .map((t,i,a)=>`<div class="tl done"><div class="tl-dot"><b></b>${i<a.length-1?'<i></i>':''}</div>
+    <div class="tl-c"><div class="tl-t">${t[0]}</div><div class="tl-s">${t[1]}</div></div></div>`).join('')}
+  </div>
+ </div>
+ <div class="card hi">
+  <div class="card-t">⚖️ וגם בצד החוקי</div>
+  <div class="card-s">הנהג לא מרוויח — הוא מתחלק בהוצאות. עד 2 הסעות ביום, עד 4 נוסעים, תיאום מראש באפליקציה בלבד. המערכת חוסמת חריגה אוטומטית.</div>
+ </div>
+ <button class="btn sec" onclick="go('rider_home')">חזרה</button>
+</div>`;
+
+/* ---------------- ליווי ---------------- */
+SC.escort_home=()=>`<div class="pad fade">
+ <div class="hd"><div><h2>ליווי עד הבית</h2><p>כשאין נסיעה — שלא תלכי לבד</p></div>
+ <div class="badge">12 מלווים זמינים</div></div>
+ <div class="chips">
+  <button class="chip ${S.escortType==='call'?'on':''}" onclick="set('escortType','call')">📞 ליווי טלפוני</button>
+  <button class="chip ${S.escortType==='video'?'on':''}" onclick="set('escortType','video')">🎥 וידאו</button>
+  <button class="chip ${S.escortType==='walk'?'on':''}" onclick="set('escortType','walk')">🚶 שמישהו יבוא</button>
+ </div>
+ <div class="card">
+  <div class="card-t">${S.escortType==='call'?'📞 מלווה על הקו':S.escortType==='video'?'🎥 מלווה רואה אותך':'🚶 מלווה יוצא אליך'}</div>
+  <div class="card-s">${S.escortType==='call'?'מתנדב/ת מאומת מהעיר נשאר איתך בשיחה עד שאת בבית. הוא רואה את המיקום שלך בזמן אמת.':S.escortType==='video'?'שיחת וידאו פתוחה. אם השיחה נקטעת — נשלחת התראה אוטומטית לאנשי הקשר ולמוקד העירוני.':'מלווה שנמצא עד 400 מ\' ממך יוצא לנקודת המפגש ומגיע איתך הביתה. מלווה ואשת ליווי לפי בחירה.'}</div>
+ </div>
+ <div class="field"><i>📍</i><div><span class="lbl">אני כאן</span><span class="val">תחנת רכבת הוד השרון</span></div></div>
+ <div class="field"><i>🏠</i><div><span class="lbl">הולכת ל</span><span class="val">הבית · 11 דק' הליכה</span></div></div>
+ <div class="field ghost"><i>👥</i><div><span class="lbl">מי עוד יראה</span><span class="val" style="color:var(--mut)">אמא + מוקד 106 העירוני</span></div></div>
+ <button class="btn mint" onclick="go('escort_active')">התחל ליווי</button>
+ <div class="card" style="margin-top:12px">
+  <div class="card-t">🤝 לא ממציאים את הגלגל</div>
+  <div class="card-s">קיימות כבר רשתות ליווי לנשים (כמו SafeUP, עם עשרות אלפי חברות בישראל). ההמלצה: לא לבנות קהילת מתנדבות מאפס — לשלב את השירות הקיים, ולהוסיף עליו את מה שרק אנחנו יכולים: הסעה אמיתית במקום הליכה.</div>
+ </div>
+</div>`;
+
+SC.escort_active=()=>{setTimeout(()=>runMap('תמר על הקו איתך','מגיעה הביתה בעוד'),60);
+ return `<div class="pad fade">
+ <div class="hd"><div><h2>תמר איתך על הקו</h2><p>מלווה מאומתת · 04:12 דקות בשיחה</p></div>
+ <div class="badge"><span class="pulse"></span> חי</div></div>
+ ${mapSVG(170)}
+ <div class="card hi">
+  <div style="display:flex;gap:11px;align-items:center">
+   <div class="avatar lg">ת</div>
+   <div style="flex:1"><div style="font-size:15px;font-weight:700">תמר ש.</div>
+   <div style="font-size:12px;color:var(--mut)">מתנדבת · 48 ליוויים · הוד השרון</div></div>
+  </div>
+  <div class="badges"><span class="badge">✓ מאומתת</span><span class="badge v">הכשרת מוקד</span></div>
+ </div>
+ <div class="row">
+  <button class="btn sec sl">🔇 השתק</button>
+  <button class="btn sec sl" onclick="go('rider_home')">✓ הגעתי</button>
+ </div>
+ <button class="btn dng" style="margin-top:8px">🚨 מצוקה · מוקד + משטרה</button>
+ <div class="card" style="margin-top:12px">
+  <div class="card-s">אם לא תאשרי הגעה תוך 11 דקות — נשלחת התראה אוטומטית לאמא ולמוקד העירוני עם המיקום האחרון.</div>
+ </div>
+</div>`};
+
+SC.escort_how=()=>`<div class="pad fade">
+ <div class="hd"><div><h2>איך הליווי עובד</h2><p>ומה הכי חשוב לשמור עליו</p></div></div>
+ ${[['1','בקשה בלחיצה אחת','בלי להסביר, בלי טפסים. גם מסך נעול.'],
+    ['2','התאמה לפי קרבה','מלווה מאומת ברדיוס 400 מ\', או מוקד טלפוני אם אין אף אחד.'],
+    ['3','שקיפות לאנשי קשר','מיקום חי לאמא/חברה + מוקד עירוני.'],
+    ['4','אישור הגעה','אין אישור = התראה אוטומטית. זה הלב של השירות.'],
+    ['5','אפס אגרה','ליווי הוא תמיד בחינם. רק הסעות מתחלקות בהוצאות.']]
+  .map(c=>`<div class="card"><div class="card-t"><span style="width:22px;height:22px;border-radius:7px;background:var(--card2);display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:var(--acc)">${c[0]}</span>${c[1]}</div><div class="card-s">${c[2]}</div></div>`).join('')}
+ <div class="card acc"><div class="card-t">⚠️ מה שחייב להיות מוכן מראש</div>
+ <div class="card-s">נוהל מצוקה כתוב, מספר מוקד אמיתי שעונה 24/7, הכשרה למתנדבים, וביטוח אחריות מקצועית. בלי זה — לא משחררים את הפיצ'ר לציבור.</div></div>
+</div>`;
+
+/* ---------------- הורה ---------------- */
+SC.parent_live=()=>{setTimeout(()=>runMap('נועם בדרך הביתה','עם רונית ל. · 2 נוסעים נוספים',.45),60);
+ return `<div class="pad fade">
+ <div class="hd"><div><h2>שלום אורית</h2><p>2 בני בית · שבת 23:04</p></div><div class="avatar a">א</div></div>
+ <div class="card mint">
+  <div style="display:flex;align-items:center;gap:10px">
+   <div class="avatar m">נ</div>
+   <div style="flex:1"><div class="card-t" style="margin:0">נועם · בדרך הביתה</div>
+   <div class="card-s">נכנס לרכב ב-23:07 ליד מרכז המוסיקה</div></div>
+   <div class="badge"><span class="pulse"></span> חי</div>
+  </div>
+ </div>
+ ${mapSVG(180)}
+ ${driverCard(`<div class="row" style="margin-top:12px">
+  <button class="btn sec sl">📞 לנהגת</button>
+  <button class="btn sec sl">📞 לנועם</button></div>`)}
+ <div class="sec-t">מי עוד ברכב</div>
+ <div class="card">${D.riders2.map(r=>`<div class="list-item"><div class="avatar sm">${r.i}</div>
+   <div class="li-main"><div class="li-t">${r.n}</div><div class="li-s">${r.s}</div></div></div>`).join('')}</div>
+ <div class="card">
+  <div style="display:flex;align-items:center;gap:10px">
+   <div class="avatar sm">מ</div>
+   <div style="flex:1"><div class="li-t">מאיה · בבית</div><div class="li-s">הגיעה 21:52 ✓</div></div>
+  </div>
+ </div>
+</div>`};
+
+SC.parent_alerts=()=>`<div class="pad fade">
+ <div class="hd"><div><h2>עדכונים</h2><p>הכל אוטומטי. לא צריך לשאול "הגעת?"</p></div></div>
+ ${[['🚗','נועם נכנס לרכב','23:07 · רונית ל. · 84-612-73','var(--acc)'],
+    ['👥','מאיה ואיתי נאספו בדרך','23:11 · 3 נוסעים ברכב','var(--mut)'],
+    ['🏠','נועם הגיע הביתה','23:19 · 4.2 ק"מ · 12 דק\'','var(--mint)'],
+    ['✅','מאיה הגיעה הביתה','21:52 · עם דני א.','var(--mint)'],
+    ['⚠️','נסיעה חרגה מהמסלול ב-3 דק\'','20:14 · נבדק ונסגר — פקק בכיכר','var(--danger)']]
+  .map(a=>`<div class="card" style="padding:12px"><div style="display:flex;gap:11px;align-items:flex-start">
+   <div style="font-size:17px">${a[0]}</div>
+   <div style="flex:1"><div class="li-t" style="color:${a[3]}">${a[1]}</div><div class="li-s">${a[2]}</div></div></div></div>`).join('')}
+ <div class="card hi"><div class="card-t">🔔 גם בוואטסאפ</div>
+ <div class="card-s">ההורים שלא רוצים להתקין אפליקציה מקבלים את אותן התראות בוואטסאפ, עם קישור למפה החיה.</div></div>
+</div>`;
+
+SC.parent_settings=()=>`<div class="pad fade">
+ <div class="hd"><div><h2>הכללים שלי</h2><p>אתם קובעים, לא האפליקציה</p></div></div>
+ ${[['נסיעות מותרות עד','00:30',1],['רק נהגים מאומתים ברמה 2','כולל אישור משטרה',1],
+    ['רק נהגים שיש להם ילד בבית הספר','תיכון הדרים',0],
+    ['אישור הורה לכל נסיעה','מתחת לגיל 16',1],
+    ['שיתוף מיקום עם 2 אנשי קשר','אורית, יוסי',1],
+    ['חסימת נהג ספציפי','אפשר תמיד, בלי להסביר',0]]
+  .map((r,i)=>`<div class="card" style="padding:13px"><div style="display:flex;align-items:center;gap:10px">
+   <div style="flex:1"><div class="li-t">${r[0]}</div><div class="li-s">${r[1]}</div></div>
+   <button class="switch ${r[2]?'on':''}" onclick="this.classList.toggle('on')"></button></div></div>`).join('')}
+ <div class="card acc"><div class="card-t">💳 תקציב חודשי</div>
+  <div class="card-s">100 ₪ לחודש · נוצלו 40 ₪<div class="bar"><i style="width:40%"></i></div></div></div>
+</div>`;
+
+/* ---------------- נהג ---------------- */
+SC.driver_home=()=>`<div class="pad fade">
+ <div class="hd"><div><h2>שלום רונית</h2><p>שבת 23:04 · 7 נהגים זמינים בעיר</p></div><div class="avatar m">ר</div></div>
+ <div class="card ${S.avail?'mint':''}">
+  <div style="display:flex;align-items:center;gap:11px">
+   <div style="flex:1"><div class="card-t" style="margin:0">${S.avail?'את זמינה להסעות':'לא זמינה כרגע'}</div>
+   <div class="card-s">${S.avail?'תקבלי בקשות רק מתושבי העיר, רק לנסיעות קצרות':'סמני זמינות כשאת בכל מקרה בחוץ'}</div></div>
+   <button class="switch ${S.avail?'on':''}" onclick="set('avail',${!S.avail})"></button>
+  </div>
+ </div>
+ <div class="chips">
+  <button class="chip on">עד 10 דק' ממני</button>
+  <button class="chip on">עד 00:30</button>
+  <button class="chip">רק נערות</button>
+  <button class="chip">רק מכירים</button>
+ </div>
+ ${S.avail?`<div class="card hi fade">
+  <div class="hd" style="margin-bottom:10px"><div><div class="card-t">בקשה חדשה · נועם, 16</div>
+  <div class="card-s">מרכז מוסיקה → נווה נאמן · 4.2 ק"מ</div></div><div class="badge a">8 שנ'</div></div>
+  <div class="timeline">
+   <div class="tl now"><div class="tl-dot"><b></b><i></i></div><div class="tl-c"><div class="tl-t">איסוף · הרימון 12</div><div class="tl-s">3 דק' ממך</div></div></div>
+   <div class="tl"><div class="tl-dot"><b></b><i></i></div><div class="tl-c"><div class="tl-t">בדרך · מאיה + איתי</div><div class="tl-s">+2 דק' למסלול</div></div></div>
+   <div class="tl"><div class="tl-dot"><b></b></div><div class="tl-c"><div class="tl-t">יעד · נווה נאמן</div><div class="tl-s">סה"כ 12 דק'</div></div></div>
+  </div>
+  <div class="hr"></div>
+  <div class="card-s" style="margin-bottom:8px">מה לקבל על הנסיעה?</div>
+  <div class="row" style="margin-bottom:10px">
+   <button class="chip ${S.price==='credit'?'on':''}" onclick="set('price','credit')">3 קרדיטים למשפחה</button>
+   <button class="chip ${S.price==='cash'?'on':''}" onclick="set('price','cash')">30 ₪ השתתפות</button>
+  </div>
+  <div class="row"><button class="btn sl" onclick="go('driver_route')">קבלי נסיעה</button>
+  <button class="btn sec sl">לא עכשיו</button></div>
+ </div>
+ <div class="card"><div class="card-t">⚖️ מגבלת החוק · 1 מתוך 2 היום</div>
+  <div class="card-s">אחרי 2 הסעות ביום המערכת תסמן אותך לא זמינה. ככה נשארים בתחום ההסעה השיתופית.<div class="bar"><i style="width:50%"></i></div></div></div>`
+ :`<div class="card center" style="padding:28px"><span class="big-emoji">😴</span>
+   <div class="card-s">כשתהיי זמינה — תראי כאן בקשות מהשכונה</div></div>`}
+</div>`;
+
+SC.driver_route=()=>{setTimeout(()=>runMap('בדרך לאיסוף של נועם','הרימון 12 · 3 עצירות במסלול',.1),60);
+ return `<div class="pad fade">
+ <div class="hd"><div><h2>המסלול שלך</h2><p>3 נוסעים · 12 דק' · 4.2 ק"מ</p></div>
+ <div class="badge"><span class="pulse"></span> פעיל</div></div>
+ ${mapSVG(180)}
+ <div class="card">
+  <div class="timeline">
+   <div class="tl now"><div class="tl-dot"><b></b><i></i></div><div class="tl-c"><div class="tl-t">נועם · הרימון 12</div><div class="tl-s">מחכה בחוץ · 23:07</div></div></div>
+   <div class="tl"><div class="tl-dot"><b></b><i></i></div><div class="tl-c"><div class="tl-t">מאיה · הדקל 4</div><div class="tl-s">23:11</div></div></div>
+   <div class="tl"><div class="tl-dot"><b></b><i></i></div><div class="tl-c"><div class="tl-t">איתי · כיכר השרון</div><div class="tl-s">23:13</div></div></div>
+   <div class="tl"><div class="tl-dot"><b></b></div><div class="tl-c"><div class="tl-t">יעד · נווה נאמן</div><div class="tl-s">23:19 · כולם באותה שכונה</div></div></div>
+  </div>
+ </div>
+ <div class="row"><button class="btn sl">🧭 נווט (Waze)</button><button class="btn sec sl">💬 לנוסעים</button></div>
+ <button class="btn sec" style="margin-top:8px" onclick="go('driver_wallet')">סיום מסלול</button>
+</div>`};
+
+SC.driver_wallet=()=>`<div class="pad fade">
+ <div class="hd"><div><h2>מה צברת</h2><p>החודש · 14 הסעות</p></div></div>
+ <div class="kpis">
+  <div class="kpi acc"><div class="n">12</div><div class="l">קרדיטים זמינים</div></div>
+  <div class="kpi up"><div class="n">140 <small>₪</small></div><div class="l">שווי השתתפות</div></div>
+ </div>
+ <div class="card acc"><div class="card-t">💡 למה קרדיט ולא כסף</div>
+  <div class="card-s">קרדיט נשאר בקהילה, לא נחשב הכנסה, ומחזיר לך בדיוק את מה שנתת — הסעה לילד שלך כשאת לא יכולה. אפשר גם לתרום קרדיטים למשפחה שצריכה.</div></div>
+ <div class="sec-t">מה אפשר לעשות איתם</div>
+ ${[['🚗','הסעה לבני המשפחה','1 קרדיט = נסיעה אחת'],
+    ['🎁','לתרום למשפחה נזקקת','העירייה מחלקת בעילום שם'],
+    ['🏪','להמיר אצל עסק מקומי','שלב ב\' · קפה, פיצה, חוג'],
+    ['💸','להמיר להשתתפות בהוצאות','עד התקרה החוקית']]
+  .map(o=>`<div class="list-item"><div style="font-size:17px">${o[0]}</div>
+   <div class="li-main"><div class="li-t">${o[1]}</div><div class="li-s">${o[2]}</div></div><div class="li-e">›</div></div>`).join('')}
+ <button class="btn sec" style="margin-top:14px" onclick="go('driver_home')">חזרה</button>
+</div>`;
+
+/* ---------------- עירייה ---------------- */
+SC.city_home=()=>`<div class="pad fade">
+ <div class="hd"><div><h2>עיריית הוד השרון</h2><p>פיילוט · יום 47 מתוך 90</p></div><div class="avatar a">🏛️</div></div>
+ <div class="kpis">
+  <div class="kpi acc"><div class="n">1,284</div><div class="l">הסעות בפיילוט</div></div>
+  <div class="kpi up"><div class="n">63%</div><div class="l">בלילה ובשבת</div></div>
+  <div class="kpi"><div class="n">4.6 <small>דק'</small></div><div class="l">זמן המתנה ממוצע</div></div>
+  <div class="kpi up"><div class="n">0</div><div class="l">אירועי בטיחות</div></div>
+ </div>
+ <div class="card hi">
+  <div class="card-t">💰 עלות לעירייה</div>
+  <div class="money" style="color:var(--mint);margin:4px 0">0 ₪</div>
+  <div class="card-s">קו לילה עירוני עולה מאות אלפי ש"ח בשנה ונוסע לפי לוח זמנים קבוע. כאן העירייה מקבלת כיסוי לפי ביקוש אמיתי, בעלות תפעול אפס — ושליטה בנתונים.</div>
+ </div>
+ <div class="sec-t">שעות שיא · למה אין פה אוטובוס</div>
+ <div class="card">
+  ${[['16:00-19:00','חוגים וצהרונים',38],['21:00-00:30','נוער · מוצ"ש וסופ"ש',100],['שבת בבוקר','ביקור משפחה, בית כנסת',54],['06:30-08:00','הסעות לבית ספר',22]]
+   .map(h=>`<div style="margin-bottom:11px"><div style="display:flex;justify-content:space-between;font-size:12.5px">
+    <span>${h[0]}</span><span style="color:var(--mut)">${h[1]}</span></div>
+    <div class="bar"><i style="width:${h[2]}%"></i></div></div>`).join('')}
+ </div>
+ <div class="sec-t">מה העירייה מקבלת</div>
+ <div class="card">
+  ${[['דאשבורד בזמן אמת','מי נוסע, מאיפה לאיפה, מתי'],
+     ['מפת ביקוש לתכנון תחבורה','בסיס נתונים לקווי אוטובוס עתידיים'],
+     ['חיבור למוקד 106 ולקב"ט העיר','כל אירוע מצוקה מגיע אליהם'],
+     ['דוח חודשי למועצת העיר','כולל שביעות רצון הורים']]
+   .map(x=>`<div class="list-item"><div class="li-main"><div class="li-t">${x[0]}</div><div class="li-s">${x[1]}</div></div><div class="li-e">✓</div></div>`).join('')}
+ </div>
+</div>`;
+
+SC.city_drivers=()=>`<div class="pad fade">
+ <div class="hd"><div><h2>מצבת נהגים</h2><p>רק תושבי העיר · 214 מאומתים</p></div></div>
+ <div class="kpis">
+  <div class="kpi up"><div class="n">214</div><div class="l">אושרו</div></div>
+  <div class="kpi"><div class="n">31</div><div class="l">בתהליך אימות</div></div>
+  <div class="kpi acc"><div class="n">9</div><div class="l">נדחו</div></div>
+  <div class="kpi"><div class="n">2</div><div class="l">הושעו</div></div>
+ </div>
+ <div class="sec-t">בתהליך · ממתין לאישור</div>
+ <div class="card">
+  ${[['ד','דפנה כ.','ת"ז ✓ · משטרה ✓ · ממליצים 1/2','ממתין'],
+     ['א','אבי מ.','ת"ז ✓ · משטרה ⏳','בבדיקה'],
+     ['ס','סמיר ח.','הכל ✓ · ראיון טלפוני','לאישור']]
+   .map(d=>`<div class="list-item"><div class="avatar sm">${d[0]}</div>
+   <div class="li-main"><div class="li-t">${d[1]}</div><div class="li-s">${d[2]}</div></div>
+   <div class="li-e"><b style="color:var(--acc)">${d[3]}</b></div></div>`).join('')}
+ </div>
+ <div class="card dng" style="background:rgba(255,107,107,.08);border-color:rgba(255,107,107,.3)">
+  <div class="card-t" style="color:var(--danger)">⚠️ 2 השעיות החודש</div>
+  <div class="card-s">נהג שחרג ממגבלת 2 ההסעות ביום (אוטומטי) · נהג שקיבל 2 דיווחי נהיגה פרועה מהורים. כל השעיה מתועדת ומדווחת לעירייה.</div>
+ </div>
+</div>`;
+
+SC.city_biz=()=>`<div class="pad fade">
+ <div class="hd"><div><h2>שלב ב' · עסקים מקומיים</h2><p>המודל שמחזיק את זה כלכלית</p></div></div>
+ <div class="card acc">
+  <div class="card-t">הרעיון במשפט</div>
+  <div class="card-s">עסק מקומי מממן נסיעות, והנוסע רואה: "הנסיעה הזו באדיבות פיצה אמיליה". פרסום שמרגיש כמו תרומה לקהילה — ולא כמו באנר.</div>
+ </div>
+ <div class="sec-t">חבילות</div>
+ ${[['חסות שעה','800 ₪ לחודש','כל הנסיעות בין 22:00-00:00 ביום מסוים נושאות את שמכם'],
+    ['50 נסיעות במתנה','500 ₪','הלקוחות שלכם מקבלים קוד לנסיעה חינם הביתה'],
+    ['חסות שכונה','1,500 ₪ לחודש','מיתוג על כל נסיעה בשכונה + באנר בדאשבורד העירוני']]
+  .map(p=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline">
+   <div class="card-t">${p[0]}</div><div style="color:var(--acc);font-weight:700;font-size:14px">${p[1]}</div></div>
+   <div class="card-s">${p[2]}</div></div>`).join('')}
+ <div class="sec-t">כבר בפנים · דמה</div>
+ <div class="card">
+  ${[['🍕','פיצה אמיליה','חסות 22:00-00:00 · מוצ"ש'],['☕','קפה ברחוב','50 נסיעות במתנה'],['🥋','מכבי הוד השרון','הסעות מאימונים']]
+   .map(b=>`<div class="list-item"><div style="font-size:17px">${b[0]}</div>
+   <div class="li-main"><div class="li-t">${b[1]}</div><div class="li-s">${b[2]}</div></div><div class="li-e">פעיל</div></div>`).join('')}
+ </div>
+ <div class="card hi"><div class="card-t">📌 למה זה עובד דווקא בעיר</div>
+ <div class="card-s">לעסק שכונתי אין איפה לפרסם לנוער בעיר שלו. פייסבוק מוכר לו חשיפה לכל הארץ. אנחנו מוכרים לו בדיוק את 400 המשפחות שגרות ברדיוס הליכה ממנו.</div></div>
+</div>`;
+
+/* ============================================================
+   ROUTER
+   ============================================================ */
+function go(id){
+ if(ANIM){cancelAnimationFrame(ANIM);ANIM=null}
+ S.screen=id;
+ const sc=document.getElementById('screen');
+ sc.innerHTML=(SC[id]||SC.rider_home)();
+ sc.scrollTop=0;
+ renderTabs();
+}
+function set(k,v){S[k]=(v==='true')?true:(v==='false'?false:v);go(S.screen)}
+function setRole(r){
+ S.role=r;
+ const role=ROLES.find(x=>x.id===r);
+ document.querySelectorAll('.role').forEach(b=>b.classList.toggle('on',b.dataset.r===r));
+ go(role.tabs[0][2]);
+}
+function renderTabs(){
+ const role=ROLES.find(x=>x.id===S.role);
+ document.getElementById('tabbar').innerHTML=role.tabs.map(t=>
+  `<button class="tab ${S.screen===t[2]?'on':''}" onclick="go('${t[2]}')"><i>${t[1]}</i>${t[0]}</button>`).join('');
+}
+document.getElementById('roles').innerHTML=ROLES.map(r=>
+ `<button class="role ${r.id===S.role?'on':''}" data-r="${r.id}" onclick="setRole('${r.id}')">${r.label}</button>`).join('');
+setRole('rider');
+/* שעון */
+setInterval(()=>{const d=new Date();
+ document.getElementById('clock').textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')},1000);
+</script>
+</body>
+</html>
