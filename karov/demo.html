@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>קרוב — דמו</title>
+<meta name="description" content="דמו פשוט של קרוב: הזמנת הסעה שכונתית מההתחלה ועד הסוף, ב-60 שניות.">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#070B18;--bg2:#0D1326;--card:#141B33;--card2:#1B2342;--line:#28325A;
+--txt:#EDF1FC;--mut:#8E99C0;--dim:#636E96;--acc:#FFC53D;--mint:#4FDCA8;--violet:#8A7CFF;--danger:#FF6B6B}
+body{font-family:'Heebo',system-ui,sans-serif;min-height:100vh;color:var(--txt);
+background:radial-gradient(800px 500px at 75% -10%,rgba(138,124,255,.17),transparent 60%),
+radial-gradient(600px 400px at 10% 0%,rgba(255,197,61,.10),transparent 60%),var(--bg);
+display:flex;flex-direction:column;align-items:center;padding:26px 16px 50px}
+.top{text-align:center;margin-bottom:18px;max-width:420px}
+.logo{display:inline-flex;align-items:center;gap:9px;margin-bottom:8px}
+.mark{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#FFC53D,#FF8A3D);
+display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;color:#2A1C00}
+.bn{font-size:22px;font-weight:800;letter-spacing:-.4px}
+.top p{font-size:13px;color:var(--mut);line-height:1.6}
+.dots{display:flex;gap:6px;justify-content:center;margin:14px 0 10px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--line);transition:.25s}
+.dot.on{background:var(--acc);width:20px;border-radius:5px}
+.phone{width:100%;max-width:390px;background:#000;border:9px solid #1A1F35;border-radius:40px;
+box-shadow:0 26px 60px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.05);overflow:hidden}
+.bar{background:var(--bg2);display:flex;justify-content:space-between;padding:9px 20px 3px;font-size:10.5px;color:var(--mut)}
+.scr{background:var(--bg2);min-height:560px;padding:16px 18px 24px;display:flex;flex-direction:column}
+.fade{animation:f .32s ease}@keyframes f{from{opacity:0;transform:translateY(10px)}}
+h2{font-size:22px;font-weight:800;line-height:1.25;margin-bottom:5px}
+.sub{font-size:13px;color:var(--mut);margin-bottom:18px;line-height:1.6}
+.field{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:12px 14px;
+display:flex;align-items:center;gap:11px;margin-bottom:9px}
+.field i{font-style:normal;font-size:15px}
+.field .l{font-size:10px;color:var(--dim);display:block}
+.field .v{font-size:14.5px;font-weight:500}
+.opt{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:13px 14px;
+display:flex;align-items:center;gap:12px;margin-bottom:9px;cursor:pointer;transition:.15s;width:100%;
+font-family:inherit;color:inherit;text-align:right}
+.opt:hover{border-color:#3C4A80}
+.opt.on{border-color:var(--acc);background:rgba(255,197,61,.08)}
+.opt .t{font-size:14.5px;font-weight:500}
+.opt .s{font-size:11.5px;color:var(--mut);margin-top:2px}
+.opt .e{margin-right:auto;font-size:12px;color:var(--mut);text-align:left}
+.btn{width:100%;border:none;border-radius:14px;padding:16px;font-family:inherit;font-size:15.5px;
+font-weight:700;cursor:pointer;background:var(--acc);color:#2A1C00;margin-top:auto;transition:.15s}
+.btn:active{transform:scale(.985)}
+.btn:disabled{opacity:.35;cursor:default}
+.btn.g{background:var(--card2);color:var(--txt);border:1px solid var(--line);font-weight:500;font-size:14px;padding:13px;margin-top:9px}
+.btn.m{background:var(--mint);color:#04231A}
+.av{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--mint),#1EA47A);
+display:flex;align-items:center;justify-content:center;font-weight:700;font-size:19px;color:#04231A;flex-shrink:0}
+.av.v{background:linear-gradient(135deg,var(--violet),#5B4BD6);color:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:15px;margin-bottom:11px}
+.card.hl{background:linear-gradient(160deg,var(--card2),var(--card));border-color:#39477E}
+.badges{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.bg{font-size:10.5px;padding:4px 9px;border-radius:20px;background:rgba(79,220,168,.13);
+color:var(--mint);border:1px solid rgba(79,220,168,.25)}
+.bg.v{background:rgba(138,124,255,.14);color:#AFA5FF;border-color:rgba(138,124,255,.3)}
+.spin{width:54px;height:54px;border:3px solid var(--line);border-top-color:var(--acc);
+border-radius:50%;animation:s 1s linear infinite;margin:0 auto 20px}@keyframes s{to{transform:rotate(360deg)}}
+.map{border:1px solid var(--line);border-radius:15px;overflow:hidden;margin-bottom:11px;background:#0A0F20;position:relative}
+.map svg{display:block;width:100%}
+.ov{position:absolute;bottom:9px;right:9px;left:9px;background:rgba(10,15,32,.93);
+border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px}
+.eta{font-size:20px;font-weight:800;color:var(--acc);line-height:1}
+.eta small{font-size:11px;color:var(--mut);font-weight:500}
+.live{font-size:10.5px;color:var(--mint);display:flex;align-items:center;gap:5px}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--mint);animation:p 1.6s infinite}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
+.row{display:flex;gap:9px}.row>*{flex:1}
+.ln{display:flex;justify-content:space-between;font-size:13px;padding:9px 0;border-bottom:1px solid rgba(40,50,90,.6)}
+.ln:last-child{border:0}
+.ln span{color:var(--mut)}.ln b{font-weight:600}
+.big{font-size:42px;margin-bottom:12px;display:block;text-align:center}
+.note{font-size:11.5px;color:var(--dim);line-height:1.65;margin-top:12px}
+.restart{margin-top:18px;background:none;border:none;color:var(--mut);font-family:inherit;
+font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+.foot{max-width:390px;margin-top:16px;text-align:center;font-size:11.5px;color:var(--dim);line-height:1.7}
+.foot a{color:var(--acc);text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="logo"><div class="mark">ק</div><div class="bn">קרוב</div></div>
+  <p>דמו פשוט: הזמנת הסעה שכונתית, מההתחלה ועד שהילד בבית.</p>
+  <div class="dots" id="dots"></div>
+</div>
+
+<div class="phone">
+  <div class="bar"><span id="clk">20:45</span><span>דמו · נתוני דמה</span></div>
+  <div class="scr" id="scr"></div>
+</div>
+
+<div class="foot">
+  אב טיפוס להמחשה · <a href="index.html">לאפליקציה המלאה</a> · <a href="screens.html">כל המסכים</a>
+</div>
+
+<script>
+let step=0,dest=null,ANIM=null;
+const DESTS=[['הבית · נווה נאמן','4.2 ק״מ · 11 דק׳'],['תיכון הדרים','2.6 ק״מ · 7 דק׳'],['מרכז הספורט','5.1 ק״מ · 13 דק׳']];
+
+function map(h){h=h||175;return `<div class="map"><svg viewBox="0 0 320 ${h}" preserveAspectRatio="none">
+<rect width="320" height="${h}" fill="#0A0F20"/>
+<g stroke="#17203C" stroke-width="7" stroke-linecap="round">
+<path d="M-10 44 H330"/><path d="M-10 100 H330"/><path d="M40 -10 V${h+10}"/><path d="M150 -10 V${h+10}"/><path d="M278 -10 V${h+10}"/></g>
+<g stroke="#111833" stroke-width="3"><path d="M-10 72 H330"/><path d="M95 -10 V${h+10}"/><path d="M215 -10 V${h+10}"/></g>
+<g fill="#121A33"><rect x="54" y="52" width="32" height="16" rx="3"/><rect x="162" y="52" width="44" height="16" rx="3"/>
+<rect x="106" y="108" width="34" height="20" rx="3"/><rect x="228" y="108" width="42" height="20" rx="3"/></g>
+<path id="rt" d="M40 ${h-50} L40 100 L150 100 L150 44 L278 44" fill="none" stroke="#FFC53D" stroke-width="4"
+ stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+<circle cx="40" cy="${h-50}" r="6" fill="#4FDCA8" stroke="#04231A" stroke-width="2"/>
+<circle cx="278" cy="44" r="8" fill="#fff" stroke="#070B18" stroke-width="2"/>
+<text x="278" y="48" font-size="9" text-anchor="middle">🏠</text>
+<g id="car" transform="translate(40,${h-50})"><circle r="14" fill="#FFC53D" opacity=".22"/>
+<circle r="7.5" fill="#fff" stroke="#E0A91B" stroke-width="2.5"/></g>
+</svg><div class="ov" id="ov"></div></div>`}
+
+function drive(label){
+ const p=document.getElementById('rt'),c=document.getElementById('car'),ov=document.getElementById('ov');
+ if(!p)return;const len=p.getTotalLength();let t=0;
+ const go=()=>{t+=.0017;if(t>1)t=1;
+  const pt=p.getPointAtLength(len*t);c.setAttribute('transform',`translate(${pt.x},${pt.y})`);
+  const m=Math.max(1,Math.round((1-t)*8));
+  ov.innerHTML=`<div class="eta">${m} <small>דק׳</small></div>
+   <div style="flex:1;font-size:11.5px;color:var(--mut);line-height:1.5">${label}<br>
+   <span style="color:var(--txt)">רונית ל. · קורולה אפורה · 84-612-73</span></div>
+   <div class="live"><span class="pulse"></span>חי</div>`;
+  if(t<1)ANIM=requestAnimationFrame(go);};
+ go();
+}
+
+const S=[
+// 0 — לאן
+()=>`<h2>לאן נוסעים?</h2>
+<div class="sub">יום ג׳, 20:45 · אין קו אוטובוס פעיל ליעד הזה</div>
+<div class="field"><i>🟢</i><div><span class="l">איסוף</span><span class="v">מרכז מוסיקה, הרימון 12</span></div></div>
+${DESTS.map((d,i)=>`<button class="opt ${dest===i?'on':''}" onclick="dest=${i};render()">
+ <i style="font-size:16px">${i===0?'🏠':i===1?'🏫':'🏀'}</i>
+ <div><div class="t">${d[0]}</div><div class="s">${d[1]}</div></div>
+ <div class="e">10 ₪</div></button>`).join('')}
+<div class="note">מחיר אחיד לכל נסיעה בתוך העיר, בכל שעה.</div>
+<button class="btn" ${dest===null?'disabled':''} onclick="next()">${dest===null?'בחר יעד':'חפש נהג'}</button>`,
+
+// 1 — מחפש
+()=>{setTimeout(next,2400);return `<div style="margin:auto 0;text-align:center">
+<div class="spin"></div><h2 style="font-size:19px">מחפשים נהג מאומת</h2>
+<div class="sub" style="margin-top:7px">הבקשה נשלחה ל-7 תושבים שסימנו שהם זמינים עכשיו</div></div>`},
+
+// 2 — נמצא נהג
+()=>`<h2>רונית תיקח אותך</h2>
+<div class="sub">מגיעה אליך בעוד 3 דקות</div>
+<div class="card hl"><div style="display:flex;gap:12px;align-items:center">
+ <div class="av">ר</div>
+ <div style="flex:1"><div style="font-size:16px;font-weight:700">רונית ל. <span style="color:var(--acc);font-size:12.5px">★ 4.9</span></div>
+ <div style="font-size:12.5px;color:var(--mut);margin-top:2px">טויוטה קורולה · אפורה</div>
+ <div style="font-size:13px;letter-spacing:.5px;margin-top:2px">84-612-73</div></div></div>
+ <div class="badges"><span class="bg">✓ מאומתת</span><span class="bg">✓ אישור משטרה</span>
+ <span class="bg v">אמא של יואב · תיכון הדרים</span></div></div>
+<div class="card"><div class="ln"><span>היא גם אוספת בדרך</span><b>מאיה, איתי</b></div>
+<div class="ln"><span>זה לא מייקר לך</span><b>10 ₪</b></div></div>
+<button class="btn" onclick="next()">מעולה, בואי</button>`,
+
+// 3 — מעקב
+()=>{setTimeout(()=>drive('בדרך אליך'),50);return `<h2>בדרך אליך</h2>
+<div class="sub">המפה מראה רק איפה הרכב. הניווט עצמו רץ ב-Waze אצל רונית.</div>
+${map(175)}
+<div class="row"><button class="btn g" style="margin-top:0">📞 התקשר</button>
+<button class="btn g" style="margin-top:0" onclick="next()">👨‍👩‍👦 שתף עם אמא</button></div>
+<button class="btn" onclick="step=5;render()">דלג לסוף הנסיעה</button>`},
+
+// 4 — ההורה
+()=>`<h2 style="font-size:20px">מה שאמא רואה עכשיו</h2>
+<div class="sub">אותו מידע בדיוק, בלי להתקין כלום — קישור בוואטסאפ</div>
+<div class="card"><div style="display:flex;gap:11px;align-items:center">
+ <div class="av v">א</div><div><div style="font-weight:700;font-size:15px">אורית · אמא</div>
+ <div style="font-size:12px;color:var(--mut)">קיבלה התראה ב-20:47</div></div></div></div>
+${[['מי הנהגת','רונית ל. · מאומתת'],['איזה רכב','קורולה אפורה · 84-612-73'],
+['איפה הם עכשיו','מפה חיה, מתעדכנת כל 3 שניות'],['מי עוד ברכב','מאיה, איתי'],
+['מתי יגיע הביתה','20:58 — והתראה אוטומטית בהגעה']]
+ .map(r=>`<div class="card" style="padding:12px;margin-bottom:8px"><div class="ln" style="padding:0;border:0">
+ <span>${r[0]}</span><b style="font-size:12.5px">${r[1]}</b></div></div>`).join('')}
+<button class="btn" onclick="next()">חזרה לנסיעה</button>`,
+
+// 5 — הגיע
+()=>`<div style="margin-top:14px"><span class="big">🏠</span>
+<h2 style="text-align:center">נועם בבית · 20:58</h2>
+<div class="sub" style="text-align:center">אמא קיבלה עדכון אוטומטי. לא היה צריך לשאול.</div></div>
+<div class="card"><div class="ln"><span>הנסיעה</span><b>4.2 ק״מ · 11 דק׳</b></div>
+<div class="ln"><span>השתתפות בהוצאות · לרונית</span><b>7.50 ₪</b></div>
+<div class="ln"><span>דמי שירות · קרוב</span><b>2.50 ₪</b></div>
+<div class="ln" style="padding-top:12px"><span style="color:var(--txt);font-weight:600">סה״כ</span>
+<b style="font-size:17px;color:var(--acc)">10 ₪</b></div></div>
+<div class="card" style="text-align:center"><div style="font-size:13px;font-weight:600;margin-bottom:6px">איך היה עם רונית?</div>
+<div style="font-size:25px;letter-spacing:6px;color:var(--acc)">★★★★★</div></div>
+<button class="btn m" onclick="step=0;dest=null;render()">הזמן נסיעה נוספת</button>
+<button class="btn g" onclick="location.href='index.html'">לאפליקציה המלאה</button>`
+];
+
+function next(){if(step<S.length-1){step++;render()}}
+function render(){
+ if(ANIM){cancelAnimationFrame(ANIM);ANIM=null}
+ document.getElementById('scr').innerHTML=`<div class="fade" style="display:flex;flex-direction:column;flex:1">${S[step]()}</div>`;
+ document.getElementById('dots').innerHTML=S.map((_,i)=>`<div class="dot ${i===step?'on':''}"></div>`).join('');
+}
+setInterval(()=>{const d=new Date();document.getElementById('clk').textContent=
+ String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')},1000);
+render();
+</script>
+</body>
+</html>

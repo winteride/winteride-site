@@ -40,6 +40,8 @@ body{font-family:'Heebo',system-ui,sans-serif;background:
 .block li{font-size:13.5px;color:var(--mut);line-height:1.6;padding-right:16px;position:relative}
 .block li:before{content:"";position:absolute;right:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--acc)}
 .block li b{color:var(--txt);font-weight:500}
+.block li.warn:before{background:var(--danger)}
+.block li.warn{color:#C9A9A9}
 .note{font-size:12px;color:var(--dim);line-height:1.7}
 
 /* ---------- phone ---------- */
@@ -180,13 +182,23 @@ a.lnk{color:var(--acc);font-size:12px;text-decoration:none;border-bottom:1px das
   </div>
 
   <div class="block">
-    <h3><span>⚖️</span> המודל הכספי — כך הוא עומד בחוק</h3>
+    <h3><span>💰</span> המודל הכלכלי</h3>
     <ul>
-      <li><b>לא "שכר" אלא השתתפות בהוצאות.</b> תקנה 84ב לתקנות התעבורה מכירה בהסעה שיתופית ברכב פרטי — בתנאי שהתשלום לא עולה על חלקו היחסי של הנוסע בהוצאות הישירות של הנסיעה, ומשולם רק על ידי הנוסעים.</li>
-      <li><b>תקרה של 2 הסעות ביום לנהג.</b> האפליקציה חוסמת אוטומטית נהג שהגיע למגבלה — זה מה שמבדיל קהילה מ"מונית פיראטית".</li>
-      <li><b>עד 4 נוסעים</b> ותיאום מראש דרך האפליקציה בלבד — לא איסוף מהרחוב.</li>
-      <li><b>קרדיט במקום כסף</b> כברירת מחדל: הנהג מקבל קרדיט לשימוש המשפחה. פחות חשיפה, יותר הדדיות, והכסף נשאר בקהילה.</li>
-      <li><b>לפני השקה:</b> חוות דעת של עו"ד תעבורה + אישור בכתב מחברת הביטוח לגבי נסיעה שיתופית.</li>
+      <li><b>10 ₪ לנסיעה, דרך האפליקציה.</b> מתוכם 7.50 ₪ לנהג כהשתתפות בהוצאות, ו-2.50 ₪ דמי שירות לתפעול הפלטפורמה.</li>
+      <li><b>חסויות עסקים מקומיים</b> — מקור ההכנסה השני, ומבחינה רגולטורית הנקי ביותר: העסק משלם על פרסום, לא על הסעה.</li>
+      <li><b>מנוי משפחתי</b> — תשלום חודשי על השימוש בתוכנה, לא על הנסיעה. זו ההכנסה שהכי קשה לתקוף.</li>
+      <li><b>חוזה עירוני / בית ספרי</b> — העירייה או ועד ההורים קונים מכסת נסיעות.</li>
+      <li class="warn"><b>הסיכון שחייב לדעת:</b> ב-2017 משרד התחבורה הגיש כתב אישום נגד אובר על גיוס נהגים פרטיים ללא רישיון הסעה תוך גביית עמלה של 25% מכל נסיעה. עוסק מורשה פותר מס הכנסה — לא את פקודת התעבורה. לכן העמלה בנויה כדמי שירות על התוכנה, והמנוי והחסויות הם הרגליים היציבות.</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h3><span>⚙️</span> שלושה מצבי נהג</h3>
+    <ul>
+      <li><b>קהילתי (ברירת מחדל)</b> — עד 2 הסעות ביום, בתוך גבולות ההסעה השיתופית של תקנה 84ב.</li>
+      <li><b>מורחב</b> — ללא מגבלת מספר, דיווח הכנסה אוטומטי לנהג שהוא עוסק מורשה. פתוח רק באישור ניהולי.</li>
+      <li><b>נהג מורשה</b> — בעל רישיון הסעה בתוקף. כאן עמלה מלאה היא חוקית לגמרי, כמו בגט.</li>
+      <li>המערכת אוכפת את המצב אוטומטית ומתעדת כל נסיעה — כך גם אם הרגולציה משתנה, לא צריך לבנות מחדש.</li>
     </ul>
   </div>
 
@@ -210,7 +222,7 @@ a.lnk{color:var(--acc);font-size:12px;text-decoration:none;border-bottom:1px das
       <li><b>מה מבקשים:</b> לוגו, הפצה בערוצי העירייה ובבתי הספר, וחיבור לקב"ט העיר ולמשטרה הקהילתית.</li>
       <li><b>שלב ב':</b> עסקים מקומיים קונים חסות על נסיעות ("הנסיעה הזו על חשבון הפיצרייה") — העירייה מקבלת קרדיט על כלכלה מקומית.</li>
     </ul>
-    <p class="note" style="margin-top:10px">מצגת לעירייה מוכנה לשליחה: <a class="lnk" href="pitch.html">pitch.html</a></p>
+    <p class="note" style="margin-top:10px">מצגת לעירייה: <a class="lnk" href="pitch.html">pitch.html</a> · דמו קצר להראות לאנשים: <a class="lnk" href="demo.html">demo.html</a></p>
   </div>
   <p class="note">אב טיפוס להמחשה. כל הנתונים באפליקציה הם דמה. אין כאן תשלום אמיתי, מיקום אמיתי או נהגים אמיתיים.</p>
 </div>
@@ -411,7 +423,9 @@ SC.rider_done=()=>`<div class="pad fade center" style="padding-top:34px">
  <h2 style="font-size:21px">הגעת הביתה · 23:19</h2>
  <p style="font-size:12.5px;color:var(--mut);margin-top:6px">ההורים קיבלו עדכון אוטומטי</p>
  <div class="card" style="margin-top:20px;text-align:right">
-  <div class="list-item"><div class="li-main"><div class="li-t">השתתפות בהוצאות</div><div class="li-s">4.2 ק"מ · התחלק בין 3 נוסעים</div></div><div class="li-e"><b>10 ₪</b></div></div>
+  <div class="list-item"><div class="li-main"><div class="li-t">השתתפות בהוצאות · לרונית</div><div class="li-s">4.2 ק"מ · התחלק בין 3 נוסעים</div></div><div class="li-e"><b>7.50 ₪</b></div></div>
+  <div class="list-item"><div class="li-main"><div class="li-t">דמי שירות · קרוב</div><div class="li-s">תפעול הפלטפורמה</div></div><div class="li-e"><b>2.50 ₪</b></div></div>
+  <div class="list-item"><div class="li-main"><div class="li-t" style="font-weight:700">סה"כ</div></div><div class="li-e"><b style="color:var(--acc)">10 ₪</b></div></div>
   <div class="list-item"><div class="li-main"><div class="li-t">שולם מהארנק המשפחתי</div><div class="li-s">נשארו 4 קרדיטים</div></div><div class="li-e">✓</div></div>
  </div>
  <div class="card" style="text-align:right">
@@ -485,7 +499,7 @@ SC.trust=()=>`<div class="pad fade">
   <div class="timeline">
   ${[['אימות זהות','ת"ז + סלפי מול התמונה + רישיון נהיגה בתוקף'],
      ['בעלות ורכב','רישיון רכב, ביטוח בתוקף, בדיקת תקינות'],
-     ['היעדר עבירות מין','אישור משטרה — חובה לכל נהג'],
+     ['היעדר עבירות מין','אישור משטרה — מונפק רק דרך מוסד: העירייה או עמותה'],
      ['עבר תעבורתי','שלילות, תאונות, נקודות'],
      ['2 ממליצים','תושבים שכבר במערכת מאשרים אותך'],
      ['תושבות','אישור כתובת בעיר — רק מי שגר כאן'],
@@ -516,7 +530,7 @@ SC.escort_home=()=>`<div class="pad fade">
  </div>
  <div class="field"><i>📍</i><div><span class="lbl">אני כאן</span><span class="val">תחנת רכבת הוד השרון</span></div></div>
  <div class="field"><i>🏠</i><div><span class="lbl">הולכת ל</span><span class="val">הבית · 11 דק' הליכה</span></div></div>
- <div class="field ghost"><i>👥</i><div><span class="lbl">מי עוד יראה</span><span class="val" style="color:var(--mut)">אמא + מוקד 106 העירוני</span></div></div>
+ <div class="field ghost"><i>👥</i><div><span class="lbl">מי עוד יראה</span><span class="val" style="color:var(--mut)">אמא + מוקד עירוני · בכפוף לאישור</span></div></div>
  <button class="btn mint" onclick="go('escort_active')">התחל ליווי</button>
  <div class="card" style="margin-top:12px">
   <div class="card-t">🤝 לא ממציאים את הגלגל</div>
@@ -543,7 +557,7 @@ SC.escort_active=()=>{setTimeout(()=>runMap('תמר על הקו איתך','מג�
  </div>
  <button class="btn dng" style="margin-top:8px">🚨 מצוקה · מוקד + משטרה</button>
  <div class="card" style="margin-top:12px">
-  <div class="card-s">אם לא תאשרי הגעה תוך 11 דקות — נשלחת התראה אוטומטית לאמא ולמוקד העירוני עם המיקום האחרון.</div>
+  <div class="card-s">אם לא תאשרי הגעה תוך 11 דקות — נשלחת התראה אוטומטית לאמא, ולמוקד העירוני אם העירייה אישרה חיבור.</div>
  </div>
 </div>`};
 
@@ -642,13 +656,18 @@ SC.driver_home=()=>`<div class="pad fade">
   <div class="card-s" style="margin-bottom:8px">מה לקבל על הנסיעה?</div>
   <div class="row" style="margin-bottom:10px">
    <button class="chip ${S.price==='credit'?'on':''}" onclick="set('price','credit')">3 קרדיטים למשפחה</button>
-   <button class="chip ${S.price==='cash'?'on':''}" onclick="set('price','cash')">30 ₪ השתתפות</button>
+   <button class="chip ${S.price==='cash'?'on':''}" onclick="set('price','cash')">22.50 ₪ השתתפות</button>
   </div>
   <div class="row"><button class="btn sl" onclick="go('driver_route')">קבלי נסיעה</button>
   <button class="btn sec sl">לא עכשיו</button></div>
  </div>
- <div class="card"><div class="card-t">⚖️ מגבלת החוק · 1 מתוך 2 היום</div>
-  <div class="card-s">אחרי 2 הסעות ביום המערכת תסמן אותך לא זמינה. ככה נשארים בתחום ההסעה השיתופית.<div class="bar"><i style="width:50%"></i></div></div></div>`
+ <div class="card"><div class="card-t">⚙️ מצב הנהג · קהילתי</div>
+  <div class="card-s">1 מתוך 2 הסעות היום. במצב קהילתי המערכת עוצרת אותך אחרי 2 — בתוך גבולות ההסעה השיתופית.
+  <div class="bar"><i style="width:50%"></i></div></div>
+  <div class="chips" style="margin:10px 0 0">
+   <button class="chip on">קהילתי</button><button class="chip">מורחב · עוסק</button><button class="chip">נהג מורשה</button>
+  </div>
+  <div class="card-s" style="margin-top:8px;color:var(--dim)">מצב מורחב נפתח רק לנהג עם עוסק מורשה ודיווח הכנסה, ובאישור ניהולי.</div></div>`
  :`<div class="card center" style="padding:28px"><span class="big-emoji">😴</span>
    <div class="card-s">כשתהיי זמינה — תראי כאן בקשות מהשכונה</div></div>`}
 </div>`;
@@ -674,7 +693,7 @@ SC.driver_wallet=()=>`<div class="pad fade">
  <div class="hd"><div><h2>מה צברת</h2><p>החודש · 14 הסעות</p></div></div>
  <div class="kpis">
   <div class="kpi acc"><div class="n">12</div><div class="l">קרדיטים זמינים</div></div>
-  <div class="kpi up"><div class="n">140 <small>₪</small></div><div class="l">שווי השתתפות</div></div>
+  <div class="kpi up"><div class="n">105 <small>₪</small></div><div class="l">שווי השתתפות</div></div>
  </div>
  <div class="card acc"><div class="card-t">💡 למה קרדיט ולא כסף</div>
   <div class="card-s">קרדיט נשאר בקהילה, לא נחשב הכנסה, ומחזיר לך בדיוק את מה שנתת — הסעה לילד שלך כשאת לא יכולה. אפשר גם לתרום קרדיטים למשפחה שצריכה.</div></div>
