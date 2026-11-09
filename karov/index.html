@@ -245,9 +245,9 @@ a.lnk{color:var(--acc);font-size:12px;text-decoration:none;border-bottom:1px das
 const ROLES=[
  {id:'rider', label:'נוסע', tabs:[['בית','🏠','rider_home'],['הנסיעה','🚗','rider_live'],['תחב"צ','🚌','transit'],['ליווי','🛡️','escort_home'],['ארנק','💳','wallet']]},
  {id:'parent',label:'הורה', tabs:[['מצב חי','📍','parent_live'],['עדכונים','🔔','parent_alerts'],['כללים','⚙️','parent_settings']]},
- {id:'driver',label:'נהג',  tabs:[['זמינות','🟢','driver_home'],['מסלול','🗺️','driver_route'],['ארנק','💳','driver_wallet']]},
+ {id:'driver',label:'נהג',  tabs:[['הצטרפות','📝','join_start'],['זמינות','🟢','driver_home'],['מסלול','🗺️','driver_route'],['ארנק','💳','driver_wallet']]},
  {id:'escort',label:'ליווי', tabs:[['בקשת ליווי','🛡️','escort_home'],['איך זה עובד','ℹ️','escort_how']]},
- {id:'city',  label:'עירייה',tabs:[['דאשבורד','📊','city_home'],['נהגים','🪪','city_drivers'],['עסקים','🏪','city_biz']]}
+ {id:'city',  label:'עירייה',tabs:[['דאשבורד','📊','city_home'],['נהגים','🪪','city_drivers'],['אישורים','✅','school_queue'],['עסקים','🏪','city_biz']]}
 ];
 const D={
  rider:{name:'נועם',init:'נ'},
@@ -708,6 +708,99 @@ SC.driver_wallet=()=>`<div class="pad fade">
 </div>`;
 
 /* ---------------- עירייה ---------------- */
+SC.join_start=()=>`<div class="pad fade">
+ <div class="hd"><div><h2>להצטרף כנהג</h2><p>תיכון הדרים · ועד ההורים הזמין אותך</p></div><div class="avatar a">🏫</div></div>
+ <div class="card acc">
+  <div class="card-t">איך בית הספר נכנס לתמונה</div>
+  <div class="card-s">ועד ההורים שולח קישור אישי רק להורים של בית הספר. זה הסינון הראשון — ולפני כל בדיקה, זה מה שהופך "נהג זר" ל"אמא של מישהו מהכיתה המקבילה".</div>
+ </div>
+ <div class="card hi">
+  <div class="card-t">⚠️ מה בית הספר <u>לא</u> עושה</div>
+  <div class="card-s">בית הספר לא מפעיל את השירות ולא אחראי על הנסיעות. לפי כללי משרד החינוך, הסעות תלמידים מאורגנות חייבות רכב מורשה להסעת נוסעים — אוטובוס, מיניבוס או מונית. לכן בית הספר רק <b>מאשר שאתה באמת הורה אצלו</b>; הנסיעה עצמה היא בין תושבים, באחריות העמותה.</div>
+ </div>
+ <div class="kpis">
+  <div class="kpi acc"><div class="n">6</div><div class="l">שלבים</div></div>
+  <div class="kpi"><div class="n">10 <small>ימים</small></div><div class="l">זמן ממוצע לאישור</div></div>
+ </div>
+ <button class="btn" onclick="go('join_steps')">תתחיל את התהליך</button>
+ <button class="btn sec" style="margin-top:8px" onclick="go('join_status')">איפה הבקשה שלי?</button>
+</div>`;
+
+SC.join_steps=()=>`<div class="pad fade">
+ <div class="hd"><div><h2>ששת השלבים</h2><p>3 שלבים עליך, 3 על העמותה והקהילה</p></div></div>
+ <div class="card"><div class="timeline"><div class="tl done"><div class="tl-dot"><b></b><i></i></div>
+    <div class="tl-c"><div class="tl-t">1. ההזמנה מבית הספר ✓</div>
+    <div class="tl-s">ועד ההורים שולח קישור אישי. רק מי שבאמת הורה בבית הספר יכול להיכנס.</div>
+    <div class="badges"><span class="badge v">בית הספר</span><span class="badge a">מיידי</span></div></div></div><div class="tl done"><div class="tl-dot"><b></b><i></i></div>
+    <div class="tl-c"><div class="tl-t">2. אימות זהות ✓</div>
+    <div class="tl-s">ת"ז + סלפי חי שמושווה אוטומטית לתמונה שבתעודה.</div>
+    <div class="badges"><span class="badge v">אתה</span><span class="badge a">2 דקות</span></div></div></div><div class="tl done"><div class="tl-dot"><b></b><i></i></div>
+    <div class="tl-c"><div class="tl-t">3. רכב, רישיון וביטוח ✓</div>
+    <div class="tl-s">רישיון נהיגה, רישיון רכב, ופוליסה בתוקף — כולל אישור שהיא מכסה נוסעים בנסיעה שיתופית.</div>
+    <div class="badges"><span class="badge v">אתה</span><span class="badge a">5 דקות</span></div></div></div><div class="tl now"><div class="tl-dot"><b></b><i></i></div>
+    <div class="tl-c"><div class="tl-t">4. עבר תעבורתי ●</div>
+    <div class="tl-s">הצהרה + ייפוי כוח לבדיקת שלילות, נקודות ותאונות.</div>
+    <div class="badges"><span class="badge v">אתה + העמותה</span><span class="badge a">יומיים</span></div></div></div><div class="tl "><div class="tl-dot"><b></b><i></i></div>
+    <div class="tl-c"><div class="tl-t">5. אישור היעדר עבירות מין </div>
+    <div class="tl-s">העמותה מגישה למשטרה עם "תעודת מוסד", על סמך טופס בקשת בגיר שחתמת עליו. מקוון דרך GovID.</div>
+    <div class="badges"><span class="badge v">העמותה מול המשטרה</span><span class="badge a">3–10 ימים</span></div></div></div><div class="tl "><div class="tl-dot"><b></b><i></i></div>
+    <div class="tl-c"><div class="tl-t">6. שתי המלצות + ראיון </div>
+    <div class="tl-s">שני הורים שכבר ברשת מאשרים אותך, ושיחת וידאו של 10 דקות עם רכז הקהילה.</div>
+    <div class="badges"><span class="badge v">הקהילה</span><span class="badge a">יומיים</span></div></div></div></div></div>
+ <div class="card mint">
+  <div class="card-t">✅ ואז: תג "נהג מאומת"</div>
+  <div class="card-s">מופיע לכל נוסע ולכל הורה, עם תאריך האימות האחרון. בתוקף ל-3 שנים — ואז בדיקה מחדש אוטומטית.</div>
+ </div>
+ <div class="card">
+  <div class="card-t">🔁 וגם אחרי שאושרת</div>
+  <div class="card-s">דירוג דו-כיווני בכל נסיעה · 2 דיווחי בטיחות = השעיה מיידית ובדיקה אנושית · כל נסיעה מתועדת (מי, מתי, איפה, עם מי) · בדיקה חוזרת כל 3 שנים.</div>
+ </div>
+ <button class="btn sec" onclick="go('join_status')">ראה סטטוס לדוגמה</button>
+</div>`;
+
+SC.join_status=()=>`<div class="pad fade">
+ <div class="hd"><div><h2>הבקשה בבדיקה</h2><p>הוגשה לפני 4 ימים · רונית ל.</p></div>
+ <div class="badge a">4 מתוך 6</div></div>
+ <div class="card acc">
+  <div class="card-t">⏳ ממתין למשטרה</div>
+  <div class="card-s">אישור היעדר עבירות מין — הוגש על ידי העמותה לפני יומיים. זמן תגובה ממוצע: 3–10 ימים. זה צוואר הבקבוק של כל התהליך, ואין דרך לקצר אותו.
+  <div class="bar"><i style="width:67%"></i></div></div>
+ </div>
+ <div class="card">
+  ${[['✅','זהות אומתה','יום ראשון, 09:14'],['✅','רישיון, רכב וביטוח','יום ראשון, 09:21'],
+     ['✅','עבר תעבורתי נקי','יום שני'],['⏳','אישור משטרה','בטיפול העמותה'],
+     ['⬜','המלצות','1 מתוך 2 · ממתין לדני א.'],['⬜','ראיון וידאו','ייקבע אחרי האישור']]
+   .map(r=>`<div class="list-item"><div style="font-size:15px">${r[0]}</div>
+   <div class="li-main"><div class="li-t">${r[1]}</div><div class="li-s">${r[2]}</div></div></div>`).join('')}
+ </div>
+ <div class="card hi"><div class="card-t">בינתיים אפשר</div>
+  <div class="card-s">להצטרף כנוסע, ולראות את השירות מבפנים. כנהג — רק אחרי שכל השישה ירוקים.</div></div>
+ <button class="btn sec" onclick="go('join_steps')">חזרה לשלבים</button>
+</div>`;
+
+SC.school_queue=()=>`<div class="pad fade">
+ <div class="hd"><div><h2>תור אישורים</h2><p>תיכון הדרים · ועד ההורים + העמותה</p></div><div class="avatar a">🏫</div></div>
+ <div class="kpis">
+  <div class="kpi up"><div class="n">61</div><div class="l">הורים אושרו</div></div>
+  <div class="kpi acc"><div class="n">12</div><div class="l">בתהליך</div></div>
+ </div>
+ <div class="sec-t">ממתינים להחלטה</div>
+ <div class="card">
+  ${[['ד','דפנה כ.','ט\'2 + ז\'4 · 5 מתוך 6','מוכן לאישור','var(--mint)'],
+     ['א','אבי מ.','י\'1 · ממתין למשטרה','יום 6','var(--acc)'],
+     ['ס','סמיר ח.','ח\'3 · חסרה המלצה שנייה','תזכורת נשלחה','var(--mut)'],
+     ['נ','נטלי ר.','לא נמצאה במאגר ההורים','נדחה אוטומטית','var(--danger)']]
+   .map(d=>`<div class="list-item"><div class="avatar sm">${d[0]}</div>
+   <div class="li-main"><div class="li-t">${d[1]}</div><div class="li-s">${d[2]}</div></div>
+   <div class="li-e"><b style="color:${d[4]}">${d[3]}</b></div></div>`).join('')}
+ </div>
+ <div class="row"><button class="btn sl">אשר את דפנה</button><button class="btn sec sl">פרטים</button></div>
+ <div class="card" style="margin-top:12px">
+  <div class="card-t">🔐 מה ועד ההורים רואה ומה לא</div>
+  <div class="card-s">רואה: האם ההורה רשום בבית הספר, ובאיזה שלב הבקשה. <b>לא רואה</b> תוצאות של בדיקות משטרה או מידע רפואי — אלה נשארים אצל העמותה בלבד. כל גישה למאגר ההורים דורשת הסכמה בכתב מכל הורה.</div>
+ </div>
+</div>`;
+
 SC.city_home=()=>`<div class="pad fade">
  <div class="hd"><div><h2>עיריית הוד השרון</h2><p>פיילוט · יום 47 מתוך 90</p></div><div class="avatar a">🏛️</div></div>
  <div class="kpis">
