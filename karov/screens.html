@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>קרוב | כל המסכים</title>
+<meta name="description" content="קרוב — כל מסכי האפליקציה, מסך אחד בכל תמונה.">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#070B18;--card:#141B33;--line:#28325A;--txt:#EDF1FC;--mut:#8E99C0;--dim:#636E96;--acc:#FFC53D}
+body{font-family:'Heebo',system-ui,sans-serif;background:
+ radial-gradient(900px 500px at 80% -10%,rgba(138,124,255,.16),transparent 60%),
+ radial-gradient(700px 400px at 5% 5%,rgba(255,197,61,.09),transparent 60%),var(--bg);
+ color:var(--txt);padding:40px 20px 80px}
+.wrap{max-width:1180px;margin:0 auto}
+header{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.mark{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#FFC53D,#FF8A3D);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;color:#2A1C00}
+.bn{font-size:28px;font-weight:800;letter-spacing:-.5px;line-height:1.1}
+.bs{font-size:11px;color:var(--mut);letter-spacing:2px}
+h1{font-size:clamp(24px,3.4vw,34px);font-weight:800;line-height:1.25;margin-bottom:10px}
+.lead{color:var(--mut);font-size:15.5px;line-height:1.75;max-width:70ch;margin-bottom:10px}
+.links{display:flex;gap:9px;flex-wrap:wrap;margin:16px 0 34px}
+.links a{background:var(--card);border:1px solid var(--line);color:var(--txt);text-decoration:none;font-size:13px;padding:9px 16px;border-radius:24px}
+.links a.p{background:var(--acc);color:#2A1C00;font-weight:700;border-color:var(--acc)}
+h2.role{font-size:12px;letter-spacing:2.5px;font-weight:800;color:var(--c);margin:40px 0 16px;display:flex;align-items:center;gap:10px}
+h2.role:after{content:"";flex:1;height:1px;background:var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:22px}
+figure{background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:18px;padding:12px;transition:.18s}
+figure:hover{border-color:#3C4A80;transform:translateY(-3px)}
+img{width:100%;display:block;border-radius:12px;max-height:560px;object-fit:cover;object-position:top}
+figcaption{padding:12px 4px 4px}
+figcaption b{display:block;font-size:14px;font-weight:700;margin-bottom:4px}
+figcaption span{font-size:12.5px;color:var(--mut);line-height:1.6}
+footer{margin-top:50px;border-top:1px solid var(--line);padding-top:20px;color:var(--dim);font-size:12.5px;line-height:1.8}
+</style>
+</head>
+<body><div class="wrap">
+<header><div class="mark">ק</div><div><div class="bn">קרוב</div><div class="bs">ההסעה השכונתית</div></div></header>
+<h1>כל המסכים, מסך אחד בכל תמונה</h1>
+<p class="lead">20 מסכים, חמישה תפקידים: נוסע, הורה, נהג, ליווי ועירייה. השירות פועל כל היום — בוקר לבית הספר, צהריים לחוגים, ערב, לילה ושבת — ולא רק בשעות שאין בהן תחבורה ציבורית. לחיצה על תמונה פותחת אותה בגודל מלא.</p>
+<div class="links"><a class="p" href="index.html">← לאב-טיפוס האינטראקטיבי</a><a href="pitch.html">הצעה לעירייה</a><a href="README.md">מסמך המוצר</a></div>
+<h2 class="role" style="--c:#FFC53D">נוסע</h2>
+<div class="grid">
+  <figure><a href="screens/01-הזמנת-נסיעה.png" target="_blank"><img src="screens/01-הזמנת-נסיעה.png" alt="הזמנת נסיעה" loading="lazy"></a>
+   <figcaption><b>הזמנת נסיעה</b><span>בוחרים שעה ביום, רואים מחיר אחיד של 10 ₪, ומי זמין עכשיו בעיר.</span></figcaption></figure>
+  <figure><a href="screens/02-תחבורה-ציבורית-חיה.png" target="_blank"><img src="screens/02-תחבורה-ציבורית-חיה.png" alt="אוטובוס מול הסעה" loading="lazy"></a>
+   <figcaption><b>אוטובוס מול הסעה</b><span>זמני אוטובוס בזמן אמת לצד ההסעה. אם האוטובוס עדיף — נגיד את זה.</span></figcaption></figure>
+  <figure><a href="screens/03-חיפוש-נהג.png" target="_blank"><img src="screens/03-חיפוש-נהג.png" alt="מחפש נהג" loading="lazy"></a>
+   <figcaption><b>מחפש נהג</b><span>הבקשה נשלחת לכל הנהגים המאומתים שסימנו זמינות.</span></figcaption></figure>
+  <figure><a href="screens/04-מעקב-חי.png" target="_blank"><img src="screens/04-מעקב-חי.png" alt="נסיעה חיה" loading="lazy"></a>
+   <figcaption><b>נסיעה חיה</b><span>מפה שמראה רק איפה הרכב — כמו בגט. הניווט עצמו ב-Waze של הנהג.</span></figcaption></figure>
+  <figure><a href="screens/05-שיתוף-עם-ההורים.png" target="_blank"><img src="screens/05-שיתוף-עם-ההורים.png" alt="שיתוף עם ההורים" loading="lazy"></a>
+   <figcaption><b>שיתוף עם ההורים</b><span>ההורים מקבלים בדיוק את אותו מידע, גם בלי להתקין אפליקציה.</span></figcaption></figure>
+  <figure><a href="screens/06-סיום-נסיעה.png" target="_blank"><img src="screens/06-סיום-נסיעה.png" alt="הגעת הביתה" loading="lazy"></a>
+   <figcaption><b>הגעת הביתה</b><span>תשלום, קבלה, דירוג — וההורים קיבלו עדכון אוטומטי.</span></figcaption></figure>
+  <figure><a href="screens/07-ארנק-משפחתי.png" target="_blank"><img src="screens/07-ארנק-משפחתי.png" alt="ארנק משפחתי" loading="lazy"></a>
+   <figcaption><b>ארנק משפחתי</b><span>קרדיטים במקום כסף: מי שמסיע צובר, כל המשפחה משתמשת.</span></figcaption></figure>
+  <figure><a href="screens/08-אמון-ואימות.png" target="_blank"><img src="screens/08-אמון-ואימות.png" alt="למה אפשר לסמוך" loading="lazy"></a>
+   <figcaption><b>למה אפשר לסמוך</b><span>שבע שכבות אימות לפני שנהג מקבל נוסע ראשון.</span></figcaption></figure>
+</div>
+<h2 class="role" style="--c:#8A7CFF">הורה</h2>
+<div class="grid">
+  <figure><a href="screens/09-הורה-מצב-חי.png" target="_blank"><img src="screens/09-הורה-מצב-חי.png" alt="איפה הילד עכשיו" loading="lazy"></a>
+   <figcaption><b>איפה הילד עכשיו</b><span>מי הנהגת, איזה רכב, מי עוד בפנים, ומתי הוא מגיע.</span></figcaption></figure>
+  <figure><a href="screens/10-הורה-עדכונים.png" target="_blank"><img src="screens/10-הורה-עדכונים.png" alt="עדכונים אוטומטיים" loading="lazy"></a>
+   <figcaption><b>עדכונים אוטומטיים</b><span>בלי לשאול "הגעת?". גם בוואטסאפ, להורים שלא מתקינים אפליקציות.</span></figcaption></figure>
+  <figure><a href="screens/11-הורה-כללים.png" target="_blank"><img src="screens/11-הורה-כללים.png" alt="הכללים שלי" loading="lazy"></a>
+   <figcaption><b>הכללים שלי</b><span>שעות מותרות, אישור לכל נסיעה, חסימת נהג, תקציב חודשי.</span></figcaption></figure>
+</div>
+<h2 class="role" style="--c:#4FDCA8">נהג</h2>
+<div class="grid">
+  <figure><a href="screens/12-נהג-זמינות.png" target="_blank"><img src="screens/12-נהג-זמינות.png" alt="זמינות ובקשה נכנסת" loading="lazy"></a>
+   <figcaption><b>זמינות ובקשה נכנסת</b><span>מתג אחד. ומונה שחוסם אוטומטית אחרי 2 הסעות ביום — המגבלה החוקית.</span></figcaption></figure>
+  <figure><a href="screens/13-נהג-מסלול.png" target="_blank"><img src="screens/13-נהג-מסלול.png" alt="מסלול עם איסופים" loading="lazy"></a>
+   <figcaption><b>מסלול עם איסופים</b><span>אוספים עוד בדרך בלי לסטות. ניווט נפתח ב-Waze.</span></figcaption></figure>
+  <figure><a href="screens/14-נהג-ארנק.png" target="_blank"><img src="screens/14-נהג-ארנק.png" alt="מה צברת" loading="lazy"></a>
+   <figcaption><b>מה צברת</b><span>קרדיטים למשפחה, תרומה למשפחה אחרת, או המרה אצל עסק מקומי.</span></figcaption></figure>
+</div>
+<h2 class="role" style="--c:#4FDCA8">ליווי</h2>
+<div class="grid">
+  <figure><a href="screens/15-בקשת-ליווי.png" target="_blank"><img src="screens/15-בקשת-ליווי.png" alt="בקשת ליווי" loading="lazy"></a>
+   <figcaption><b>בקשת ליווי</b><span>טלפוני, וידאו, או שמישהו יבוא ברגל. תמיד בחינם.</span></figcaption></figure>
+  <figure><a href="screens/16-ליווי-פעיל.png" target="_blank"><img src="screens/16-ליווי-פעיל.png" alt="ליווי פעיל" loading="lazy"></a>
+   <figcaption><b>ליווי פעיל</b><span>מלווה על הקו, מיקום חי להורים ולמוקד, וטיימר שמתריע אם לא אושרה הגעה.</span></figcaption></figure>
+  <figure><a href="screens/17-ליווי-איך-עובד.png" target="_blank"><img src="screens/17-ליווי-איך-עובד.png" alt="איך זה עובד" loading="lazy"></a>
+   <figcaption><b>איך זה עובד</b><span>חמישה שלבים, ומה חייב להיות מוכן לפני שמשחררים לציבור.</span></figcaption></figure>
+</div>
+<h2 class="role" style="--c:#FFC53D">עירייה</h2>
+<div class="grid">
+  <figure><a href="screens/18-עירייה-דאשבורד.png" target="_blank"><img src="screens/18-עירייה-דאשבורד.png" alt="דאשבורד עירוני" loading="lazy"></a>
+   <figcaption><b>דאשבורד עירוני</b><span>המספרים שמוכרים את זה: עלות 0 ₪, שעות שיא, אפס אירועי בטיחות.</span></figcaption></figure>
+  <figure><a href="screens/19-עירייה-נהגים.png" target="_blank"><img src="screens/19-עירייה-נהגים.png" alt="מצבת נהגים" loading="lazy"></a>
+   <figcaption><b>מצבת נהגים</b><span>מי אושר, מי בבדיקה, ומי הושעה — והכל מדווח לעירייה.</span></figcaption></figure>
+  <figure><a href="screens/20-עסקים-מקומיים.png" target="_blank"><img src="screens/20-עסקים-מקומיים.png" alt="עסקים מקומיים" loading="lazy"></a>
+   <figcaption><b>עסקים מקומיים</b><span>שלב ב': עסק מממן נסיעות, והנוסע רואה מי שילם.</span></figcaption></figure>
+</div>
+
+<footer>אב טיפוס להמחשה. כל הנתונים בתמונות הם נתוני דמה — אין תשלומים, מיקומים או נהגים אמיתיים.</footer>
+</div></body></html>

@@ -151,6 +151,10 @@ body{font-family:'Heebo',system-ui,sans-serif;background:
 .bar i{display:block;height:100%;background:var(--acc);border-radius:10px}
 .money{font-size:30px;font-weight:800;letter-spacing:-1px}
 .hr{height:1px;background:var(--line);margin:14px 0}
+.steps{display:flex;align-items:center;gap:5px;margin-bottom:11px}
+.steps b{font-size:10px;font-weight:500;color:var(--dim);background:var(--card);border:1px solid var(--line);padding:5px 8px;border-radius:20px;white-space:nowrap}
+.steps b.on{color:#2A1C00;background:var(--acc);border-color:var(--acc);font-weight:700}
+.steps i{flex:1;height:1px;background:var(--line)}
 a.lnk{color:var(--acc);font-size:12px;text-decoration:none;border-bottom:1px dashed rgba(255,197,61,.4)}
 </style>
 </head>
@@ -163,10 +167,12 @@ a.lnk{color:var(--acc);font-size:12px;text-decoration:none;border-bottom:1px das
     <div class="logo-mark">ק</div>
     <div><div class="logo-txt">קרוב</div><div class="logo-sub">ההסעה השכונתית</div></div>
   </div>
-  <h1>בלילה ובשבת אין תחבורה בעיר.<br><em>לשכנים יש רכב.</em></h1>
-  <p class="lead">קרוב מחברת תושבים מאומתים שנוסעים בכל מקרה, לנוער ולמי שצריך הסעה קצרה בתוך העיר — בשקיפות מלאה להורים: מי הנהג, איזה רכב, איפה הם עכשיו, ומתי הם מגיעים הביתה.</p>
+  <h1>תחבורה פנימית בעיר כמעט <em>לא קיימת.</em><br>לשכנים <em>יש רכב.</em></h1>
+  <p class="lead">קרוב מחברת תושבים מאומתים שנוסעים בכל מקרה, לכל מי שצריך הסעה קצרה בתוך העיר — כל היום, לא רק בלילה: בוקר לבית הספר, צהריים לחוגים, ערב, לילה ושבת. עם שקיפות מלאה להורים: מי הנהג, איזה רכב, איפה הם עכשיו, ומתי הם מגיעים הביתה.</p>
   <div class="pill-row">
     <div class="pill">הסעה בתוך העיר · <b>10 ₪</b></div>
+    <div class="pill"><b>כל היום</b>, לא רק בלילה</div>
+    <div class="pill">אוטובוס חי <b>מול</b> הסעה</div>
     <div class="pill">נהגים <b>מאומתים</b></div>
     <div class="pill">מעקב חי <b>להורים</b></div>
     <div class="pill">איסוף <b>בדרך</b></div>
@@ -225,7 +231,7 @@ a.lnk{color:var(--acc);font-size:12px;text-decoration:none;border-bottom:1px das
    קרוב — אב טיפוס. כל הנתונים דמה.
    ============================================================ */
 const ROLES=[
- {id:'rider', label:'נוסע', tabs:[['בית','🏠','rider_home'],['הנסיעה','🚗','rider_live'],['ליווי','🛡️','escort_home'],['ארנק','💳','wallet']]},
+ {id:'rider', label:'נוסע', tabs:[['בית','🏠','rider_home'],['הנסיעה','🚗','rider_live'],['תחב"צ','🚌','transit'],['ליווי','🛡️','escort_home'],['ארנק','💳','wallet']]},
  {id:'parent',label:'הורה', tabs:[['מצב חי','📍','parent_live'],['עדכונים','🔔','parent_alerts'],['כללים','⚙️','parent_settings']]},
  {id:'driver',label:'נהג',  tabs:[['זמינות','🟢','driver_home'],['מסלול','🗺️','driver_route'],['ארנק','💳','driver_wallet']]},
  {id:'escort',label:'ליווי', tabs:[['בקשת ליווי','🛡️','escort_home'],['איך זה עובד','ℹ️','escort_how']]},
@@ -237,7 +243,15 @@ const D={
          who:'אמא של יואב מ-ט\'2 · תיכון הדרים'},
  riders2:[{n:'מאיה',i:'מ',s:'איסוף · רח\' הדקל 4'},{n:'איתי',i:'א',s:'איסוף · כיכר השרון'}]
 };
-let S={role:'rider',screen:'rider_home',avail:true,escortType:'call',price:'credit',when:'now'};
+const CTX=[['🌅 בוקר','07:20 · יום ג\' · הסעה לבית הספר'],
+ ['☀️ צהריים','16:10 · אחרי הלימודים · חוג כדורסל'],
+ ['🌆 ערב','20:45 · חזרה מחברים'],
+ ['🌙 לילה','23:04 · מוצ"ש · אין תחבורה ציבורית'],
+ ['🕯️ שבת','11:30 · שבת · אין אוטובוסים']];
+const BUS=[{l:'29',m:6,w:4,note:'מגיע לשער בית הספר ב-07:41'},
+ {l:'10',m:14,w:7,note:'צריך החלפה אחת · 24 דק\' בסך הכל'},
+ {l:'29',m:22,w:4,note:'הקו האחרון יוצא ב-21:30'},null,null];
+let S={role:'rider',screen:'rider_home',avail:true,escortType:'call',price:'credit',when:'now',part:3};
 let ANIM=null;
 
 /* ---------- map ---------- */
@@ -309,21 +323,26 @@ function driverCard(extra){return `
 const SC={};
 
 /* ---------------- נוסע ---------------- */
+function transitCompare(){const b=BUS[S.part];
+ if(!b)return `<div class="card"><div class="card-t">🚌 תחבורה ציבורית · אין כרגע</div>
+   <div class="card-s">אין קו פעיל ליעד שלך בשעה הזו. בדיוק בשביל השעות האלה קרוב נולדה.</div></div>`;
+ return `<div class="card"><div class="card-t">🚌 יש אוטובוס — ואולי הוא עדיף</div>
+   <div class="card-s">קו ${b.l} מגיע בעוד <b style="color:var(--mint)">${b.m} דק'</b> · ${b.w} דק' הליכה לתחנה · 6 ₪<br>
+   <span style="color:var(--dim)">${b.note}</span></div>
+   <button class="btn sec sl" style="margin-top:10px" onclick="go('transit')">השווה את שתי האפשרויות</button></div>`}
+
 SC.rider_home=()=>`<div class="pad fade">
  <div class="hd">
-   <div><h2>לאן, נועם?</h2><p>23:04 · שבת · אין תחבורה ציבורית</p></div>
+   <div><h2>לאן, נועם?</h2><p>${CTX[S.part][1]}</p></div>
    <div class="avatar">נ</div>
  </div>
- <div class="field"><i>🟢</i><div><span class="lbl">איסוף</span><span class="val">מרכז מוסיקה, הרימון 12</span></div></div>
- <div class="field"><i>🏠</i><div><span class="lbl">יעד</span><span class="val">הבית · נווה נאמן</span></div></div>
- <div class="chips">
-   <button class="chip ${S.when==='now'?'on':''}" onclick="set('when','now')">עכשיו</button>
-   <button class="chip ${S.when==='15'?'on':''}" onclick="set('when','15')">בעוד 15 דק'</button>
-   <button class="chip ${S.when==='after'?'on':''}" onclick="set('when','after')">בסוף החוג</button>
- </div>
+ <div class="chips">${CTX.map((c,i)=>`<button class="chip ${S.part===i?'on':''}" onclick="set('part',${i})">${c[0]}</button>`).join('')}</div>
+ <div class="field"><i>🟢</i><div><span class="lbl">איסוף</span><span class="val">${S.part===0?'הבית · נווה נאמן':S.part===1?'תיכון הדרים':'מרכז מוסיקה, הרימון 12'}</span></div></div>
+ <div class="field"><i>🏠</i><div><span class="lbl">יעד</span><span class="val">${S.part===0?'תיכון הדרים':S.part===1?'אולם ספורט, הנשיא 8':'הבית · נווה נאמן'}</span></div></div>
+ ${transitCompare()}
  <div class="card acc" style="display:flex;align-items:center;gap:12px">
    <div class="money" style="color:var(--acc)">10 ₪</div>
-   <div class="card-s" style="flex:1">מחיר אחיד לכל נסיעה בתוך העיר.<br>אפשר לשלם בקרדיט משפחתי שצברתם.</div>
+   <div class="card-s" style="flex:1">מחיר אחיד לכל נסיעה בתוך העיר, בכל שעה.<br>אפשר לשלם בקרדיט משפחתי שצברתם.</div>
  </div>
  <button class="btn" onclick="go('rider_match')">מצא נהג בסביבה</button>
  <div class="row" style="margin-top:8px">
@@ -351,7 +370,9 @@ SC.rider_live=()=>{setTimeout(()=>runMap('רונית בדרך אליך','אחר�
  return `<div class="pad fade">
  <div class="hd"><div><h2>רונית בדרך אליך</h2><p>טויוטה קורולה אפורה · 84-612-73</p></div>
  <div class="badge"><span class="pulse"></span> חי</div></div>
+ <div class="steps"><b class="on">בדרך אליך</b><i></i><b>אספנו אותך</b><i></i><b>בדרך הביתה</b></div>
  ${mapSVG(200)}
+ <div class="card" style="padding:11px;margin-top:-4px"><div class="card-s">🧭 הניווט עצמו נפתח ב-Waze אצל הנהג. במסך שלך ושל ההורים רואים רק איפה הרכב — כמו בגט.</div></div>
  ${driverCard(`<div class="row" style="margin-top:12px">
    <button class="btn sec sl">📞 התקשר</button>
    <button class="btn sec sl">💬 הודעה</button>
@@ -421,6 +442,40 @@ SC.wallet=()=>`<div class="pad fade">
   <div class="card-t">🏪 שלב ב' · עסקים מקומיים</div>
   <div class="card-s">אפשר להמיר קרדיטים אצל עסקים בעיר, או לקבל נסיעה במתנה מעסק שמחזיר לקהילה.</div>
   <button class="btn sec sl" style="margin-top:10px" onclick="go('city_biz')">ראה מי בפנים</button>
+ </div>
+</div>`;
+
+SC.transit=()=>`<div class="pad fade">
+ <div class="hd"><div><h2>מה יוצא לי עכשיו</h2><p>${CTX[S.part][1]}</p></div>
+ <div class="badge"><span class="pulse"></span> חי</div></div>
+ <div class="chips">${CTX.map((c,i)=>`<button class="chip ${S.part===i?'on':''}" onclick="set('part',${i})">${c[0]}</button>`).join('')}</div>
+ ${BUS[S.part]?`
+ <div class="card mint">
+   <div class="card-t">🚌 קו ${BUS[S.part].l} · המומלץ עכשיו</div>
+   <div class="card-s">מגיע לתחנה בעוד <b style="color:var(--mint)">${BUS[S.part].m} דק'</b> · ${BUS[S.part].w} דק' הליכה · <b>6 ₪</b><br>${BUS[S.part].note}</div>
+   <button class="btn sec sl" style="margin-top:10px">נווט לתחנה</button>
+ </div>`:`
+ <div class="card">
+   <div class="card-t">🚌 אין תחבורה ציבורית</div>
+   <div class="card-s">אין קו פעיל ליעד שלך בשעה הזו.</div>
+ </div>`}
+ <div class="card ${BUS[S.part]?'':'acc'}">
+   <div class="card-t">🚗 קרוב · הסעה שכונתית</div>
+   <div class="card-s">נהג מאומת <b style="color:var(--acc)">3 דק'</b> ממך · מדלת לדלת · <b>10 ₪</b><br>
+   ${BUS[S.part]?'יקר ב-4 ₪, חוסך לך '+(BUS[S.part].m+BUS[S.part].w-3)+' דקות והליכה':'האפשרות היחידה כרגע'}</div>
+   <button class="btn sl" style="margin-top:10px" onclick="go('rider_match')">הזמן הסעה</button>
+ </div>
+ <div class="sec-t">תחנות קרובות · זמן אמת</div>
+ <div class="card">
+  ${[['29','תחנת הרימון','4 דק\' הליכה','6'],['10','כיכר השרון','7 דק\' הליכה','14'],['247','דרך רמתיים','9 דק\' הליכה','21']]
+   .map(b=>`<div class="list-item" style="${BUS[S.part]?'':'opacity:.5'}"><div class="avatar sm a">${b[0]}</div>
+   <div class="li-main"><div class="li-t">${b[1]}</div><div class="li-s">${b[2]}</div></div>
+   <div class="li-e">${BUS[S.part]?`<b style="color:var(--mint)">${b[3]} דק'</b>להגעה`:`<b style="color:var(--dim)">—</b>אין שירות`}</div></div>`).join('')}
+  ${BUS[S.part]?'':'<div class="card-s" style="margin-top:8px">הקו האחרון יצא ב-21:30. ההגעה הבאה: מחר ב-06:10.</div>'}
+ </div>
+ <div class="card hi">
+  <div class="card-t">💡 למה אנחנו מראים גם אוטובוס</div>
+  <div class="card-s">אפליקציה שמנסה למכור לך נסיעה בכל מחיר מאבדת אמון. אם יש אוטובוס טוב — נגיד לך. זה מה שהופך אותנו לשירות עירוני ולא לעוד מתחרה של מוניות. הנתונים מגיעים מנתוני התחבורה הציבורית הפתוחים של משרד התחבורה.</div>
  </div>
 </div>`;
 
